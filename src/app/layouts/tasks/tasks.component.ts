@@ -54,9 +54,7 @@ import { environment } from '../../../environments/environment';
   imports: [
     FormsModule,
     CommonModule,
-    FileUploadComponent,
     MatTabsModule,
-    TimesheetComponent,
     MatProgressSpinnerModule,
     PieChartComponent,
     // CdkDropList,
@@ -67,7 +65,6 @@ import { environment } from '../../../environments/environment';
     MatFormFieldModule,
     MatDatepickerModule,
     ReactiveFormsModule,
-    EditAssigneeNamesComponent,
     MatProgressBarModule
 ],
   providers: [provideNativeDateAdapter()],

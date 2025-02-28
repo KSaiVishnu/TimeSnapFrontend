@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-verification',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule],
   templateUrl: './verification.component.html',
   styleUrl: './verification.component.css',
 })

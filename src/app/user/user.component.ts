@@ -6,7 +6,7 @@ import { trigger, style, animate, transition, query } from "@angular/animations"
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [RegistrationComponent, RouterOutlet],
+  imports: [RouterOutlet],
   templateUrl: './user.component.html',
   styles: ``,
   animations: [
