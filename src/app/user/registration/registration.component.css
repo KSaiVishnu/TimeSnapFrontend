@@ -1,0 +1,29 @@
+.mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+  .mat-mdc-form-field-subscript-wrapper:has(.mat-mdc-form-field-hint-wrapper, .mat-error) {
+    display: block;
+  }
+
+  .password-field{
+    width: 100%;
+  }
+
+  ::ng-deep .no-border .mdc-notched-outline__leading,
+  ::ng-deep .no-border .mdc-notched-outline__trailing,
+  ::ng-deep .no-border .mdc-notched-outline__notch {
+    border: none !important; /* Remove all borders */
+  }
+  
+  ::ng-deep .no-border .mdc-notched-outline {
+    border-top: 2px solid black !important; /* Keep only the top border */
+  }
+
+
+  .no-border .mdc-notched-outline {
+    border: none !important; /* Remove all borders */
+    border-top: 2px solid black !important; /* Add only top border */
+  }
+  
+  
+  

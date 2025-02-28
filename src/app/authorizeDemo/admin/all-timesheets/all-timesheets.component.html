@@ -1,0 +1,89 @@
+<div class="container pt-4">
+  <div class="d-flex flex-row justify-content-center mb-3">
+    <div class="">
+      <mat-form-field appearance="outline">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input
+            matStartDate
+            formControlName="start"
+            placeholder="Start date"
+          />
+          <input matEndDate formControlName="end" placeholder="End date" />
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+
+        @if (range.controls.start.hasError('matStartDateInvalid')) {
+        <mat-error>Invalid start date</mat-error>
+        } @if (range.controls.end.hasError('matEndDateInvalid')) {
+        <mat-error>Invalid end date</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    <div class="p-2">
+      <button
+        mat-button
+        (click)="openExportTimeSheetsPopup(filteredTimeSheets)"
+        class="btn btn-info ml-auto"
+      >
+        Export
+        <i class="fas fa-file-export ml-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <table
+    class="table table-bordered"
+    *ngIf="groupedTimeSheets.length > 0; else noTimesheets"
+  >
+    <thead>
+      <tr>
+        <td style="min-width: 10%">Id</td>
+        <td style="min-width: 45%">Task Name</td>
+        <td style="min-width: 15%">Log Hours</td>
+        <td style="min-width: 15%">Date</td>
+        <td style="min-width: 15%">Billing Type</td>
+      </tr>
+    </thead>
+  </table>
+  <div *ngFor="let item of groupedTimeSheets">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td style="background-color: #f4f4f4 !important"></td>
+          <td style="background-color: #f4f4f4 !important">
+            <strong>{{ item.userName | titlecase }}</strong>
+          </td>
+          <td style="background-color: #f4f4f4 !important">
+            <strong>{{ Sum(item.timesheets) }}</strong>
+          </td>
+          <td style="background-color: #f4f4f4 !important"></td>
+          <td style="background-color: #f4f4f4 !important"></td>
+        </tr>
+        <tr *ngFor="let task of item.timesheets">
+          <td style="width: 10%">{{ task.taskId }}</td>
+          <td style="width: 45%">{{ task.taskName }}</td>
+          <td style="width: 15%">{{ convert(task.totalMinutes) }}</td>
+          <td style="width: 15%">{{ task.date | date }}</td>
+          <td style="width: 15%">{{ task.billingType }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #noTimesheets>
+  <div class="no-tasks-container">
+    <img class="no-tasks-image" src="NoTasks.jpg" />
+    <div class="d-flex flex-column align-items-center">
+      <h3>No TimeSheets Found</h3>
+      <p>Try with different filters.</p>
+      <button class="btn btn-primary" (click)="onResetFilters()">Reset</button>
+    </div>
+  </div>
+</ng-template>

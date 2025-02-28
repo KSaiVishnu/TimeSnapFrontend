@@ -1,0 +1,15 @@
+<div *ngIf="chartOptions">
+    <apx-chart
+      id="taskChart"
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [labels]="chartOptions.labels"
+      [responsive]="chartOptions.responsive"
+      [title]="chartOptions.title"
+      [colors]="chartOptions.colors"
+      [legend]="chartOptions.legend"
+      >
+      
+    </apx-chart>
+  </div>
+  

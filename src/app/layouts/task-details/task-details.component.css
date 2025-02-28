@@ -1,0 +1,43 @@
+.task-details-main-container{
+    background-color: white;
+    padding: 30px;
+}
+
+.task-description-container{
+    display: flex;
+}
+
+.add-log-button{
+    margin-left: auto;
+}
+
+.task-title {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .summary-card {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .time-sheet-table{
+    margin-top: 30px;
+  }
+  
+  .action-button{
+    margin-left: 20px;
+  }
+  
+  .non-billable {
+    color: red;
+    font-weight: bold;
+  }
+  .billable{
+    color: green;
+    font-weight: bold;
+  }

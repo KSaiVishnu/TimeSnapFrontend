@@ -1,0 +1,26 @@
+<div class="admin-main-container">
+  <mat-tab-group
+    mat-stretch-tabs="false"
+    animationDuration="0ms"
+    mat-align-tabs="start"
+  >
+    <mat-tab label="Import">
+      <app-file-upload></app-file-upload>
+    </mat-tab>
+    <mat-tab label="Tasks">
+      <app-all-tasks></app-all-tasks>
+    </mat-tab>
+    <mat-tab label="Time Sheets">
+      <app-all-timesheets></app-all-timesheets>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template #noTasks>
+  <div class="no-tasks-container">
+    <img class="no-tasks-image" src="NoTasks.jpg" />
+    <div>
+      <h3>No Tasks Found</h3>
+    </div>
+  </div>
+</ng-template>

@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+body{
+    font-family: "Inter", serif;
+}
+.error-feedback {
+    font-size: 0.9rem;
+    color: crimson;
+    margin: 0.3rem !important;
+    margin-top: 0.1rem !important;
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+/* ::ng-deep .no-border .mdc-notched-outline__leading,
+::ng-deep .no-border .mdc-notched-outline__trailing,
+::ng-deep .no-border .mdc-notched-outline__notch {
+  border: none !important;
+}
+
+::ng-deep .no-border .mdc-notched-outline {
+  border-top: 2px solid black !important;
+} */

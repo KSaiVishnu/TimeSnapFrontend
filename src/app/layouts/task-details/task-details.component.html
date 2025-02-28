@@ -1,0 +1,89 @@
+<div class="task-details-main-container">
+  <div class="task-description-container">
+    <h2 class="task-title">📝 Deleting-1</h2>
+    <button
+      class="btn btn-success add-log-button"
+      (click)="openAddLogModal(empId, taskId)"
+    >
+      Add Log
+    </button>
+  </div>
+  <div>
+    <mat-card class="summary-card">
+      <mat-card-content>
+        <div class="d-flex flex-row">
+          <p>
+            📅 Start Date: <strong>{{ startDate | date }}</strong>
+          </p>
+          <p class="ml-5">
+            📅 Due Date: <strong>{{ dueDate | date }}</strong>
+          </p>
+        </div>
+        <p>
+          ⏳ Total Time:
+          <strong>{{ totalTimeInMinutes | minutesToHours }}</strong>
+        </p>
+        <p *ngIf="billingType=='Non-Billable'">
+          💰 Billing Type: <span class="non-billable">{{ billingType }}</span>
+        </p>
+        <p *ngIf="billingType=='Billable'">
+          💰 Billing Type: <span class="billable">{{ billingType }}</span>
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div>
+    <table
+      mat-table
+      [dataSource]="timesheets"
+      class="mat-elevation-z8 time-sheet-table"
+    >
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let log">
+          {{ log.date | date : "MMM dd, yyyy" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="timeSpent">
+        <th mat-header-cell *matHeaderCellDef>Time Spent</th>
+        <td mat-cell *matCellDef="let log">
+          {{ log.totalMinutes | minutesToHours }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let log">
+          <div class="action-buttons">
+            <button
+              class="btn btn-info"
+              mat-icon-button
+              color="primary"
+              (click)="editLog(log)"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-danger action-button"
+              mat-icon-button
+              color="warn"
+              (click)="deleteLog(log.id)"
+            >
+              Delete
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="['date', 'timeSpent', 'actions']"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['date', 'timeSpent', 'actions']"
+      ></tr>
+    </table>
+  </div>
+</div>

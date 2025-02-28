@@ -1,0 +1,63 @@
+<div class="d-flex">
+  <form style="width: 90%">
+    <mat-form-field
+      class="no-border"
+      appearance="outline"
+      style="width: 100%; margin-bottom: 0px;"
+    >
+      <div class="scroll-container">
+        <mat-chip-grid #chipGrid aria-label="Fruit selection">
+          @for (fruit of fruits(); track $index) {
+          <mat-chip-row (removed)="remove(fruit)">
+            {{ fruit.assignee }}
+            <button
+              matChipRemove
+              [attr.aria-label]="'remove ' + fruit.assignee"
+            >
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+          }
+        </mat-chip-grid>
+      </div>
+
+      <input
+        name="currentFruit"
+        placeholder="New Assignee.."
+        type="search"
+        #fruitInput
+        [(ngModel)]="currentFruit"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      />
+      <!-- (matChipInputTokenEnd)="add($event)" -->
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event); fruitInput.value = ''"
+      >
+        @for (fruit of filteredFruits(); track fruit) {
+        <mat-option [value]="fruit">{{ fruit.userName }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+  <div>
+    <button
+      (click)="saveTaskChanges()"
+      matTooltip="Save"
+      class="btn btn-success ml-2"
+      style="padding: auto"
+    >
+      <i class="fas fa-save"></i>
+    </button>
+    <!-- <button
+      mat-raised-button
+      matTooltip="Save"
+      aria-label="Button that displays a tooltip when focused or hovered over"
+    >
+    <i class="fas fa-save"></i>
+    </button> -->
+  </div>
+</div>
+

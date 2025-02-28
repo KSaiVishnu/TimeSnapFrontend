@@ -1,0 +1,119 @@
+
+
+.example-chip-list {
+    width: 100%;
+  }
+  
+  input[type="search"]::-webkit-search-cancel-button {
+    cursor: pointer;
+  }
+
+
+
+
+
+
+/* Completely hide the outline border */
+.example-chip-list .mat-form-field-outline {
+  display: none !important;
+  border: none !important;
+}
+
+/* Remove background, shadow, and extra borders */
+.example-chip-list {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Hide underline */
+.example-chip-list .mat-form-field-underline {
+  display: none !important;
+  border: none !important;
+}
+
+/* Remove border from input inside mat-form-field */
+.example-chip-list .mat-input-element {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Ensure no border appears when field is focused */
+.example-chip-list.mat-focused .mat-form-field-outline {
+  display: none !important;
+}
+
+/* Ensure scroll container does not introduce extra border */
+.scroll-container {
+  border: none !important;
+  outline: none !important;
+}
+
+mat-form-field {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+
+
+
+
+  
+  
+
+  .scroll-container {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  mat-chip-grid {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 5px;
+    min-width: max-content;
+  }
+  
+
+  /* .scroll-container ::ng-deep .mat-mdc-text-field-wrapper {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  .scroll-container ::ng-deep .mdc-notched-outline {
+    display: none !important;
+  } */
+  
+  
+  
+  /* ::ng-deep .mat-mdc-text-field-wrapper {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  ::ng-deep .mdc-notched-outline {
+    display: none !important;
+  } 
+  
+  
+  ::ng-deep .mat-mdc-chip-grid {
+    padding: 0 !important;
+  }
+  
+  ::ng-deep .mat-mdc-chip {
+    padding: 0 !important;
+    margin: 0 !important;
+  } */

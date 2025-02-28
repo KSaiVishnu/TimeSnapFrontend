@@ -1,0 +1,141 @@
+<div class="mb-4">
+  <h2 class="text-success">
+    Sign up
+  </h2>
+  <div>Already have an account?
+    <a routerLink="/signin" class="text-decoration-none fw-medium text-success d-inlin-block">Sign in</a>
+  </div>
+</div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <div>
+      <label for="fullName">Full Name</label>
+      <input id="fullName" class="form-control mt-0" placeholder="Full Name" formControlName="fullName">
+    </div>
+      <div class="error-feedback" *ngIf="hasDisplayableError('fullName') && form.controls['fullName'].hasError('required')">
+        Please enter your full name.
+      </div>
+    </div>
+    <div class="mb-3">
+      <input class="form-control" placeholder="Email" formControlName="email">
+      <div class="error-feedback" *ngIf="hasDisplayableError('email')">
+        <ng-container [ngSwitch]="form.controls['email'].errors  | firstKey">
+          <div *ngSwitchCase="'required'">
+            Please enter your email address.
+          </div>
+          <div *ngSwitchCase="'email'">
+            Please enter a valid email address.
+          </div>
+          <div *ngSwitchCase="'invalidDomain'">
+            Only For Framsikt Employees
+          </div>
+        </ng-container>
+      </div>
+    </div>
+<!-- 
+    sai
+
+    <mat-form-field appearance="outline" style="width: 100%;" class="mt-2 no-border">
+      <mat-label>Full Name</mat-label>
+      <input matInput placeholder="Full Name" formControlName="fullName" />
+    
+      <mat-error *ngIf="form.controls['fullName'].hasError('required')">
+        Please enter your full name.
+      </mat-error>
+    </mat-form-field> -->
+    
+
+    <!-- <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Enter your email</mat-label>
+      <input
+        matInput
+        placeholder="james@framsikt.io"
+        formControlName="email"
+        required
+      />
+    
+      <mat-error *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+        <ng-container [ngSwitch]="form.controls['email'].errors | firstKey">
+          <span *ngSwitchCase="'required'">Please enter your email address.</span>
+          <span *ngSwitchCase="'email'">Please enter a valid email address.</span>
+          <span *ngSwitchCase="'invalidDomain'">Only For Framsikt Employees.</span>
+        </ng-container>
+      </mat-error>
+    </mat-form-field> -->
+    
+
+
+
+<!-- 
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Enter your password</mat-label>
+      <input formControlName="password" matInput [type]="hide() ? 'password' : 'text'" />
+      <button
+        mat-icon-button matSuffix (click)="clickEvent($event)"
+        [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()" type="button">
+        <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    
+      <mat-error *ngIf="form.controls['password'].invalid && form.controls['password'].touched">
+        <ng-container [ngSwitch]="form.controls['password'].errors | firstKey">
+          <span *ngSwitchCase="'required'">Please enter your password.</span>
+          <span *ngSwitchCase="'minlength'">At least 6 characters required.</span>
+          <span *ngSwitchCase="'pattern'">One or more special characters required.</span>
+        </ng-container>
+      </mat-error>
+    </mat-form-field> -->
+
+
+
+
+    <div class="mb-3">
+      <!-- <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Enter your password</mat-label>
+        <input formControlName="password" matInput [type]="hide() ? 'password' : 'text'" />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="clickEvent($event)"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide()"
+          type="button"
+        >
+          <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field> -->
+
+      <input type="password" class="form-control" placeholder="Password" formControlName="password">
+      <div class="error-feedback" *ngIf="hasDisplayableError('password')">
+        <ng-container [ngSwitch]="form.controls['password'].errors  | firstKey">
+          <div *ngSwitchCase="'required'">
+            Please enter your password.
+          </div>
+          <div *ngSwitchCase="'minlength'">
+            Atleast 6 characters required.
+          </div>
+          <div *ngSwitchCase="'pattern'">
+            One or more special character(s).
+          </div>
+        </ng-container>
+        
+      </div>
+    </div>
+
+
+
+
+
+
+    <div class="">
+      <input class="form-control" placeholder="Confirm Password" formControlName="confirmPassword">
+      <div class="error-feedback" 
+      *ngIf="hasDisplayableError('confirmPassword') && form.controls['confirmPassword'].hasError('passwordMismatch')">
+        Passwords doesn't match.
+      </div>
+    </div>
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success w-100 rounded-3">
+        Register
+      </button>
+    </div>
+  </form>
