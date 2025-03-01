@@ -37,8 +37,11 @@ export const routes: Routes = [
         {
           path:'tasks',component:TasksComponent
         },
+        // {
+        //   path:`tasks/:id`, component:TaskDetailsComponent
+        // },
         {
-          path:`tasks/:id`, component:TaskDetailsComponent
+          path: 'tasks/:id', loadComponent: () => import('./layouts/task-details/task-details.component').then(m => m.TaskDetailsComponent)
         },
         {
           path: 'admin-or-manager', component: AdminOrManagerComponent,
