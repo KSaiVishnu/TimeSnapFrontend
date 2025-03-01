@@ -82,9 +82,13 @@ export class AuthService {
     this.cookieService.set(TOKEN_KEY, token);
   }
 
-  googleLogin(key: boolean) {
-    const value = key ? 'Yes' : 'No';
-    localStorage.setItem('google_login', value);
+  // googleLogin(key: boolean) {
+  //   const value = key ? 'Yes' : 'No';
+  //   localStorage.setItem('google_login', value);
+  // }
+
+  googleLogin(data: { token: string }): Observable<any> {
+    return this.http.post(`${this.baseURL}/google-login`, data);
   }
 
   getToken() {
