@@ -58,6 +58,9 @@ export class AllTimesheetsComponent {
 
   ngOnInit(){
     this.fetchTimeSheets();
+      this.range.valueChanges.subscribe(() => {
+        this.filterTimeSheets();
+      });
   }
 
   fetchTimeSheets() {

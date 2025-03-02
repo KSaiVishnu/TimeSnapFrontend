@@ -14,12 +14,13 @@ import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { v4 as uuidv4 } from 'uuid';
 import { FirstKeyPipe } from '../shared/pipes/first-key.pipe';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-edit-task-popup',
   imports: [FormsModule, CommonModule, ReactiveFormsModule, FirstKeyPipe],
   templateUrl: './edit-task-popup.component.html',
-  styleUrl: './edit-task-popup.component.css'
+  styleUrl: './edit-task-popup.component.css',
 })
 export class EditTaskPopupComponent {
   // searchTerm: string = '';
@@ -35,7 +36,6 @@ export class EditTaskPopupComponent {
 
   @Output() taskAdded = new EventEmitter<void>(); // Event to notify parent
 
-
   form: FormGroup;
 
   constructor(
@@ -43,7 +43,7 @@ export class EditTaskPopupComponent {
     private http: HttpClient,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<EditTaskPopupComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { allAssignees: any, task: any }
+    @Inject(MAT_DIALOG_DATA) public data: { allAssignees: any; task: any }
   ) {
     this.form = this.formBuilder.group(
       {
@@ -58,6 +58,8 @@ export class EditTaskPopupComponent {
     this.assigneeList = [...data.task.assignee];
     console.log(this.assigneeList);
   }
+
+  baseURL = environment.apiBaseUrl;
 
   dateMatchValidator: ValidatorFn = (control: AbstractControl): null => {
     const startDate = control.get('startDate');
@@ -102,6 +104,8 @@ export class EditTaskPopupComponent {
       billingType: this.form.value.billingType,
     };
 
+    console.log(details);
+
     let taskDetails = details.assignee.map((each: any) => {
       return {
         task: details.task,
@@ -117,6 +121,32 @@ export class EditTaskPopupComponent {
     console.log(taskDetails);
 
     this.onReset();
+
+    this.http
+      .put(`${this.baseURL}/update-task`, taskDetails)
+      .subscribe({
+        next: (res: any) => {
+          this.toastr.success('Task Updated!', 'Task Updation Successful');
+          // alert('Task updated successfully!');
+          this.dialogRef.close('success'); // Pass "success" when closing
+
+          console.log(res);
+        },
+        error: (err: any) => console.log('error while adding task:\n', err),
+      });
+
+
+
+    // .subscribe(
+    //   () => {
+    //     alert('Task updated successfully!');
+    //     // this.loadTasks(); // Reload updated tasks
+    //   },
+    //   (error) => {
+    //     console.error('Error updating task', error);
+    //   }
+    // );
+
     // this.http
     //   .post('https://localhost:7062/api/tasks/upload', taskDetails)
     //   .subscribe({
