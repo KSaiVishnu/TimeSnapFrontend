@@ -123,7 +123,7 @@ export class EditTaskPopupComponent {
     this.onReset();
 
     this.http
-      .put(`${this.baseURL}/update-task`, taskDetails)
+      .put(`${this.baseURL}/tasks/update-task`, taskDetails)
       .subscribe({
         next: (res: any) => {
           this.toastr.success('Task Updated!', 'Task Updation Successful');
