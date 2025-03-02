@@ -13,6 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-add-log-modal',
@@ -54,6 +55,8 @@ export class AddLogModalComponent {
     this.setTodayDate();
   }
 
+    baseURL = environment.apiBaseUrl;
+
   setTodayDate() {
     const today = new Date();
     this.date = today.toISOString().split('T')[0]; // Convert to 'YYYY-MM-DD'
@@ -84,7 +87,7 @@ export class AddLogModalComponent {
 
     console.log(timesheet);
 
-    this.http.post('https://localhost:7062/api/timesheet/addlog', timesheet).subscribe({
+    this.http.post(`${this.baseURL}/timesheet/addlog`, timesheet).subscribe({
       next: (res: any) => {
         console.log('Timesheet saved!', res);
         this.dialogRef.close(res); // Send deleted ID back

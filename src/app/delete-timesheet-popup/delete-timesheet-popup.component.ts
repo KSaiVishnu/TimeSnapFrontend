@@ -7,6 +7,7 @@ import {
 import { ExportPopupComponent } from '../export-popup/export-popup.component';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-delete-timesheet-popup',
@@ -21,13 +22,15 @@ export class DeleteTimesheetPopupComponent {
     @Inject(MAT_DIALOG_DATA) public data: { id: any }
   ) {}
 
+    baseURL = environment.apiBaseUrl;
+
   close() {
     this.dialogRef.close();
   }
 
   deleteTimesheet() {
     const timesheetId = this.data.id;
-    this.http.delete(`https://localhost:7062/api/timesheet/${timesheetId}`).subscribe({
+    this.http.delete(`${this.baseURL}/timesheet/${timesheetId}`).subscribe({
       next:(res: any) =>{
         console.log(res);
         // window.location.reload();

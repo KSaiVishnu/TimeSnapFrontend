@@ -13,6 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-edit-log-popup',
@@ -57,6 +58,8 @@ export class EditLogPopupComponent {
     }
   }
 
+    baseURL = environment.apiBaseUrl;
+
   format(num: number) {
     return (num + '').length === 1 ? '0' + num : num + '';
   }
@@ -76,7 +79,7 @@ export class EditLogPopupComponent {
     console.log(timesheet);
 
     this.http
-      .put(`https://localhost:7062/api/timesheet/${this.timeSheetId}`, timesheet)
+      .put(`${this.baseURL}/timesheet/${this.timeSheetId}`, timesheet)
       .subscribe({
         next: (res: any) => {
           console.log('Timesheet saved!', res);

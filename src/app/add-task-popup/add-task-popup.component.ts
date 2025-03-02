@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { v4 as uuidv4 } from 'uuid';
 import { FirstKeyPipe } from '../shared/pipes/first-key.pipe';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-add-task-popup',
@@ -57,6 +58,8 @@ export class AddTaskPopupComponent {
     );
     console.log(this.assigneeList);
   }
+
+    baseURL = environment.apiBaseUrl;
 
   dateMatchValidator: ValidatorFn = (control: AbstractControl): null => {
     const startDate = control.get('startDate');
@@ -135,7 +138,7 @@ export class AddTaskPopupComponent {
 
     this.onReset();
     this.http
-      .post('https://localhost:7062/api/tasks/upload', taskDetails)
+      .post(`${this.baseURL}/tasks/upload`, taskDetails)
       .subscribe({
         next: (res: any) => {
           this.toastr.success(
