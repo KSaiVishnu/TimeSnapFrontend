@@ -485,7 +485,7 @@ loading = true;
     console.log('Updating Task:', updatedTask);
 
     this.http
-      .put(`${this.baseURL}{/tasks/${task.id}`, updatedTask)
+      .put(`${this.baseURL}/tasks/${task.id}`, updatedTask)
       .subscribe({
         next: (response: any) => {
           console.log('Task updated:', response);
