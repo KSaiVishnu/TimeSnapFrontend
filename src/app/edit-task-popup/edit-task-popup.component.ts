@@ -51,7 +51,7 @@ export class EditTaskPopupComponent {
         searchTerm: [''],
         startDate: [data.task.startDate.split('T')[0], [Validators.required]],
         dueDate: [data.task.dueDate.split('T')[0], [Validators.required]],
-        billingType: ['Non-Billable'],
+        billingType: [data.task.billingType],
       },
       { validators: this.dateMatchValidator }
     );
