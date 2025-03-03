@@ -65,7 +65,7 @@ export class RegistrationComponent implements OnInit{
 
   emailDomainValidator(control: AbstractControl) {
     const email = control.value;
-    return email && email.endsWith('ac.in') ? null : { invalidDomain: true };
+    return email && email.endsWith('@gmail.com') ? null : { invalidDomain: true };
   }
 
   passwordMatchValidator: ValidatorFn = (control: AbstractControl): null => {
