@@ -1,0 +1,14 @@
+table {
+    width: 50%;
+}
+
+.assignee-container{
+    background-color: rgb(249, 237, 221);
+    padding: 6px 10px 6px 10px;
+    margin: 0px 10px 10px 0px;
+    border-radius: 20px;
+  }
+
+  .remove-button{
+    background-color: rgb(249, 237, 221);
+  }

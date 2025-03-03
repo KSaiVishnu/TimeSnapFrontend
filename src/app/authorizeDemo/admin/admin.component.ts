@@ -7,6 +7,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 
 import { AllTasksComponent } from "./all-tasks/all-tasks.component";
 import { AllTimesheetsComponent } from "./all-timesheets/all-timesheets.component";
+import { EmployeesComponent } from "./employees/employees.component";
 
 @Component({
   selector: 'app-admin',
@@ -14,7 +15,8 @@ import { AllTimesheetsComponent } from "./all-timesheets/all-timesheets.componen
     FileUploadComponent,
     MatTabsModule,
     AllTasksComponent,
-    AllTimesheetsComponent
+    AllTimesheetsComponent,
+    EmployeesComponent
 ],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,

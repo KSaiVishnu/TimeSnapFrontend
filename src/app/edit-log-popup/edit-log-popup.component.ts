@@ -89,9 +89,10 @@ export class EditLogPopupComponent {
         },
         error: (err: any) => {
           console.error('Error saving timesheet', err);
+          this.dialogRef.close(timesheet); // Pass updated data on close
         },
       });
 
-    this.dialogRef.close();
+    // this.dialogRef.close(timesheet);
   }
 }

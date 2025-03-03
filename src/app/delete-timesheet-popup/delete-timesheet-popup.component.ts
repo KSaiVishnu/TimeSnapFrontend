@@ -37,10 +37,11 @@ export class DeleteTimesheetPopupComponent {
         this.dialogRef.close(timesheetId); // Send deleted ID back
 
       },
-      error(err) {
+      error:(err)=> {
         console.log(err);
+        this.close();
       },
     })
-    this.close();
+    // this.close();
   }
 }

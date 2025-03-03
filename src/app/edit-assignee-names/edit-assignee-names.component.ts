@@ -93,7 +93,7 @@ export class EditAssigneeNamesComponent implements OnInit {
       )
       .subscribe((data) => {
         this.allAssignees = data;
-        console.log(data);
+        // console.log(data);
         this.allFruits = data
         // console.log(this.allAssignees);
       });

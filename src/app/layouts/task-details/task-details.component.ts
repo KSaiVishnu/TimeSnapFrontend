@@ -118,7 +118,7 @@ export class TaskDetailsComponent implements OnInit {
         userName: timeSheet.task.assignee
 
       }
-      this.timesheets = [...this.timesheets, newTimeSheet]; // Ensure UI refresh
+      this.timesheets = [...this.timesheets, newTimeSheet];
     });
   }
 
@@ -130,12 +130,16 @@ export class TaskDetailsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(updatedLog => {
+      console.log(updatedLog);
       if (updatedLog) {
         const index = this.timesheets.findIndex(t => t.id === log.id);
+        console.log(this.timesheets);
+        console.log(index);
         if (index !== -1) {
           this.timesheets[index].totalMinutes = updatedLog.totalMinutes;
           this.timesheets[index].date = updatedLog.date
         }
+        console.log(this.timesheets);
       }
     });
   }
