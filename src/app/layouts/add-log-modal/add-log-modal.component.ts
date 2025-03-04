@@ -99,4 +99,5 @@ export class AddLogModalComponent {
     // this.dialogRef.close();
 
   }
+
 }

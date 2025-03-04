@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
@@ -7,7 +7,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ExportPopupComponent } from '../../../export-popup/export-popup.component';
 import { CommonModule } from '@angular/common';
@@ -35,6 +35,8 @@ export class AllTimesheetsComponent {
   filteredTimeSheets: any[] = [];
   groupedTimeSheets: any[] = [];
 
+  @Input() billingType = '';
+
   // Function to get the start of the current week (Sunday)
   getStartOfWeek(): Date {
     const today = new Date();
@@ -56,15 +58,21 @@ export class AllTimesheetsComponent {
   constructor(private http: HttpClient, private dialog: MatDialog) {}
   baseURL = environment.apiBaseUrl;
 
-  ngOnInit(){
+  ngOnInit() {
     this.fetchTimeSheets();
-      this.range.valueChanges.subscribe(() => {
-        this.filterTimeSheets();
-      });
+    this.range.valueChanges.subscribe(() => {
+      this.filterTimeSheets();
+    });
   }
 
   fetchTimeSheets() {
-    this.http.get<any[]>(`${this.baseURL}/timesheet`).subscribe({
+    let params = new HttpParams();
+
+    if (this.billingType) {
+      params = params.set('billingType', this.billingType);
+    }
+
+    this.http.get<any[]>(`${this.baseURL}/timesheet`, {params}).subscribe({
       next: (res: any) => {
         this.timesheets = res;
         this.filterTimeSheets(); // Apply filter initially
@@ -166,6 +174,4 @@ export class AllTimesheetsComponent {
     console.log(this.range);
     this.filterTimeSheets();
   }
-
-  
 }

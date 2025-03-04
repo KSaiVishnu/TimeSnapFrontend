@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 
 import { AfterViewInit, ViewChild } from '@angular/core';
@@ -12,6 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-employees',
@@ -20,6 +21,7 @@ import { CommonModule } from '@angular/common';
     MatPaginatorModule,
     ReactiveFormsModule,
     CommonModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.css',
@@ -40,7 +42,9 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   lastIdentity:any;
   count = 1;
 
-  constructor(private http: HttpClient, public formBuilder: FormBuilder) {
+  isLoading = true;
+
+  constructor(private http: HttpClient, public formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
     this.form = this.formBuilder.group({
       empName: ['', Validators.required],
       empId: ['', Validators.required],
@@ -59,14 +63,18 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   }
 
   fetchEmployees() {
+    this.isLoading = true;
     this.http
       .get<{ userName: string; employeeId: string }[]>(
         `${this.baseURL}/user-employee`
       )
       .subscribe((data) => {
         // console.log(data);
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Forces UI to update
         this.dataSource = new MatTableDataSource(data);
         this.dataSource.paginator = this.paginator;
+
       });
   }
 

@@ -1,4 +1,4 @@
-<div class="admin-main-container">
+<!-- <div class="admin-main-container">
   <mat-tab-group
     mat-stretch-tabs="false"
     animationDuration="0ms"
@@ -13,17 +13,81 @@
     <mat-tab label="Time Sheets">
       <app-all-timesheets></app-all-timesheets>
     </mat-tab>
+
+    <mat-tab label="Billable">
+      <app-billable></app-billable>
+    </mat-tab>
+    <mat-tab label="Non-Billable">
+      <app-non-billable></app-non-billable>
+    </mat-tab>
+
     <mat-tab label="Employees">
       <app-employees></app-employees>
     </mat-tab>
   </mat-tab-group>
-</div>
+</div> -->
 
-<ng-template #noTasks>
+<!-- <ng-template #noTasks>
   <div class="no-tasks-container">
     <img class="no-tasks-image" src="NoTasks.jpg" />
     <div>
       <h3>No Tasks Found</h3>
     </div>
   </div>
-</ng-template>
+</ng-template> -->
+
+<div class="admin-main-container">
+
+<div class="flex-container">
+  <div class="row">
+    <!-- <div class="d-flex" style="list-style-type: none;">
+      <li routerLink="upload"><button>Import</button></li>
+      <li routerLink="billable"><button>Billable</button></li>
+      <li routerLink="non-billable"><button>Non-Billable</button></li>
+      <li routerLink="all-employees"><button>Employees</button></li>
+    </div> -->
+
+
+    <!-- <div class="d-flex" style="list-style-type: none;">
+      <li>
+        <button routerLink="upload" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Import</button>
+      </li>
+      <li>
+        <button routerLink="billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Billable</button>
+      </li>
+      <li>
+        <button routerLink="non-billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Non-Billable</button>
+      </li>
+      <li>
+        <button routerLink="all-employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Employees</button>
+      </li>
+    </div> -->
+
+
+    <div class="nav-container">
+      <li>
+        <button routerLink="upload" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Import</button>
+      </li>
+      <li>
+        <button routerLink="billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Billable</button>
+      </li>
+      <li>
+        <button routerLink="non-billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Non-Billable</button>
+      </li>
+      <li>
+        <button routerLink="all-employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Employees</button>
+      </li>
+    </div>
+    
+    
+    
+    
+
+
+    <div>
+      <router-outlet />
+    </div>
+  </div>
+
+</div>
+</div>

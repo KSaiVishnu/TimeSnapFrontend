@@ -1,36 +1,78 @@
 <div class="task-details-main-container">
   <div class="task-description-container">
     <h2 class="task-title">📝 Deleting-1</h2>
-    <button
+    <!-- <button
       class="btn btn-success add-log-button"
       (click)="openAddLogModal(empId, taskId)"
     >
       Add Log
-    </button>
+    </button> -->
   </div>
-  <div>
-    <mat-card class="summary-card">
-      <mat-card-content>
-        <div class="d-flex flex-row">
+  <div class="row">
+    <div class="col-12 col-md-7">
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <div class="d-flex flex-row">
+            <p>
+              📅 Start Date: <strong>{{ startDate | date }}</strong>
+            </p>
+            <p class="ml-5">
+              📅 Due Date: <strong>{{ dueDate | date }}</strong>
+            </p>
+          </div>
           <p>
-            📅 Start Date: <strong>{{ startDate | date }}</strong>
+            ⏳ Total Time:
+            <strong>{{ totalTimeInMinutes | minutesToHours }}</strong>
           </p>
-          <p class="ml-5">
-            📅 Due Date: <strong>{{ dueDate | date }}</strong>
+          <p *ngIf="billingType == 'Non-Billable'">
+            💰 Billing Type: <span class="non-billable">{{ billingType }}</span>
           </p>
+          <p *ngIf="billingType == 'Billable'">
+            💰 Billing Type: <span class="billable">{{ billingType }}</span>
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-12 col-md-5 pl-5 pt-4" style="border: 1px solid gray;">
+      <h3 class="mb-3">Add Log</h3>
+      <div class="d-flex flex-row mb-3">
+        <div class="d-flex flex-column mr-3">
+          <label>Date</label>
+          <input type="date" [(ngModel)]="date" class="form-control" />
         </div>
-        <p>
-          ⏳ Total Time:
-          <strong>{{ totalTimeInMinutes | minutesToHours }}</strong>
-        </p>
-        <p *ngIf="billingType=='Non-Billable'">
-          💰 Billing Type: <span class="non-billable">{{ billingType }}</span>
-        </p>
-        <p *ngIf="billingType=='Billable'">
-          💰 Billing Type: <span class="billable">{{ billingType }}</span>
-        </p>
-      </mat-card-content>
-    </mat-card>
+        <div class="d-flex flex-column mr-2">
+          <label>Hours</label>
+          <select [(ngModel)]="totalHours" class="form-control">
+            <option *ngFor="let hour of hoursRange" [value]="hour">
+              {{ format(hour) }}
+            </option>
+          </select>
+        </div>
+        <div
+          class="d-flex flex-row justify-content-center align-items-center mr-1 mt-4"
+        >
+          :
+        </div>
+        <div class="d-flex flex-column">
+          <label>Minutes</label>
+          <select
+            [(ngModel)]="totalMin"
+            style="width: 45px"
+            class="form-control"
+          >
+            <option *ngFor="let min of minRange" [value]="min">
+              {{ format(min) }}
+            </option>
+          </select>
+        </div>
+        <div class="pt-4 pl-4">
+  <button (click)="save()" class="btn btn-success" >Save</button>
+  <!-- <button mat-stroked-button (click)="openSnackBar()" aria-label="Show an example snack-bar">
+    Pizza party
+  </button> -->
+</div>
+      </div>
+    </div>
   </div>
   <div>
     <table

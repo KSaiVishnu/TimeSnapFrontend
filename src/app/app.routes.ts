@@ -12,6 +12,10 @@ import { claimReq } from './shared/utils/claimReq-utils';
 import { VerificationComponent } from './user/verification/verification.component';
 import { TasksComponent } from './layouts/tasks/tasks.component';
 import { TaskDetailsComponent } from './layouts/task-details/task-details.component';
+import { FileUploadComponent } from './authorizeDemo/admin/file-upload/file-upload.component';
+import { BillableComponent } from './authorizeDemo/admin/billable/billable.component';
+import { NonBillableComponent } from './authorizeDemo/admin/non-billable/non-billable.component';
+import { EmployeesComponent } from './authorizeDemo/admin/employees/employees.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/signin', pathMatch: 'full' },
@@ -30,10 +34,10 @@ export const routes: Routes = [
         {
           path: 'dashboard', component: DashboardComponent
         },
-        {
-          path: 'admin', component: AdminComponent,
-          data: { claimReq: claimReq.admin }
-        },
+        // {
+        //   path: 'admin', component: AdminComponent,
+        //   data: { claimReq: claimReq.admin }
+        // },
         {
           path:'tasks',component:TasksComponent
         },
@@ -49,6 +53,19 @@ export const routes: Routes = [
         },
         {
           path: 'forbidden', component: ForbiddenComponent
+        },
+        {
+          path: 'admin', component: AdminComponent, data: { claimReq: claimReq.admin },
+          children: [
+            // Define admin-specific child routes here
+            { path: 'upload', component: FileUploadComponent },
+            { path: 'billable', component: BillableComponent },
+            { path: 'non-billable', component: NonBillableComponent },
+            { path: 'all-employees', component: EmployeesComponent },
+
+
+            { path: '', redirectTo: 'upload', pathMatch: 'full' } // Default admin route
+          ]
         }
       ]
     },

@@ -110,3 +110,69 @@ mat-form-field {
     margin-bottom: 0 !important;
   }
   
+
+  .edit-container {
+    max-width: 380px;
+    overflow-x: auto; /* Use auto instead of scroll for better UX */
+    white-space: nowrap;
+  }
+  
+  .chip-scroll-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 5px;
+  }
+
+
+  /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.edit-container::-webkit-scrollbar, 
+.chip-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.edit-container, 
+.chip-scroll-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* Hide scrollbar for IE & Edge */
+}
+
+
+
+
+
+
+
+.custom-chip-grid {
+  display: flex;
+  flex-wrap: no-wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+  overflow-x: scroll;
+}
+
+.custom-chip-row {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid gray;
+  color: rgb(68, 66, 66);
+  padding: 6px 12px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+
+.custom-chip-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.custom-chip-grid{
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* Hide scrollbar for IE & Edge */
+}
+
+

@@ -5,12 +5,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  EventEmitter,
   inject,
   Input,
   model,
   OnInit,
+  Output,
   signal,
-  ViewEncapsulation 
+  ViewEncapsulation,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -21,10 +23,12 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import SaveIcon from '@mui/icons-material/Save';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatButtonModule} from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-edit-assignee-names',
@@ -34,20 +38,23 @@ import { environment } from '../../environments/environment';
     MatIconModule,
     MatAutocompleteModule,
     FormsModule,
-    MatButtonModule, MatTooltipModule, CommonModule
+    MatButtonModule,
+    MatTooltipModule,
+    CommonModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-assignee-names.component.html',
   styleUrl: './edit-assignee-names.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class EditAssigneeNamesComponent implements OnInit {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   readonly currentFruit = model('');
-  fruits:any = signal([]);
+  fruits: any = signal([]);
   allFruits: any[] = [];
   filteredFruits = computed(() => {
     const currentFruit = this.currentFruit().toLowerCase();
+    console.log(currentFruit);
 
     this.allFruits = this.allFruits.filter(
       (user: any) =>
@@ -60,30 +67,37 @@ export class EditAssigneeNamesComponent implements OnInit {
       return [];
     }
     return currentFruit
-      ? this.allFruits.filter((fruit) => fruit.userName.toLowerCase().includes(currentFruit))
+      ? this.allFruits.filter((fruit) =>
+          fruit.userName.toLowerCase().includes(currentFruit)
+        )
       : this.allFruits.slice();
   });
 
   readonly announcer = inject(LiveAnnouncer);
 
-  constructor(private http: HttpClient){}
+  constructor(private http: HttpClient) {}
 
   @Input() assignee: any;
   @Input() taskId: any;
+  @Input() allAssignees: any;
+
+  @Input() currentlyEditingTaskId!: number | null;
+  @Output() editModeChange = new EventEmitter<number | null>();
 
   baseURL = environment.apiBaseUrl;
 
-  allAssignees: { userName: string; employeeId: string }[] = []; // Store all users
+  // allAssignees: { userName: string; employeeId: string }[] = []; // Store all users
   isEditing = false;
-
 
   ngOnInit() {
     console.log(this.assignee);
     console.log(this.taskId);
-    for(let item of this.assignee){
-      this.fruits.set([...this.fruits(),item])
+    for (let item of this.assignee) {
+      this.fruits.set([...this.fruits(), item]);
     }
-    this.fetchAssignees(); // Fetch data when component loads
+    // this.fetchAssignees(); // Fetch data when component loads
+    console.log(this.allAssignees);
+    this.allFruits = this.allAssignees;
   }
 
   fetchAssignees() {
@@ -94,7 +108,7 @@ export class EditAssigneeNamesComponent implements OnInit {
       .subscribe((data) => {
         this.allAssignees = data;
         // console.log(data);
-        this.allFruits = data
+        this.allFruits = data;
         // console.log(this.allAssignees);
       });
   }
@@ -108,14 +122,14 @@ export class EditAssigneeNamesComponent implements OnInit {
   //   );
   //   // this.filteredFruits = computed(() => {
   //   //   const currentFruit = this.currentFruit().toLowerCase();
-  
+
   //   //   this.allFruits = this.allFruits.filter(
   //   //     (user: any) =>
   //   //       !this.assignee.some(
   //   //         (a: { empId: string }) => a.empId === user.employeeId
   //   //       )
   //   //   );
-  
+
   //   //   if (this.currentFruit() === '') {
   //   //     return [];
   //   //   }
@@ -154,6 +168,16 @@ export class EditAssigneeNamesComponent implements OnInit {
   //   this.currentFruit.set('');
   // }
 
+  onEdit() {
+    this.isEditing = !this.isEditing;
+    this.editModeChange.emit(this.taskId); // Notify parent that this row is in editing mode
+  }
+
+  cross() {
+    this.isEditing = !this.isEditing;
+    this.editModeChange.emit(null); // Notify parent that editing mode is off
+  }
+
   saveTaskChanges() {
     // console.log(task);
     // console.log(this.fruits());
@@ -177,28 +201,60 @@ export class EditAssigneeNamesComponent implements OnInit {
           console.log('Error updating task:', err);
         },
       });
+
+    this.isEditing = !this.isEditing;
+    this.editModeChange.emit(null); // Notify parent that editing mode is off
+    this.openSnackBar();
   }
 
-  remove(fruit: string): void {
-    this.fruits.update((fruits:any) => {
-      const index = fruits.indexOf(fruit);
-      if (index < 0) {
-        return fruits;
-      }
-
-      fruits.splice(index, 1);
-      this.announcer.announce(`Removed ${fruit}`);
-      return [...fruits];
+  // snackbar
+  private _snackBar = inject(MatSnackBar);
+  durationInSeconds = 5;
+  openSnackBar() {
+    this._snackBar.openFromComponent(SnackbarComponent, {
+      duration: this.durationInSeconds * 1000,
+      data: {
+        message: 'Changes Saved Successfully',
+      },
     });
+  }
+
+  // remove(fruit: string): void {
+  //   this.fruits.update((fruits:any) => {
+  //     const index = fruits.indexOf(fruit);
+  //     if (index < 0) {
+  //       return fruits;
+  //     }
+
+  //     fruits.splice(index, 1);
+  //     this.announcer.announce(`Removed ${fruit}`);
+  //     return [...fruits];
+  //   });
+  //   console.log(this.filteredFruits);
+
+  // }
+
+  remove(fruit: any): void {
+    this.fruits.update((fruits: any) => {
+      return fruits.filter((f: any) => f.empId !== fruit.empId);
+    });
+
+    // Add back to the available list for autocomplete
+    this.allFruits.push({
+      userName: fruit.assignee,
+      employeeId: fruit.empId,
+    });
+
+    this.announcer.announce(`Removed ${fruit.assignee}`);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     // console.log(event.option);
     let newItem = {
       assignee: event.option.value.userName,
-      empId: event.option.value.employeeId
-    }
-    this.fruits.update((fruits:any) => [newItem, ...fruits]);
+      empId: event.option.value.employeeId,
+    };
+    this.fruits.update((fruits: any) => [newItem, ...fruits]);
     this.currentFruit.set('');
     event.option.deselect();
   }

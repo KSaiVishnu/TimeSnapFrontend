@@ -8,6 +8,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { AllTasksComponent } from "./all-tasks/all-tasks.component";
 import { AllTimesheetsComponent } from "./all-timesheets/all-timesheets.component";
 import { EmployeesComponent } from "./employees/employees.component";
+import { BillableComponent } from "./billable/billable.component";
+import { NonBillableComponent } from "./non-billable/non-billable.component";
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -16,7 +19,12 @@ import { EmployeesComponent } from "./employees/employees.component";
     MatTabsModule,
     AllTasksComponent,
     AllTimesheetsComponent,
-    EmployeesComponent
+    EmployeesComponent,
+    BillableComponent,
+    NonBillableComponent,
+    RouterLink,
+    RouterOutlet,
+    RouterLinkActive
 ],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,

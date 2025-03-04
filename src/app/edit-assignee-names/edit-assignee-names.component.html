@@ -1,9 +1,9 @@
-<div class="d-flex">
-  <form style="width: 90%">
+<!-- <div class="d-flex"> -->
+  <!-- <form *ngIf="isEditing" style="width: 90%">
     <mat-form-field
       class="no-border"
       appearance="outline"
-      style="width: 100%; margin-bottom: 0px;"
+      style="width: 100%; margin-bottom: 0px"
     >
       <div class="scroll-container">
         <mat-chip-grid #chipGrid aria-label="Fruit selection">
@@ -31,7 +31,120 @@
         [matAutocomplete]="auto"
         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       />
-      <!-- (matChipInputTokenEnd)="add($event)" -->
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event); fruitInput.value = ''"
+      >
+        @for (fruit of filteredFruits(); track fruit) {
+        <mat-option [value]="fruit">{{ fruit.userName }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </form> -->
+  <!-- <div *ngIf="!isEditing">
+    <div class="scroll-container">
+      <mat-chip-grid #chipGrid aria-label="Fruit selection">
+        @for (fruit of fruits(); track $index) {
+        <mat-chip-row (removed)="remove(fruit)">
+          {{ fruit.assignee }}
+
+        </mat-chip-row>
+        }
+      </mat-chip-grid>
+    </div>
+  </div> -->
+  <!-- <div *ngIf="!isEditing">
+    <div class="edit-container">
+      <div class="chip-scroll-container">
+        <mat-chip-grid #chipGrid aria-label="Fruit selection">
+          @for (fruit of fruits(); track $index) {
+          <mat-chip-row (removed)="remove(fruit)">
+            {{ fruit.assignee }}
+          </mat-chip-row>
+          }
+        </mat-chip-grid>
+      </div>
+    </div>
+  </div> -->
+<!-- 
+  <div class="d-flex flex-column">
+    <button
+      *ngIf="isEditing"
+      (click)="saveTaskChanges()"
+      matTooltip="Save"
+      class="btn btn-success ml-2"
+      style="padding: auto; height: 40px; border-radius: 60px"
+    >
+      <i class="fas fa-save"></i>
+    </button>
+
+    <button
+      *ngIf="isEditing"
+      (click)="cross()"
+      matTooltip="Remove"
+      class="btn btn-danger mt-2 ml-2"
+      style="padding: auto; height: 40px; border-radius: 60px"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+
+    <button
+      *ngIf="!isEditing"
+      (click)="onEdit()"
+      matTooltip="Edit"
+      class="btn ml-2"
+      style="padding: auto; height: 43px; border-radius: 60px"
+    >
+      <i class="fas fa-edit"></i>
+    </button>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="d-flex">
+  <form *ngIf="taskId === currentlyEditingTaskId" style="width: 90%">
+    <mat-form-field class="no-border" appearance="outline" style="width: 100%; margin-bottom: 0px">
+      <div class="scroll-container">
+        <mat-chip-grid #chipGrid aria-label="Assignee selection">
+          @for (fruit of fruits(); track $index) {
+          <mat-chip-row (removed)="remove(fruit)">
+            {{ fruit.assignee }}
+            <button matChipRemove [attr.aria-label]="'remove ' + fruit.assignee">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+          }
+        </mat-chip-grid>
+      </div>
+
+      <input
+        name="currentFruit"
+        placeholder="New Assignee.."
+        type="search"
+        #fruitInput
+        [(ngModel)]="currentFruit"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      />
+
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="selected($event); fruitInput.value = ''"
@@ -42,22 +155,149 @@
       </mat-autocomplete>
     </mat-form-field>
   </form>
-  <div>
+
+  <div *ngIf="taskId !== currentlyEditingTaskId">
+    <div class="edit-container">
+      <div class="chip-scroll-container">
+        <!-- <mat-chip-grid #chipGrid aria-label="Assignee selection">
+          @for (fruit of fruits(); track $index) {
+          <mat-chip-row>{{ fruit.assignee }}</mat-chip-row>
+          }
+        </mat-chip-grid> -->
+
+
+
+        <!-- @for (fruit of fruits(); track $index) {
+          <li>{{fruit.assignee}}</li>
+        } -->
+
+
+        <ul class="custom-chip-grid">
+          @for (fruit of fruits(); track $index) {
+            <li class="custom-chip-row">
+              {{ fruit.assignee }}
+            </li>
+          }
+        </ul>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column">
     <button
+      *ngIf="taskId === currentlyEditingTaskId"
       (click)="saveTaskChanges()"
       matTooltip="Save"
       class="btn btn-success ml-2"
-      style="padding: auto"
+      style="padding: auto; height: 40px; border-radius: 60px"
     >
       <i class="fas fa-save"></i>
     </button>
-    <!-- <button
-      mat-raised-button
-      matTooltip="Save"
-      aria-label="Button that displays a tooltip when focused or hovered over"
+
+    <button
+      *ngIf="taskId === currentlyEditingTaskId"
+      (click)="cross()"
+      matTooltip="Close"
+      class="btn btn-danger mt-2 ml-2"
+      style="padding: auto; height: 40px; border-radius: 60px"
     >
-    <i class="fas fa-save"></i>
-    </button> -->
+      <i class="fas fa-times"></i>
+    </button>
+
+    <button
+      *ngIf="taskId !== currentlyEditingTaskId"
+      (click)="onEdit()"
+      matTooltip="Edit"
+      class="btn ml-2"
+      style="padding: auto; height: 43px; border-radius: 60px"
+    >
+      <i class="fas fa-edit"></i>
+    </button>
   </div>
 </div>
 
+
+
+
+
+
+
+<!-- <div class="d-flex">
+  <form *ngIf="taskId === currentlyEditingTaskId" style="width: 90%">
+    <mat-form-field class="no-border" appearance="outline" style="width: 100%; margin-bottom: 0px">
+      <div class="scroll-container">
+        <mat-chip-grid #chipGrid aria-label="Assignee selection">
+          <mat-chip-row *ngFor="let fruit of fruits(); track by $index" (removed)="remove(fruit)">
+            {{ fruit.assignee }}
+            <button matChipRemove [attr.aria-label]="'remove ' + fruit.assignee">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+      </div>
+
+      <input
+        name="currentFruit"
+        placeholder="New Assignee.."
+        type="search"
+        #fruitInput
+        [(ngModel)]="currentFruit"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)"
+      />
+
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event); fruitInput.value = ''">
+        <mat-option *ngFor="let fruit of filteredFruits()" [value]="fruit">
+          {{ fruit.userName }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+
+  <div *ngIf="taskId !== currentlyEditingTaskId">
+    <div class="edit-container">
+      <div class="chip-scroll-container">
+        <mat-chip-grid aria-label="Assignee selection">
+          <mat-chip-row *ngFor="let fruit of fruits(); track by $index">
+            {{ fruit.assignee }}
+          </mat-chip-row>
+        </mat-chip-grid>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column">
+    <button
+      *ngIf="taskId === currentlyEditingTaskId"
+      (click)="saveTaskChanges()"
+      matTooltip="Save"
+      class="btn btn-success ml-2"
+      style="padding: auto; height: 40px; border-radius: 60px"
+    >
+      <i class="fas fa-save"></i>
+    </button>
+
+    <button
+      *ngIf="taskId === currentlyEditingTaskId"
+      (click)="cross()"
+      matTooltip="Cancel"
+      class="btn btn-danger mt-2 ml-2"
+      style="padding: auto; height: 40px; border-radius: 60px"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+
+    <button
+      *ngIf="taskId !== currentlyEditingTaskId"
+      (click)="onEdit(taskId)"
+      matTooltip="Edit"
+      class="btn ml-2"
+      style="padding: auto; height: 43px; border-radius: 60px"
+    >
+      <i class="fas fa-edit"></i>
+    </button>
+  </div>
+</div> -->

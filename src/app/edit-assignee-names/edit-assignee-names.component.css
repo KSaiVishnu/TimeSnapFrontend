@@ -86,7 +86,30 @@ mat-form-field {
     gap: 5px;
     min-width: max-content;
   }
+
   
+
+  .edit-container {
+    max-width: 350px;
+    overflow-x: auto; /* Use auto instead of scroll for better UX */
+    white-space: nowrap;
+  }
+  
+  .chip-scroll-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 5px;
+  }
+  
+  mat-chip-grid {
+    display: flex; /* Change from inline-flex */
+    flex-wrap: nowrap;
+    gap: 5px;
+    min-width: fit-content; /* Ensure it doesn't shrink */
+  }
+  
+
 
   /* .scroll-container ::ng-deep .mat-mdc-text-field-wrapper {
     border: none !important;

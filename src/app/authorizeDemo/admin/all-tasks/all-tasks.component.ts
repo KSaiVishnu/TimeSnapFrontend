@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component, AfterViewInit, ViewChild, OnInit } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  OnInit,
+  Input,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,17 +15,27 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { DeleteTaskPopupComponent } from '../../../delete-task-popup/delete-task-popup.component';
 import { EditTaskPopupComponent } from '../../../edit-task-popup/edit-task-popup.component';
-import {MatIconModule} from '@angular/material/icon';
-import { EditAssigneeNamesComponent } from "../../../edit-assignee-names/edit-assignee-names.component";
+import { MatIconModule } from '@angular/material/icon';
+import { EditAssigneeNamesComponent } from '../../../edit-assignee-names/edit-assignee-names.component';
 import { AddTaskPopupComponent } from '../../../add-task-popup/add-task-popup.component';
-import {MatInputModule} from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { environment } from '../../../../environments/environment';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // const ELEMENT_DATA: any = [];
 
 @Component({
   selector: 'app-all-tasks',
-  imports: [MatInputModule,MatTableModule, MatPaginatorModule, FormsModule, CommonModule, MatIconModule, EditAssigneeNamesComponent],
+  imports: [
+    MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    FormsModule,
+    CommonModule,
+    MatIconModule,
+    EditAssigneeNamesComponent,
+    MatProgressSpinnerModule,
+  ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './all-tasks.component.html',
   styleUrls: ['./all-tasks.component.css'],
@@ -35,11 +52,21 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   dataSource = new MatTableDataSource<any>();
   // dataSource:any;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private cdr: ChangeDetectorRef) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   baseURL = environment.apiBaseUrl;
+
+  @Input() billingType = '';
+
+  currentlyEditingTaskId: number | null = null; // Track which row is in editing mode
+
+  isLoading = true;
+
+  setEditingTask(taskId: number | null) {
+    this.currentlyEditingTaskId = taskId;
+  }
 
   ngAfterViewInit() {
     if (this.paginator) {
@@ -48,6 +75,7 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.billingType);
     this.fetchTasks();
     this.fetchAssignees(); // Fetch data when component loads
   }
@@ -104,7 +132,16 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   }
 
   fetchTasks() {
-    this.http.get<any[]>(`${this.baseURL}/tasks`).subscribe({
+    let params = new HttpParams();
+
+    if (this.billingType) {
+      params = params.set('billingType', this.billingType);
+    }
+
+    console.log(params);
+
+    this.isLoading = true;
+    this.http.get<any[]>(`${this.baseURL}/tasks`, { params }).subscribe({
       next: (res: any) => {
         console.log(res);
         this.tasks = res;
@@ -148,11 +185,17 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
         this.dataSource.paginator = this.paginator;
         // }
         console.log(groupedTasks);
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Forces UI to update
+
       },
       error: (err) => {
         console.log(err);
+        this.isLoading = false;
+        this.cdr.detectChanges(); // Forces UI to update
       },
     });
+    
   }
 
   // Fetch all assignees from the UserEmployee table (API call)
@@ -205,19 +248,19 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     console.log(taskId);
   }
 
-    openAddTaskPopup() {
-      let allAssignees = this.allAssignees;
-      const dialogRef = this.dialog.open(AddTaskPopupComponent, {
-        width: '50%',
-        data: { allAssignees },
-      });
-    
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result === 'success') {
-          this.fetchTasks(); // Refresh the task list
-        }
-      });
-    }
+  openAddTaskPopup() {
+    let allAssignees = this.allAssignees;
+    const dialogRef = this.dialog.open(AddTaskPopupComponent, {
+      width: '50%',
+      data: { allAssignees },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'success') {
+        this.fetchTasks(); // Refresh the task list
+      }
+    });
+  }
 
   openEditTaskPopup(task: any) {
     let allAssignees = this.allAssignees;

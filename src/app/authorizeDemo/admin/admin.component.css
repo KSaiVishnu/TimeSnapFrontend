@@ -91,3 +91,62 @@
   
 
  
+
+
+
+
+
+
+  .nav-container {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+  }
+  
+  .nav-container li {
+    position: relative;
+  }
+  
+  .nav-container button {
+    border: none;
+    padding: 10px 20px;
+    background: transparent;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #555; /* Soft dark gray */
+    transition: color 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .nav-container button::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background: #88c0d0; /* Light blue */
+    transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+  }
+  
+  /* .nav-container button:hover {
+    color: #88c0d0; 
+  }
+  
+  .nav-container button:hover::before {
+    width: 100%;
+    left: 0;
+  } */
+  
+  .nav-container button.active {
+    color: blue;
+    /* background-color: lightgreen; */
+    border-bottom: 1px solid blue;
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  
