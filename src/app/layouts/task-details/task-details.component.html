@@ -1,6 +1,6 @@
 <div class="task-details-main-container">
   <div class="task-description-container">
-    <h2 class="task-title">📝 Deleting-1</h2>
+    <!-- <h2 class="task-title">{{taskDetails.task}}</h2> -->
     <!-- <button
       class="btn btn-success add-log-button"
       (click)="openAddLogModal(empId, taskId)"
@@ -10,9 +10,14 @@
   </div>
   <div class="row">
     <div class="col-12 col-md-7">
-      <mat-card class="summary-card">
+      <!-- Skeleton Loader -->
+      <div *ngIf="isLoading">
+        <div class="skeleton-card" *ngFor="let i of [1]"></div>
+      </div>
+
+      <mat-card *ngIf="!isLoading" class="summary-card">
         <mat-card-content>
-          <div class="d-flex flex-row">
+          <!-- <div class="d-flex flex-row">
             <p>
               📅 Start Date: <strong>{{ startDate | date }}</strong>
             </p>
@@ -29,11 +34,33 @@
           </p>
           <p *ngIf="billingType == 'Billable'">
             💰 Billing Type: <span class="billable">{{ billingType }}</span>
+          </p> -->
+
+          <h2 class="task-title mb-3">📝 {{ taskDetails.task }}</h2>
+          <div class="d-flex flex-row">
+            <p>
+              📅 Start Date: <strong>{{ taskDetails.startDate | date }}</strong>
+            </p>
+            <p class="ml-5">
+              📅 Due Date: <strong>{{ taskDetails.dueDate | date }}</strong>
+            </p>
+          </div>
+          <p>
+            ⏳ Total Time:
+            <strong>{{ totalTimeInMinutes | minutesToHours }}</strong>
+          </p>
+          <p *ngIf="taskDetails.billingType == 'Non-Billable'">
+            💰 Billing Type:
+            <span class="non-billable">{{ taskDetails.billingType }}</span>
+          </p>
+          <p *ngIf="taskDetails.billingType == 'Billable'">
+            💰 Billing Type:
+            <span class="billable">{{ taskDetails.billingType }}</span>
           </p>
         </mat-card-content>
       </mat-card>
     </div>
-    <div class="col-12 col-md-5 pl-5 pt-4" style="border: 1px solid gray;">
+    <div class="col-12 col-md-5 pl-5 pt-5" style="border: 1px solid gray">
       <h3 class="mb-3">Add Log</h3>
       <div class="d-flex flex-row mb-3">
         <div class="d-flex flex-column mr-3">
@@ -66,15 +93,30 @@
           </select>
         </div>
         <div class="pt-4 pl-4">
-  <button (click)="save()" class="btn btn-success" >Save</button>
-  <!-- <button mat-stroked-button (click)="openSnackBar()" aria-label="Show an example snack-bar">
+          <button (click)="save()" class="btn btn-success">Save</button>
+          <!-- <button mat-stroked-button (click)="openSnackBar()" aria-label="Show an example snack-bar">
     Pizza party
   </button> -->
-</div>
+        </div>
       </div>
     </div>
   </div>
-  <div>
+
+  <div *ngIf="isLoading">
+    <div
+      class="flex-container"
+      style="
+        height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading">
     <table
       mat-table
       [dataSource]="timesheets"

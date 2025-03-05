@@ -15,11 +15,18 @@ import { TOKEN_KEY } from '../../shared/constants';
 import { error } from 'node:console';
 import { GoogleLoginComponent } from "../google-login/google-login.component";
 
+import {ChangeDetectionStrategy, signal} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, GoogleLoginComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, GoogleLoginComponent, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
@@ -40,6 +47,13 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl('/dashboard');
     }
   }
+
+  hide = signal(true);
+  clickEvent(event: MouseEvent) {
+    this.hide.set(!this.hide());
+    event.stopPropagation();
+  }
+  
 
   // ngAfterViewInit(): void {
   //   if (typeof google !== 'undefined') {

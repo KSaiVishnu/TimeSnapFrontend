@@ -41,3 +41,28 @@
     color: green;
     font-weight: bold;
   }
+
+
+
+  .skeleton-card {
+    height:200px;
+    width: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 8px;
+    margin: 10px 0;
+  }
+  
+  @keyframes loading {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  @media screen and (max-width: 768px){
+    .skeleton-card {
+      height:0px;
+    }
+  }
+  
+  

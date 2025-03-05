@@ -9,7 +9,7 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="mb-3">
       <div>
-      <label for="fullName">Full Name</label>
+      <!-- <label for="fullName">Full Name</label> -->
       <input id="fullName" class="form-control mt-0" placeholder="Full Name" formControlName="fullName">
     </div>
       <div class="error-feedback" *ngIf="hasDisplayableError('fullName') && form.controls['fullName'].hasError('required')">

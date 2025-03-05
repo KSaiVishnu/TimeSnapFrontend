@@ -1,3 +1,45 @@
 .google-logo{
     height: 30px;
 }
+
+
+.example-container mat-form-field + mat-form-field {
+    margin-left: 8px;
+  }
+  
+  .example-right-align {
+    text-align: right;
+  }
+  
+  input.example-right-align::-webkit-outer-spin-button,
+  input.example-right-align::-webkit-inner-spin-button {
+    display: none;
+  }
+  
+  /* input.example-right-align {
+    -moz-appearance: textfield;
+  }
+   */
+
+
+   
+
+/* Remove extra space when no error is shown */
+.mat-mdc-form-field-bottom-align {
+    display: none;
+  }
+  
+  /* Show the error space only when an error is present */
+  .mat-mdc-form-field.ng-invalid.ng-touched .mat-mdc-form-field-bottom-align {
+    display: block;
+  }
+  
+  .submit-button{
+    margin-top: 0;
+    transition: margin 0.2s ease-in-out;
+  }
+
+  /* Add margin when an error appears */
+.mat-mdc-form-field.ng-invalid.ng-touched + .submit-button {
+    margin-top: 15px; /* Adjust as needed */
+  }

@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarComponent } from '../../snackbar/snackbar.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-task-details',
@@ -27,6 +28,7 @@ import { SnackbarComponent } from '../../snackbar/snackbar.component';
     MinutesToHoursPipe,
     FormsModule,
     CommonModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './task-details.component.html',
   styleUrl: './task-details.component.css',
@@ -42,6 +44,9 @@ export class TaskDetailsComponent implements OnInit {
   totalTimeInMinutes = 0;
 
   timesheets: any[] = [];
+  taskDetails: any = {};
+
+  isLoading = true;
 
   date: string = '';
 
@@ -144,22 +149,44 @@ export class TaskDetailsComponent implements OnInit {
       this.empId = userDetails().empId;
     }
 
+    this.getTaskDetails(this.taskId);
     this.getTimesheetsForTask(this.taskId);
   }
 
+
+  getTaskDetails(taskId: number){
+    this.http.get(`${this.baseURL}/tasks/details/${taskId}`).subscribe({
+      next: (response: any) => {
+        this.taskDetails = response;
+        console.log('Task Details:', this.taskDetails);
+      },
+      error: (error: any) => {
+        if (error.status === 404) {
+          this.timesheets = [];
+        } else {
+          console.error('Error fetching task details:', error);
+        }
+      },
+    });
+  }
+
+
+
   getTimesheetsForTask(taskId: number): void {
+    this.isLoading = true;
     this.http.get(`${this.baseURL}/tasks/${taskId}/timesheets`).subscribe({
       next: (response: any) => {
         this.timesheets = response;
-        const oneTimeSheetData = response[0];
-        this.startDate = oneTimeSheetData.startDate;
-        this.dueDate = oneTimeSheetData.dueDate;
-        this.billingType = oneTimeSheetData.billingType;
+        // const oneTimeSheetData = response[0];
+        // this.startDate = oneTimeSheetData.startDate;
+        // this.dueDate = oneTimeSheetData.dueDate;
+        // this.billingType = oneTimeSheetData.billingType;
 
         response.map((eachSheet: any) => {
           this.totalTimeInMinutes += eachSheet.totalMinutes;
         });
         console.log('Timesheets:', this.timesheets);
+        this.isLoading = false;
       },
       error: (error: any) => {
         if (error.status === 404) {
@@ -167,6 +194,7 @@ export class TaskDetailsComponent implements OnInit {
         } else {
           console.error('Error fetching timesheets:', error);
         }
+        // this.isLoading = false;
       },
     });
   }
