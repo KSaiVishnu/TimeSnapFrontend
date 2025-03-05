@@ -189,6 +189,7 @@
       *ngIf="taskId === currentlyEditingTaskId"
       (click)="saveTaskChanges()"
       matTooltip="Save"
+      matTooltipPosition="right"
       class="btn btn-success ml-2"
       style="padding: auto; height: 40px; border-radius: 60px"
     >
@@ -199,6 +200,7 @@
       *ngIf="taskId === currentlyEditingTaskId"
       (click)="cross()"
       matTooltip="Close"
+      matTooltipPosition="right"
       class="btn btn-danger mt-2 ml-2"
       style="padding: auto; height: 40px; border-radius: 60px"
     >

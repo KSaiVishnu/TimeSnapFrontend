@@ -11,11 +11,11 @@
   <div class="row">
     <div class="col-12 col-md-7">
       <!-- Skeleton Loader -->
-      <div *ngIf="isLoading">
+      <div *ngIf="isLoading_taskDetails">
         <div class="skeleton-card" *ngFor="let i of [1]"></div>
       </div>
 
-      <mat-card *ngIf="!isLoading" class="summary-card">
+      <mat-card *ngIf="!isLoading_taskDetails" class="summary-card">
         <mat-card-content>
           <!-- <div class="d-flex flex-row">
             <p>
@@ -122,17 +122,66 @@
       [dataSource]="timesheets"
       class="mat-elevation-z8 time-sheet-table"
     >
-      <ng-container matColumnDef="date">
+      <!-- <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef>Date</th>
         <td mat-cell *matCellDef="let log">
           {{ log.date | date : "MMM dd, yyyy" }}
         </td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let log">
+          <div *ngIf="editingLogId === log.id" class="d-flex flex-column mr-3 w-50">
+            <input
+              type="date"
+              [(ngModel)]="log.date.split('T')[0]"
+              class="form-control"
+            />
+          </div>
+          <span *ngIf="editingLogId !== log.id">
+          {{ log.date | date : "MMM dd, yyyy" }}
+          </span>
+        </td>
       </ng-container>
+
+      <!-- <ng-container matColumnDef="timeSpent">
+        <th mat-header-cell *matHeaderCellDef>Time Spent</th>
+        <td mat-cell *matCellDef="let log">
+          {{ log.totalMinutes | minutesToHours }}
+        </td>
+      </ng-container> -->
 
       <ng-container matColumnDef="timeSpent">
         <th mat-header-cell *matHeaderCellDef>Time Spent</th>
         <td mat-cell *matCellDef="let log">
-          {{ log.totalMinutes | minutesToHours }}
+          <div *ngIf="editingLogId === log.id" class="d-flex">
+            <div class="d-flex flex-column mr-2">
+              <select [(ngModel)]="log.totalHours" class="form-control"  (ngModelChange)="log.totalHours = +$event">
+                <option *ngFor="let hour of hoursRange" [value]="hour">
+                  {{ format(hour) }}
+                </option>
+              </select>
+            </div>
+            <div
+              class="d-flex flex-row justify-content-center align-items-center mr-1"
+            >
+              :
+            </div>
+            <div class="d-flex flex-column">
+              <select
+                [(ngModel)]="log.totalMin"
+                (ngModelChange)="log.totalMin= +$event"
+                style="width: 45px"
+                class="form-control"
+              >
+                <option *ngFor="let min of minRange" [value]="min">
+                  {{ format(min) }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <span *ngIf="editingLogId !== log.id">{{ log.totalMinutes | minutesToHours }}</span>
         </td>
       </ng-container>
 
@@ -141,14 +190,16 @@
         <td mat-cell *matCellDef="let log">
           <div class="action-buttons">
             <button
-              class="btn btn-info"
-              mat-icon-button
-              color="primary"
-              (click)="editLog(log)"
-            >
-              Edit
-            </button>
+            class="btn"
+            mat-icon-button
+            [ngClass]="editingLogId === log.id ? 'btn-success' : 'btn-info'"
+            (click)="editLog(log)"
+          >
+            {{ editingLogId === log.id ? 'Save' : 'Edit' }}
+          </button>
+          
             <button
+            
               class="btn btn-danger action-button"
               mat-icon-button
               color="warn"

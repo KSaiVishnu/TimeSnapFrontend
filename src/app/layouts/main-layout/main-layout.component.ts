@@ -16,6 +16,7 @@ export class MainLayoutComponent {
   claimReq = claimReq;
 
   onLogout() {
+    console.log("delete");
     this.authService.deleteToken();
     this.router.navigateByUrl('/signin');
   }

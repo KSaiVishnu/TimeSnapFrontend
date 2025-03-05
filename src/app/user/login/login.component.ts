@@ -21,15 +21,23 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 
+
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import { FormsModule} from '@angular/forms';
+import {merge} from 'rxjs';
+
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, GoogleLoginComponent, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, GoogleLoginComponent, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
+
+  errorMessage = signal('');
+
   constructor(
     public formBuilder: FormBuilder,
     private service: AuthService,
@@ -37,10 +45,31 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.form = this.formBuilder.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
     });
+    
+    merge(
+      this.form.controls['email'].statusChanges,
+      this.form.controls['email'].valueChanges
+    )
+    .pipe(takeUntilDestroyed())
+    .subscribe(() => this.updateErrorMessage());
+    
   }
+
+  updateErrorMessage() {
+    const emailControl = this.form.controls['email'];
+  
+    if (emailControl.hasError('required')) {
+      this.errorMessage.set('You must enter a value');
+    } else if (emailControl.hasError('email')) {
+      this.errorMessage.set('Not a valid email');
+    } else {
+      this.errorMessage.set('');
+    }
+  }
+  
 
   ngOnInit(): void {
     if (this.service.getToken()) {
@@ -220,11 +249,33 @@ export class LoginComponent implements OnInit {
   // }
 
 
+  // handleGoogleLogin(response: any) {
+  //   if (!response || !response.credential) {
+  //     this.toastr.error('Invalid Google response.', 'Login Failed');
+  //     return;
+  //   }
+  //   console.log(response);
+  
+  //   this.service.googleLogin({ token: response.credential }).subscribe({
+  //     next: (res: any) => {
+  //       this.service.saveToken(res.token);
+  //       this.router.navigateByUrl('/dashboard');
+  //     },
+  //     error: (err: any) => {
+  //       console.log('Login error:', err);
+  //       this.toastr.error('Google login failed.', 'Error');
+  //     },
+  //   });
+  // }
+  
+
+
   handleGoogleLogin(response: any) {
     if (!response || !response.credential) {
-      this.toastr.error('Invalid Google response.', 'Login Failed');
+      this.toastr.error('Invalid Google response. Please try again.', 'Login Failed');
       return;
     }
+  
     console.log(response);
   
     this.service.googleLogin({ token: response.credential }).subscribe({
@@ -234,11 +285,33 @@ export class LoginComponent implements OnInit {
       },
       error: (err: any) => {
         console.log('Login error:', err);
-        this.toastr.error('Google login failed.', 'Error');
+  
+        // Handle specific errors
+        if (err.status === 400) {
+          if (err.error.includes('Invalid Google token')) {
+            this.toastr.error('Invalid Google token. Please try again.', 'Login Failed');
+          } else if (err.error.includes('Employee not found')) {
+            this.toastr.error('Your email is not registered as an employee.', 'Access Denied');
+          } else if (err.error.includes('User registration failed')) {
+            this.toastr.error('User creation failed. Contact support.', 'Registration Error');
+          } else {
+            this.toastr.error(err.error, 'Login Failed');
+          }
+        } else if (err.status === 500) {
+          this.toastr.error('Server error. Please try again later.', 'Login Failed');
+        } else {
+          this.toastr.error('An unexpected error occurred.', 'Login Failed');
+        }
       },
     });
   }
   
+
+
+
+
+
+
 
   isSubmitted: boolean = false;
 

@@ -43,3 +43,8 @@
 .mat-mdc-form-field.ng-invalid.ng-touched + .submit-button {
     margin-top: 15px; /* Adjust as needed */
   }
+
+  .add-margin {
+    margin-top: 10px; /* Adjust as needed */
+  }
+  

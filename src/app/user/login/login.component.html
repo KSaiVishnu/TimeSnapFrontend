@@ -10,11 +10,12 @@
   </div>
 </div>
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="mb-3">
+  <!-- <div class="mb-3">
     <input
       class="form-control"
       placeholder="Email"
       formControlName="email"
+      type="email"
     />
     <div
       class="error-feedback"
@@ -25,9 +26,24 @@
     >
       Please enter your email address.
     </div>
+  </div> -->
+
+  <div class="example-container">
+    <mat-form-field class="w-100" appearance="outline">
+      <mat-label>Enter your email</mat-label>
+      <input
+        matInput
+        placeholder="pat@example.com"
+        formControlName="email"
+        (blur)="updateErrorMessage()"
+        required
+      />
+      @if (form.controls['email'].invalid) {
+      <mat-error>{{ errorMessage() }}</mat-error>
+      }
+    </mat-form-field>
   </div>
 
-  
   <!-- <div class="mb-3">
     <div class="d-flex">
       <input
@@ -59,8 +75,14 @@
     </div>
   </div> -->
 
-
-  <mat-form-field class="password-field w-100" appearance="outline">
+  <mat-form-field
+    class="password-field w-100"
+    appearance="outline"
+    [ngClass]="{
+      'add-margin':
+        form.controls['email'].invalid && form.controls['email'].touched
+    }"
+  >
     <mat-label>Password</mat-label>
     <input
       matInput
@@ -76,20 +98,13 @@
       [attr.aria-label]="hide() ? 'Show password' : 'Hide password'"
       [attr.aria-pressed]="hide()"
     >
-      <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
     </button>
-  
+
     <mat-error *ngIf="form.controls['password'].hasError('required')">
       Please enter your password.
     </mat-error>
   </mat-form-field>
-  
-
-
-
-
-
-
 
   <!-- <mat-form-field style="padding: 0px !important; margin: 0px !important;" appearance="outline">
     <mat-label>Enter your password</mat-label>
@@ -106,7 +121,6 @@
     </button>
   </mat-form-field> -->
 
-
   <div class="mb-4 submit-button">
     <button type="submit" class="btn btn-success w-100 rounded-3">
       Sign in
@@ -114,11 +128,11 @@
   </div>
 </form>
 
-
-
 <!-- <li style="list-style-type: none; margin-left: 45%;">or</li> -->
-<div class="dropdown-divider" style="border: 1px solid black; margin-bottom: 15px;"></div>
-
+<div
+  class="dropdown-divider"
+  style="border: 1px solid black; margin-bottom: 15px"
+></div>
 
 <!-- <app-google-login></app-google-login> -->
 

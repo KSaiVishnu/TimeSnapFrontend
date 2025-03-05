@@ -32,7 +32,7 @@ import { environment } from '../../environments/environment';
 })
 export class EditLogPopupComponent {
 
-  @Output() logUpdated = new EventEmitter<any>(); // 🔹 Notify parent component
+  @Output() logUpdated = new EventEmitter<any>(); // Notify parent component
 
 
   date: Date = new Date();

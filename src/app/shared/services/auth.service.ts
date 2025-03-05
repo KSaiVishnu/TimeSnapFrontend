@@ -97,6 +97,7 @@ export class AuthService {
   }
 
   deleteToken() {
+    console.log("Check 2");
     this.cookieService.delete(TOKEN_KEY);
   }
 

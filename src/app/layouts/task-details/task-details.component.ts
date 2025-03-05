@@ -28,7 +28,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MinutesToHoursPipe,
     FormsModule,
     CommonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './task-details.component.html',
   styleUrl: './task-details.component.css',
@@ -47,6 +47,7 @@ export class TaskDetailsComponent implements OnInit {
   taskDetails: any = {};
 
   isLoading = true;
+  isLoading_taskDetails = true;
 
   date: string = '';
 
@@ -54,6 +55,8 @@ export class TaskDetailsComponent implements OnInit {
   totalMin: number = 0;
   hoursRange: number[] = Array.from({ length: 13 }, (_, i) => i); // Generates hours 1-12
   minRange: number[] = Array.from({ length: 60 }, (_, i) => i);
+
+  editingLogId: number | null = null; // Track the currently editing log ID
 
   format(num: number) {
     return (num + '').length === 1 ? '0' + num : num + '';
@@ -108,9 +111,9 @@ export class TaskDetailsComponent implements OnInit {
   openSnackBar() {
     this._snackBar.openFromComponent(SnackbarComponent, {
       duration: this.durationInSeconds * 1000,
-      data:{
-        message: "Time Sheet Added Successfully",
-      }
+      data: {
+        message: 'Time Sheet Added Successfully',
+      },
     });
   }
 
@@ -153,8 +156,8 @@ export class TaskDetailsComponent implements OnInit {
     this.getTimesheetsForTask(this.taskId);
   }
 
-
-  getTaskDetails(taskId: number){
+  getTaskDetails(taskId: number) {
+    this.isLoading_taskDetails = true;
     this.http.get(`${this.baseURL}/tasks/details/${taskId}`).subscribe({
       next: (response: any) => {
         this.taskDetails = response;
@@ -168,23 +171,29 @@ export class TaskDetailsComponent implements OnInit {
         }
       },
     });
+    this.isLoading_taskDetails = false;
   }
-
-
 
   getTimesheetsForTask(taskId: number): void {
     this.isLoading = true;
     this.http.get(`${this.baseURL}/tasks/${taskId}/timesheets`).subscribe({
       next: (response: any) => {
-        this.timesheets = response;
         // const oneTimeSheetData = response[0];
         // this.startDate = oneTimeSheetData.startDate;
         // this.dueDate = oneTimeSheetData.dueDate;
         // this.billingType = oneTimeSheetData.billingType;
 
-        response.map((eachSheet: any) => {
+        let timeSheets = response.map((eachSheet: any) => {
           this.totalTimeInMinutes += eachSheet.totalMinutes;
+          return {
+            ...eachSheet,
+            isEditing: false,
+            totalMin: eachSheet.totalMinutes % 60,
+            totalHours: Math.floor(eachSheet.totalMinutes / 60),
+          };
         });
+        this.timesheets = timeSheets;
+
         console.log('Timesheets:', this.timesheets);
         this.isLoading = false;
       },
@@ -194,7 +203,7 @@ export class TaskDetailsComponent implements OnInit {
         } else {
           console.error('Error fetching timesheets:', error);
         }
-        // this.isLoading = false;
+        this.isLoading = false;
       },
     });
   }
@@ -226,6 +235,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   editLog(log: any) {
+    log.isEditing = true;
     console.log(log);
     const dialogRef = this.dialog.open(EditLogPopupComponent, {
       width: '50%',
@@ -246,6 +256,136 @@ export class TaskDetailsComponent implements OnInit {
       }
     });
   }
+
+  // editLog(logId: number): void {
+  //   this.editingLogId = this.editingLogId === logId ? null : logId; // Toggle edit mode for the selected log
+
+
+  //   const timesheet = {
+  //     date: new Date(this.date),
+  //     totalMinutes: Number(this.totalHours * 60) + Number(this.totalMin), // Converts the selected hours to minutes
+  //   };
+  //   console.log(this.totalHours, typeof this.totalHours);
+  //   console.log(this.totalMin, typeof this.totalMin);
+
+  //   console.log(timesheet);
+
+  //   this.http
+  //     .put(`${this.baseURL}/timesheet/${logId}`, timesheet)
+  //     .subscribe({
+  //       next: (res: any) => {
+  //         console.log('Timesheet saved!', res);
+  
+  //       },
+  //       error: (err: any) => {
+  //         console.error('Error saving timesheet', err);
+  //       },
+  //     });
+  // }
+
+
+  // editLog(log: any): void {
+  //   if (this.editingLogId === log.id) {
+  //     // If already editing, save the data
+  //     const timesheet = {
+  //       date: new Date(log.date), // Use the selected date
+  //       totalMinutes: Number(log.totalHours) * 60 + Number(log.totalMin), // Convert hours to minutes
+  //     };
+  
+  //     console.log('Saving timesheet:', timesheet);
+  
+  //     this.http.put(`${this.baseURL}/timesheet/${log.id}`, timesheet).subscribe({
+  //       next: (res: any) => {
+  //         console.log('Timesheet saved!', res);
+  //         this.editingLogId = null; // Exit edit mode after saving
+  //       },
+  //       error: (err: any) => {
+  //         console.error('Error saving timesheet', err);
+  //       },
+  //     });
+  //   } else {
+  //     // Enable edit mode
+  //     this.editingLogId = log.id;
+  //   }
+  // }
+  
+
+  // editLog(log: any): void {
+  //   if (this.editingLogId === log.id) {
+  //     // If already editing, save the data
+  //     const updatedTimesheet = {
+  //       ...log,
+  //       date: new Date(log.date), // Ensure correct date format
+  //       totalMinutes: Number(log.totalHours) * 60 + Number(log.totalMin),
+  //     };
+  
+  //     console.log('Saving timesheet:', updatedTimesheet);
+  
+  //     this.http.put(`${this.baseURL}/timesheet/${log.id}`, updatedTimesheet).subscribe({
+  //       next: (res: any) => {
+  //         console.log('Timesheet saved!', res);
+  
+  //         // Find the index of the timesheet and update the array
+  //         const index = this.timesheets.findIndex(t => t.id === log.id);
+  //         // if (index !== -1) {
+  //         //   // this.timesheets[index] = { ...updatedTimesheet }; // Update the UI manually/
+  //         //   this.timesheets[index] = updatedTimesheet
+  //         //   // this.timesheets = [...this.timesheets];
+  //         //   console.log(this.timesheets);
+  //         // }
+
+  //         if (index !== -1) {
+  //           this.timesheets[index] = { ...this.timesheets[index], ...updatedTimesheet };
+  //         }
+  
+  //         this.editingLogId = null; // Exit edit mode
+  //       },
+  //       error: (err: any) => {
+  //         console.error('Error saving timesheet', err);
+  //       },
+  //     });
+  //   } else {
+  //     // Enable edit mode
+  //     this.editingLogId = log.id;
+  //   }
+  // }
+  
+
+
+
+
+  // editLog(log: any): void {
+  //   if (this.editingLogId === log.id) {
+  //     const updatedTimesheet = {
+  //       id: log.id,
+  //       date: log.date.split('T')[0], // Ensure correct date format
+  //       totalMinutes: (parseInt(log.totalHours, 10) * 60) + parseInt(log.totalMin, 10), // Convert to number
+  //     };
+  
+  //     console.log('Saving timesheet:', updatedTimesheet);
+  
+  //     this.http.put(`${this.baseURL}/timesheet/${log.id}`, updatedTimesheet).subscribe({
+  //       next: (res: any) => {
+  //         console.log('Timesheet saved!', res);
+          
+  //         // Update the local array to reflect changes immediately
+  //         const index = this.timesheets.findIndex(t => t.id === log.id);
+  //         if (index !== -1) {
+  //           this.timesheets[index] = { ...this.timesheets[index], ...updatedTimesheet };
+  //         }
+  
+  //         this.editingLogId = null; // Exit edit mode
+  //       },
+  //       error: (err: any) => {
+  //         console.error('Error saving timesheet', err);
+  //       },
+  //     });
+  //   } else {
+  //     this.editingLogId = log.id;
+  //   }
+  // }
+  
+
 
   deleteLog(logId: any) {
     console.log(logId);
