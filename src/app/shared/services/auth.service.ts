@@ -96,10 +96,20 @@ export class AuthService {
     return this.cookieService.get(TOKEN_KEY);
   }
 
-  deleteToken() {
-    console.log("Check 2");
-    this.cookieService.delete(TOKEN_KEY);
+  // deleteToken() {
+  //   console.log("Check 2");
+  //   this.cookieService.delete(TOKEN_KEY);
+  // }
+
+  deleteToken(): Promise<void> {
+    return new Promise((resolve) => {
+      console.log("Check 2");
+      this.cookieService.delete(TOKEN_KEY);
+      resolve(); // Ensures the function behaves like an async function
+    });
   }
+  
+
 
   findUserByEmail(email:string){
     console.log(email);

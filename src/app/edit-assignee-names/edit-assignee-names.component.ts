@@ -3,6 +3,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   computed,
   EventEmitter,
@@ -12,6 +13,7 @@ import {
   OnInit,
   Output,
   signal,
+  SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -75,11 +77,13 @@ export class EditAssigneeNamesComponent implements OnInit {
 
   readonly announcer = inject(LiveAnnouncer);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   @Input() assignee: any;
   @Input() taskId: any;
-  @Input() allAssignees: any;
+  // @Input() allAssignees: any;
+  @Input() allAssignees: any[] = []; // Receive employees from AllTasks
+
 
   @Input() currentlyEditingTaskId!: number | null;
   @Output() editModeChange = new EventEmitter<number | null>();
@@ -100,6 +104,21 @@ export class EditAssigneeNamesComponent implements OnInit {
     this.allFruits = this.allAssignees;
   }
 
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['allAssignees'] && changes['allAssignees'].currentValue) {
+  //     console.log('Updated assignees:', this.allAssignees);
+  //     // this.cdr.detectChanges(); // Force UI update
+  //   }
+  // }
+
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['allAssignees'] && changes['allAssignees'].currentValue) {
+      console.log("Updated employees in EditAssignee:", this.allAssignees);
+      this.allFruits = this.allAssignees
+    }
+  }
+
   fetchAssignees() {
     this.http
       .get<{ userName: string; employeeId: string }[]>(
@@ -110,6 +129,7 @@ export class EditAssigneeNamesComponent implements OnInit {
         // console.log(data);
         this.allFruits = data;
         // console.log(this.allAssignees);
+        // console.log(this.allFruits);
       });
   }
 
@@ -258,4 +278,10 @@ export class EditAssigneeNamesComponent implements OnInit {
     this.currentFruit.set('');
     event.option.deselect();
   }
+
+
+
+  // ngOnChanges() {
+  //   this.cdr.markForCheck();  // Trigger change detection
+  // }
 }

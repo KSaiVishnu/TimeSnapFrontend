@@ -12,9 +12,10 @@ import {
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { FirstKeyPipe } from '../shared/pipes/first-key.pipe';
 import { environment } from '../../environments/environment';
+import { title } from 'process';
 
 @Component({
   selector: 'app-add-task-popup',
@@ -36,6 +37,8 @@ export class AddTaskPopupComponent {
 
   @Output() taskAdded = new EventEmitter<void>(); // Event to notify parent
 
+  toUpdateTask = false;
+  taskPresentMessage = 'Task is already Present';
 
   form: FormGroup;
 
@@ -44,22 +47,45 @@ export class AddTaskPopupComponent {
     private http: HttpClient,
     private toastr: ToastrService,
     private dialogRef: MatDialogRef<AddTaskPopupComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { allAssignees: any }
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      allAssignees: any;
+      billingType: any;
+      isEmployee: any;
+      userDetails: any;
+    }
   ) {
+    // console.log(data.billingType);
+    // let x = data.billingType;
     this.form = this.formBuilder.group(
       {
         taskName: ['', Validators.required],
+        taskId: ['', Validators.required],
         searchTerm: [''],
         startDate: ['', [Validators.required]],
         dueDate: ['', [Validators.required]],
-        billingType: ['Non-Billable'],
+        billingType: [data.billingType],
       },
       { validators: this.dateMatchValidator }
     );
     console.log(this.assigneeList);
   }
 
-    baseURL = environment.apiBaseUrl;
+  ngOnInit() {
+    this.form
+      .get('billingType')
+      ?.setValue(this.formatBillingType(this.data.billingType));
+  }
+
+  formatBillingType(value: string): string {
+    if (!value) return ''; // Handle undefined/null case
+    return value
+      .split('-') // Split words at '-'
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter
+      .join('-'); // Rejoin with '-'
+  }
+
+  baseURL = environment.apiBaseUrl;
 
   dateMatchValidator: ValidatorFn = (control: AbstractControl): null => {
     const startDate = control.get('startDate');
@@ -99,8 +125,28 @@ export class AddTaskPopupComponent {
   //   this.showSuggestions = false;
   // }
 
+
+  isResetting = false;
+
+  handleBlur() {
+    if (!this.isResetting) {
+      this.checkTaskId(); // Only execute when not resetting
+    }
+    this.isResetting = false; // Reset flag after blur execution
+
+  }
+  
+  preventBlurExecution() {
+    this.isResetting = true; // Set flag before blur event fires
+  }
+
   onReset() {
-    this.form.reset(); // Reset all form fields
+    this.form.reset();
+    this.toUpdateTask = false;
+    setTimeout(() => {
+      this.isResetting = false; // Allow blur event after reset
+    }, 100);
+
     this.form.patchValue({
       billingType: 'Non-Billable',
       searchTerm: '',
@@ -112,16 +158,28 @@ export class AddTaskPopupComponent {
 
   onAddTask() {
     let details = {
-      taskID: uuidv4(),
+      taskID: this.form.value.taskId,
       task: this.form.value.taskName,
       assignee: this.assigneeList,
       startDate: new Date(this.form.value.startDate),
       dueDate: new Date(this.form.value.dueDate),
       billingType: this.form.value.billingType,
     };
-    // console.log(this.form);
-    // console.log(details);
-    // console.log(this.form.value.taskName)
+    console.log(this.form);
+    console.log(details);
+    console.log(this.form.value.taskName);
+
+    if (this.data.isEmployee &&
+      !details.assignee.some(
+        (a: any) => a.empId === this.data.userDetails.empId
+      )
+    ) {
+      details.assignee.push({
+        assignee: this.data.userDetails.name,
+        empId: this.data.userDetails.empId,
+      });
+    }
+
     let taskDetails = details.assignee.map((each: any) => {
       return {
         task: details.task,
@@ -134,23 +192,117 @@ export class AddTaskPopupComponent {
       };
     });
 
-    // console.log(taskDetails);
-
+    console.log(taskDetails);
     this.onReset();
-    this.http
-      .post(`${this.baseURL}/tasks/upload`, taskDetails)
-      .subscribe({
-        next: (res: any) => {
-          this.toastr.success(
-            'New Task created!',
-            'Task Creation Successful'
-          );
-          this.dialogRef.close('success'); // Pass "success" when closing
 
+    if (this.toUpdateTask) {
+      console.log(taskDetails);
+      // this.onReset();
+      this.http
+        .put(`${this.baseURL}/tasks/update-task`, taskDetails)
+        .subscribe({
+          next: (res: any) => {
+            this.toastr.success('Task Updated!', 'Task Updation Successful');
+            // alert('Task updated successfully!');
+            this.dialogRef.close('success'); // Pass "success" when closing
+            console.log(res);
+          },
+          error: (err: any) => console.log('error while adding task:\n', err),
+        });
+
+    } else {
+      this.http.post(`${this.baseURL}/tasks/upload`, taskDetails).subscribe({
+        next: (res: any) => {
+          this.toastr.success('New Task created!', 'Task Creation Successful');
+          this.dialogRef.close('success'); // Pass "success" when closing
           console.log(res);
         },
         error: (err: any) => console.log('error while adding task:\n', err),
       });
+    }
+  }
+
+  checkTaskId() {
+    const taskId = this.form.get('taskId')?.value;
+    if (taskId) {
+      this.http.get<any>(`${this.baseURL}/tasks/users/${taskId}`).subscribe({
+        next: (res: any) => {
+          console.log(res);
+
+          if (res['taskID'] != null || res['taskID'] != undefined) {
+            this.toUpdateTask = true;
+
+            this.form.patchValue({
+              taskName: res.task,
+              dueDate: res.dueDate.split('T')[0],
+              startDate: res.startDate.split('T')[0],
+              billingType: res.billingType,
+            });
+            // this.assigneeList = [...res.assignee]
+            console.log(res.assignee);
+
+            // if (this.data.isEmployee) {
+            //   if (!res.assignee.empId.includes(this.data.userDetails.empId)) {
+            //     res.assignee.assignee.push(this.data.userDetails.name);
+            //     res.assignee.empId.push(this.data.userDetails.empId);
+            //   } else {
+            //     // alert("You already have this task");
+            //     console.log('You already have this task');
+            //   }
+            // }
+
+            const transformedData = res.assignee.assignee.map(
+              (name: any, index: any) => ({
+                assignee: name,
+                empId: res.assignee.empId[index],
+              })
+            );
+
+            console.log(transformedData, this.toUpdateTask);
+            this.assigneeList = transformedData;
+          } else {
+            this.toUpdateTask = false;
+
+            this.form.patchValue({
+              taskName: '',
+              dueDate: '',
+              startDate: '',
+              // billingType: res.billingType,
+            });
+            this.form
+              .get('billingType')
+              ?.setValue(this.formatBillingType(this.data.billingType));
+            this.assigneeList = [];
+
+            console.log('NO Task Found', this.toUpdateTask);
+          }
+        },
+        error: (err: any) =>
+          console.log('Task ID not found, enter new details.'),
+      });
+    }
+  }
+
+  preventSubmit(event: any) {
+    event.preventDefault(); // Prevents form submission when Enter is pressed
+  }
+
+  onChangeInput() {
+    console.log(this.form.value);
+    if (this.form.value.taskId === '') {
+      this.toUpdateTask = false;
+
+      this.form.patchValue({
+        taskName: '',
+        dueDate: '',
+        startDate: '',
+        // billingType: res.billingType,
+      });
+      this.form
+        .get('billingType')
+        ?.setValue(this.formatBillingType(this.data.billingType));
+      this.assigneeList = [];
+    }
   }
 
   filterAssignees() {

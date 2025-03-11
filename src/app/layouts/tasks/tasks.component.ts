@@ -45,6 +45,7 @@ import { Router } from '@angular/router';
 import { EditAssigneeNamesComponent } from "../../edit-assignee-names/edit-assignee-names.component";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { environment } from '../../../environments/environment';
+import { AddTaskPopupComponent } from '../../add-task-popup/add-task-popup.component';
 
 
 // export const ELEMENT_DATA: any = [];
@@ -82,6 +83,22 @@ export class TasksComponent {
   timesheets: any[] = [];
 
   baseURL = environment.apiBaseUrl;
+
+  allAssignees: { userName: string; employeeId: string; email: string }[] = []; // Store all users
+
+    // Fetch all assignees from the UserEmployee table (API call)
+    fetchAssignees() {
+      this.http
+        .get<{ userName: string; employeeId: string; email: string }[]>(
+          `${this.baseURL}/user-employee`
+        )
+        .subscribe((data) => {
+          this.allAssignees = data;
+          console.log(this.allAssignees);
+        });
+    }
+
+
 
   // @ViewChild('table', { static: true }) table: MatTable<any> | undefined;
   // displayedColumns: string[] = [
@@ -295,6 +312,29 @@ export class TasksComponent {
     });
   }
 
+  openAddTaskPopup() {
+    let allAssignees = this.allAssignees;
+    let billingType = 'Billable';
+    // console.log("iuytgf");
+
+    let userDetails = {
+      name: this.name,
+      email: this.email,
+      empId: this.empId
+    }
+
+    const dialogRef = this.dialog.open(AddTaskPopupComponent, {
+      width: '50%',
+      data: { allAssignees, billingType, isEmployee: true, userDetails},
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'success') {
+        this.fetchTasks(); // Refresh the task list
+      }
+    });
+  }
+
   ngOnInit() {
     this.currentStatus = 'loading';
     let userDetails = this.userService.getUserDetails();
@@ -321,6 +361,8 @@ export class TasksComponent {
     this.range.valueChanges.subscribe(() => {
       this.categorizeTasks();
     });
+
+    this.fetchAssignees();
   }
 
   pendingTasks: any = [];

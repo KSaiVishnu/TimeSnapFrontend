@@ -88,7 +88,7 @@ export class FileUploadComponent {
 
       parsedData = parsedData.map((item: any) => ({
         ...item,
-        "TASK ID": uuidv4(),
+        // "TASK ID": uuidv4(),
         fileName: file.name
       }));
 
