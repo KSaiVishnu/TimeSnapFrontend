@@ -178,6 +178,7 @@ export class AddTaskPopupComponent {
         assignee: this.data.userDetails.name,
         empId: this.data.userDetails.empId,
       });
+
     }
 
     let taskDetails = details.assignee.map((each: any) => {
@@ -192,12 +193,11 @@ export class AddTaskPopupComponent {
       };
     });
 
-    console.log(taskDetails);
-    this.onReset();
+    console.log(taskDetails, this.toUpdateTask);
+    // this.onReset();
 
     if (this.toUpdateTask) {
       console.log(taskDetails);
-      // this.onReset();
       this.http
         .put(`${this.baseURL}/tasks/update-task`, taskDetails)
         .subscribe({
@@ -206,13 +206,18 @@ export class AddTaskPopupComponent {
             // alert('Task updated successfully!');
             this.dialogRef.close('success'); // Pass "success" when closing
             console.log(res);
+            this.onReset();
           },
           error: (err: any) => console.log('error while adding task:\n', err),
         });
 
     } else {
+      console.log("ADD task")
+      this.onReset();
+
       this.http.post(`${this.baseURL}/tasks/upload`, taskDetails).subscribe({
         next: (res: any) => {
+          // this.onReset();
           this.toastr.success('New Task created!', 'Task Creation Successful');
           this.dialogRef.close('success'); // Pass "success" when closing
           console.log(res);

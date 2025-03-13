@@ -18,6 +18,7 @@ export class VerificationComponent {
   otpValue: string = '';
 
   onVerifyOtp() {
+    console.log(this.otpValue);
     this.authService
       .verifyOtp(this.authService.getEmail(), this.otpValue)
       .subscribe({

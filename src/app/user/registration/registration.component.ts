@@ -14,33 +14,45 @@ import { ToastrService } from 'ngx-toastr';
 import { Router, RouterLink } from '@angular/router';
 import { FirstKeyPipe } from '../../shared/pipes/first-key.pipe';
 
-import { signal} from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
+import { signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-registration',
   standalone: true,
   // providers:[AuthService],
-  imports: [ReactiveFormsModule, CommonModule, FirstKeyPipe, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    FirstKeyPipe,
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './registration.component.html',
   styles: ``,
 })
-export class RegistrationComponent implements OnInit{
+export class RegistrationComponent implements OnInit {
   form: FormGroup;
 
   constructor(
     public formBuilder: FormBuilder,
     private service: AuthService,
     private toastr: ToastrService,
-    private router:Router
+    private router: Router
   ) {
     this.form = this.formBuilder.group(
       {
         fullName: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email, this.emailDomainValidator]],
+        email: [
+          '',
+          [Validators.required, Validators.email, this.emailDomainValidator],
+        ],
         password: [
           '',
           [
@@ -56,7 +68,7 @@ export class RegistrationComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    if(this.service.getToken()){
+    if (this.service.getToken()) {
       this.router.navigateByUrl('/dashboard');
     }
   }
@@ -65,7 +77,9 @@ export class RegistrationComponent implements OnInit{
 
   emailDomainValidator(control: AbstractControl) {
     const email = control.value;
-    return email && email.endsWith('@gmail.com') ? null : { invalidDomain: true };
+    return email && email.endsWith('@gmail.com')
+      ? null
+      : { invalidDomain: true };
   }
 
   passwordMatchValidator: ValidatorFn = (control: AbstractControl): null => {
@@ -82,56 +96,55 @@ export class RegistrationComponent implements OnInit{
   // email:string = "";
 
   onSubmit() {
-      this.isSubmitted = true;
-      console.log(this.form);
-      if (this.form.valid) {
-        let FormValue = this.form.value
-        this.service.setForm(FormValue);
-        this.router.navigateByUrl("/verify");
-        this.service.sendOtp(FormValue.email).subscribe({
-          next:(res:any)=>{
-            console.log(res);
-          },
-          error:err=>{
-            console.log(err);
-          }
-        })
+    this.isSubmitted = true;
+    console.log(this.form);
+    if (this.form.valid) {
+      let FormValue = this.form.value;
+      this.service.setForm(FormValue);
+      this.router.navigateByUrl('/verify');
+      this.service.sendOtp(FormValue.email).subscribe({
+        next: (res: any) => {
+          console.log(res);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
 
-        // this.service.createUser(this.form.value)
-        //   .subscribe({
-        //     next: (res: any) => {
-        //       if (res.succeeded) {
-        //         this.form.reset();
-        //         this.isSubmitted = false;
-        //         this.toastr.success('New user created!', 'Registration Successful');
-        //         // this.service.sendOtp(this.form.value.email);
-        //         // this.router.navigateByUrl("/verify");
-        //       }
-        //     },
-        //     error: err => {
-        //       if (err.error.errors)
-        //         err.error.errors.forEach((x: any) => {
-        //           switch (x.code) {
-        //             case "DuplicateUserName":
-        //               break;
-        //             case "DuplicateEmail":
-        //               this.toastr.error('Email is already taken.', 'Registration Failed')
-        //               break;
-        //             case "InvalidEmailDomain":
-        //               this.toastr.error('Only email addresses ending with .ac.in are allowed.', 'Registration Failed')
-        //               break
-        //             default:
-        //               this.toastr.error('Contact the developer', 'Registration Failed')
-        //               console.log(x);
-        //               break;
-        //           }
-        //         })
-        //       else
-        //         console.log('error:',err);
-        //     }
-        //   });
-
-      }
+      // this.service.createUser(this.form.value)
+      //   .subscribe({
+      //     next: (res: any) => {
+      //       if (res.succeeded) {
+      //         this.form.reset();
+      //         this.isSubmitted = false;
+      //         this.toastr.success('New user created!', 'Registration Successful');
+      //         // this.service.sendOtp(this.form.value.email);
+      //         // this.router.navigateByUrl("/verify");
+      //       }
+      //     },
+      //     error: err => {
+      //       if (err.error.errors)
+      //         err.error.errors.forEach((x: any) => {
+      //           switch (x.code) {
+      //             case "DuplicateUserName":
+      //               break;
+      //             case "DuplicateEmail":
+      //               this.toastr.error('Email is already taken.', 'Registration Failed')
+      //               break;
+      //             case "InvalidEmailDomain":
+      //               this.toastr.error('Only email addresses ending with .ac.in are allowed.', 'Registration Failed')
+      //               break
+      //             default:
+      //               this.toastr.error('Contact the developer', 'Registration Failed')
+      //               console.log(x);
+      //               break;
+      //           }
+      //         })
+      //       else
+      //         console.log('error:',err);
+      //     }
+      //   });
+    }
   }
 
   hide = signal(true);
