@@ -17,6 +17,16 @@
   <div *ngIf="!isLoading && tasks.length > 0">
     <div class="table-container">
       <table class="all-tasks-table" mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="taskId">
+          <th mat-header-cell *matHeaderCellDef>Task Id</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="d-flex flex-row">
+              <div>{{ element.taskID }}</div>
+            </div>
+          </td>
+        </ng-container>
+
+
         <ng-container matColumnDef="task">
           <th mat-header-cell *matHeaderCellDef>Task</th>
           <td mat-cell *matCellDef="let element">

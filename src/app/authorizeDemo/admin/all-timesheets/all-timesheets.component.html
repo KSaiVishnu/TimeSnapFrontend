@@ -43,11 +43,12 @@
   >
     <thead>
       <tr>
-        <td style="min-width: 10%">Id</td>
-        <td style="min-width: 45%">Task Name</td>
-        <td style="min-width: 15%">Log Hours</td>
-        <td style="min-width: 15%">Date</td>
-        <td style="min-width: 15%">Billing Type</td>
+        <td style="width: 10%">Id</td>
+        <td style="width: 45%">Task Name</td>
+        <td style="width: 15%">Log Hours</td>
+        <td style="width: 5%">Notes</td>
+        <td style="width: 15%">Date</td>
+        <td style="width: 10%">Billing Type</td>
       </tr>
     </thead>
   </table>
@@ -64,13 +65,15 @@
           </td>
           <td style="background-color: #f4f4f4 !important"></td>
           <td style="background-color: #f4f4f4 !important"></td>
+          <td style="background-color: #f4f4f4 !important"></td>
         </tr>
         <tr *ngFor="let task of item.timesheets">
           <td style="width: 10%">{{ task.taskId }}</td>
           <td style="width: 45%">{{ task.taskName }}</td>
           <td style="width: 15%">{{ convert(task.totalMinutes) }}</td>
+          <td style="width: 5%">{{ task.notes ? task.notes : '-' }}</td>          
           <td style="width: 15%">{{ task.date | date }}</td>
-          <td style="width: 15%">{{ task.billingType }}</td>
+          <td style="width: 10%">{{ task.billingType }}</td>
         </tr>
       </tbody>
     </table>

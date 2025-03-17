@@ -45,8 +45,10 @@ export class EditTaskPopupComponent {
     private dialogRef: MatDialogRef<EditTaskPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { allAssignees: any; task: any }
   ) {
+    console.log(data.task);
     this.form = this.formBuilder.group(
       {
+        taskId: [{value: data.task.taskID, disabled: true,}, Validators.required],
         taskName: [data.task.task, Validators.required],
         searchTerm: [''],
         startDate: [data.task.startDate.split('T')[0], [Validators.required]],

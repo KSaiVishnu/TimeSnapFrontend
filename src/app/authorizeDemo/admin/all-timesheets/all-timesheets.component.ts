@@ -120,6 +120,7 @@ export class AllTimesheetsComponent {
           date: entry.date,
           totalMinutes: entry.totalMinutes,
           billingType: entry.billingType,
+          notes: entry.notes
         });
       } else {
         acc.push({
@@ -131,6 +132,7 @@ export class AllTimesheetsComponent {
               date: entry.date,
               totalMinutes: entry.totalMinutes,
               billingType: entry.billingType,
+              notes: entry.notes
             },
           ],
         });

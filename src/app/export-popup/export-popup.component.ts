@@ -227,12 +227,13 @@ export class ExportPopupComponent {
   save() {
     console.log(this.data.filteredTimeSheets);
 
-    const exportData = this.data.filteredTimeSheets.map((ts) => ({
+    const exportData = this.data.filteredTimeSheets.map((ts: any) => ({
       ID: ts.id,
       Employee_ID: ts.empId,
       Task_ID: ts.taskId,
       Date: new Date(ts.date).toLocaleDateString(),
-      Total_Minutes: ts.totalMinutes,
+      Total_Hours: Math.floor(ts.totalMinutes / 60) + ":" + (ts.totalMinutes % 60).toString().padStart(2, '0'),
+      Notes: ts.notes,
       Username: ts.userName,
       Task_Name: ts.taskName,
       Billing_Type: ts.billingType,
@@ -270,4 +271,5 @@ interface TimeSheetEntry {
   userName: string;
   taskName: string;
   billingType: string;
+  Notes: string;
 }

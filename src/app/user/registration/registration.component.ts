@@ -77,10 +77,11 @@ export class RegistrationComponent implements OnInit {
 
   emailDomainValidator(control: AbstractControl) {
     const email = control.value;
-    return email && email.endsWith('@gmail.com')
+    return email && (email.endsWith('@gmail.com') || email.endsWith('@framsikt.no'))
       ? null
       : { invalidDomain: true };
   }
+  
 
   passwordMatchValidator: ValidatorFn = (control: AbstractControl): null => {
     const password = control.get('password');
@@ -157,7 +158,8 @@ export class RegistrationComponent implements OnInit {
     const control = this.form.get(controlName);
     return (
       Boolean(control?.invalid) &&
-      (this.isSubmitted || Boolean(control?.touched) || Boolean(control?.dirty))
+      // (this.isSubmitted || Boolean(control?.touched) || Boolean(control?.dirty))
+      (this.isSubmitted || Boolean(control?.touched))
     );
   }
 }

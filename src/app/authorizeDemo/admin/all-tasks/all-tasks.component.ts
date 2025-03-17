@@ -42,6 +42,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class AllTasksComponent implements AfterViewInit, OnInit {
   displayedColumns: string[] = [
+    'taskId',
     'task',
     'assigneeNames',
     'startDate',
@@ -295,11 +296,11 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
       data: { allAssignees, task },
     });
 
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   if (result === 'success') {
-    //     this.fetchTasks(); // Refresh the task list
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'success') {
+        this.fetchTasks(); // Refresh the task list
+      }
+    });
   }
 
   openDeleteTaskPopup(task: any) {

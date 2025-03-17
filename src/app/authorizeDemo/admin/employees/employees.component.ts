@@ -6,6 +6,7 @@ import { AfterViewInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -13,6 +14,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FirstKeyPipe } from "../../../shared/pipes/first-key.pipe";
 
 @Component({
   selector: 'app-employees',
@@ -22,14 +24,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     CommonModule,
     MatProgressSpinnerModule,
-  ],
+    FirstKeyPipe
+],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.css',
 })
 export class EmployeesComponent implements OnInit, AfterViewInit {
   // allAssignees: { userName: string; employeeId: string }[] = []; // Store all users
 
-  displayedColumns: string[] = ['id', 'userName', 'employeeId'];
+  displayedColumns: string[] = ['id', 'userName', 'email', 'employeeId', 'role', 'actions'];
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -47,9 +50,23 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   constructor(private http: HttpClient, public formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
     this.form = this.formBuilder.group({
       empName: ['', Validators.required],
+      empMail: ['', [Validators.required, Validators.email, this.emailDomainValidator]],
       empId: ['', Validators.required],
     });
   }
+
+  getFirstError(controlName: string): string | null {
+    const controlErrors = this.form.get(controlName)?.errors;
+    return controlErrors ? Object.keys(controlErrors)[0] : null;
+  }
+
+  emailDomainValidator(control: AbstractControl) {
+    const email = control.value;
+    return email && (email.endsWith('@gmail.com') || email.endsWith('@framsikt.no'))
+      ? null
+      : { invalidDomain: true };
+  }
+  
 
   ngOnInit(): void {
     this.fetchEmployees();
@@ -69,7 +86,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         `${this.baseURL}/user-employee`
       )
       .subscribe((data) => {
-        // console.log(data);
+        console.log(data);
         this.isLoading = false;
         this.cdr.detectChanges(); // Forces UI to update
         this.dataSource = new MatTableDataSource(data);
@@ -122,7 +139,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         console.log(response.message);
       });
       this.addedUsers = [];
-  
   }
 
 
@@ -131,8 +147,10 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     let formData = {
       employeeId: formValue.empId,
       userName: formValue.empName,
+      email: formValue.empMail
     };
     this.addedUsers = [...this.addedUsers, formData];
+    console.log(this.addedUsers);
     this.form.reset();
     this.count += 1;
     const newId = (this.lastIdentity + this.count).toString().padStart(3, '0');

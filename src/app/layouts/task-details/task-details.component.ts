@@ -74,6 +74,7 @@ export class TaskDetailsComponent implements OnInit {
       date: this.date,
       // endTime: this.endTime,
       totalMinutes: Number(this.totalHours * 60) + Number(this.totalMin), // Converts the selected hours to minutes
+      notes: this.notesValue,
     };
     console.log(this.totalHours, typeof this.totalHours);
     console.log(this.totalMin, typeof this.totalMin);
@@ -95,6 +96,7 @@ export class TaskDetailsComponent implements OnInit {
           taskName: res.task.task,
           totalMinutes: res.totalMinutes,
           userName: res.task.assignee,
+          notes: res.notes
         };
         this.timesheets = [...this.timesheets, newTimeSheet];
         this.openSnackBar();
@@ -207,6 +209,22 @@ export class TaskDetailsComponent implements OnInit {
       },
     });
   }
+
+  notesOptions = [
+    { value: 'Complex Story Brainstorming', text: 'Complex Story Brainstorming' },
+    { value: 'Requirements Review', text: 'Requirements Review' },
+    { value: 'Estimation', text: 'Estimation' },
+    { value: 'Research', text: 'Research' },
+    { value: 'Software Design', text: 'Software Design' },
+    { value: 'Coding', text: 'Coding' },
+    { value: 'Testing', text: 'Testing' },
+    { value: 'Demonstrations', text: 'Demonstrations' },
+    { value: 'Bug Fix', text: 'Bug Fix' },
+    { value: 'Management', text: 'Management' }
+  ];
+  
+  notesValue: string = 'Coding'; // Default selected value
+  
 
   openAddLogModal(empId: any, taskId: any) {
     console.log(empId);
