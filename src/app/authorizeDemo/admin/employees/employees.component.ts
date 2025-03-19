@@ -9,6 +9,7 @@ import {
   AbstractControl,
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -24,7 +25,8 @@ import { FirstKeyPipe } from "../../../shared/pipes/first-key.pipe";
     ReactiveFormsModule,
     CommonModule,
     MatProgressSpinnerModule,
-    FirstKeyPipe
+    FirstKeyPipe,
+    FormsModule
 ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.css',
@@ -46,6 +48,13 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   count = 1;
 
   isLoading = true;
+
+
+  roles = [
+    { id: '8ce4f9f7-026f-11f0-ac41-000d3a915061', name: 'Admin' },
+    { id: '8ce4ff9f-026f-11f0-ac41-000d3a915061', name: 'Manager' },
+    { id: '8ce500dd-026f-11f0-ac41-000d3a915061', name: 'Employee' }
+  ];
 
   constructor(private http: HttpClient, public formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
     this.form = this.formBuilder.group({
@@ -162,6 +171,25 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   removeAssignee(index: number){
     this.addedUsers.splice(index, 1);
     console.log(this.addedUsers);
+  }
+
+  updateUserRole(user: any) {
+    const updatedData = {
+      userId: user.userId,
+      newRoleId: user.roleId
+    };
+
+    console.log(updatedData)
+  
+    this.http.put(`${this.baseURL}/user-employee/update-user-role`, updatedData).subscribe({
+      next: (response) => {
+        console.log('User role updated successfully', response);
+      },
+      error: (error) => {
+        console.error('Error updating user role', error);
+      }
+    });
+    
   }
 
 }

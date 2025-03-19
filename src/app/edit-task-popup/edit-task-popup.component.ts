@@ -174,7 +174,7 @@ export class EditTaskPopupComponent {
     this.filteredAssignees = this.data.allAssignees.filter(
       (user: any) =>
         !this.assigneeList.some(
-          (a: { empId: string }) => a.empId === user.employeeId
+          (a: { empId: string }) => a.empId === user.empId
         )
     );
 
@@ -189,7 +189,7 @@ export class EditTaskPopupComponent {
     console.log(assignee);
     this.assigneeList.push({
       assignee: assignee.userName,
-      empId: assignee.employeeId,
+      empId: assignee.empId,
     });
     console.log(this.assigneeList);
     // console.log(this.form.value)

@@ -61,7 +61,7 @@ export class EditAssigneeNamesComponent implements OnInit {
     this.allFruits = this.allFruits.filter(
       (user: any) =>
         !this.fruits().some(
-          (a: { empId: string }) => a.empId === user.employeeId
+          (a: { empId: string }) => a.empId === user.empId
         )
     );
 
@@ -262,7 +262,7 @@ export class EditAssigneeNamesComponent implements OnInit {
     // Add back to the available list for autocomplete
     this.allFruits.push({
       userName: fruit.assignee,
-      employeeId: fruit.empId,
+      empId: fruit.empId,
     });
 
     this.announcer.announce(`Removed ${fruit.assignee}`);
@@ -272,7 +272,7 @@ export class EditAssigneeNamesComponent implements OnInit {
     // console.log(event.option);
     let newItem = {
       assignee: event.option.value.userName,
-      empId: event.option.value.employeeId,
+      empId: event.option.value.empId,
     };
     this.fruits.update((fruits: any) => [newItem, ...fruits]);
     this.currentFruit.set('');

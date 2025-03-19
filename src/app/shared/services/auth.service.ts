@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   createUser(formData: any) {
-    formData = { ...formData, role: 'Admin' };
+    formData = { ...formData, role: 'Employee' };
     console.log(formData);
     return this.http.post(this.baseURL + '/signup', formData);
   }
