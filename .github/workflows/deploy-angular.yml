@@ -16,19 +16,19 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18.20.4'  # Change to your Node.js version
+        node-version: '18.20.4'  # Node 18 is recommended for Angular
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci  # Faster & better than "npm install"
 
     - name: Build Angular app
-      run: npm run build --prod
+      run: npm run build -- --configuration=production  # Use "--configuration=production" instead of "--prod"
 
     - name: Upload build artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Updated to v4
       with:
         name: angular-dist
-        path: dist/Frontend  # Change this to your Angular output folder
+        path: dist/Frontend  # Change if your build output directory is different
 
     - name: Login to Azure
       uses: azure/login@v1
@@ -39,4 +39,4 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: "TimeSnaper"  # Replace with your Azure App Service name
-        package: dist/Frontend  # Change to match your Angular build output
+        package: dist/Frontend  # This should match your Angular build output folder
