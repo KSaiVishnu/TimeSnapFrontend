@@ -1,0 +1,40 @@
+<!-- <input type="file" (change)="onFileSelected($event)" accept=".xlsx">
+<button (click)="uploadFile()" [disabled]="!selectedFile">Upload & Process</button> -->
+
+
+<!-- worklog_leaves.html -->
+<div class="file-upload-container">
+    <div 
+      class="dropzone" 
+      [ngClass]="{'active': isDragOver}" 
+      (dragover)="onDragOver($event)" 
+      (dragleave)="onDragLeave($event)" 
+      (drop)="onDrop($event)">
+      
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      
+      <h3>Drag & Drop Excel File Here</h3>
+      <p>or</p>
+      
+      <label class="file-input-label">
+        <span>Browse Files</span>
+        <input type="file" (change)="onFileSelected($event)" accept=".xlsx" class="file-input">
+      </label>
+      
+      <div *ngIf="selectedFile" class="selected-file">
+        <span>{{ selectedFile.name }}</span>
+        <button class="clear-btn" (click)="clearFile()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <button 
+      class="upload-btn" 
+      [disabled]="!selectedFile" 
+      (click)="uploadFile()">
+      <i class="fas fa-upload"></i> Upload & Process
+    </button>
+  </div>

@@ -20,7 +20,9 @@ export class DeleteTaskPopupComponent {
     private http: HttpClient,
     private dialogRef: MatDialogRef<ExportPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { task: any }
-  ) {}
+  ) {
+    console.log(this.data.task)
+  }
   baseURL = environment.apiBaseUrl;
 
   close() {
@@ -29,7 +31,7 @@ export class DeleteTaskPopupComponent {
 
   deleteTask() {
     console.log(this.data.task);
-    let taskId = this.data.task.taskID;
+    let taskId = this.data.task.taskId;
     this.http.delete(`${this.baseURL}/tasks/delete-task/${taskId}`).subscribe({
       next(res: any) {
         console.log(res);

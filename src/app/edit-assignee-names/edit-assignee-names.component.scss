@@ -176,3 +176,130 @@ mat-form-field {
 }
 
 
+
+
+
+
+
+
+
+// v0-vercel
+
+
+/* edit-assignee-names.component.scss */
+.assignee-editor {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  max-width: 450px;
+}
+
+.edit-form {
+  flex: 1;
+  min-width: 0;
+}
+
+.chip-field {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.chip-container {
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 0.25rem 0;
+}
+
+::ng-deep .custom-chip {
+  margin: 0.25rem !important;
+  border-radius: 16px !important;
+  font-weight: 500 !important;
+  
+  .mdc-evolution-chip__icon--trailing {
+    color: currentColor !important;
+    opacity: 0.7;
+  }
+}
+
+.assignee-input {
+  height: 36px;
+  font-size: 0.875rem;
+}
+
+.view-mode {
+  flex: 1;
+  min-width: 0;
+}
+
+.chip-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.view-chip {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &.save {
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+    
+    &:hover {
+      background-color: rgba(72, 187, 120, 0.2);
+    }
+  }
+  
+  &.cancel {
+    background-color: rgba(245, 101, 101, 0.1);
+    color: #e53e3e;
+    
+    &:hover {
+      background-color: rgba(245, 101, 101, 0.2);
+    }
+  }
+  
+  &.edit {
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #3182ce;
+    
+    &:hover {
+      background-color: rgba(66, 153, 225, 0.2);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .assignee-editor {
+    flex-direction: column;
+  }
+  
+  .action-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 100%;
+  }
+}

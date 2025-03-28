@@ -11,6 +11,7 @@ import { EmployeesComponent } from "./employees/employees.component";
 import { BillableComponent } from "./billable/billable.component";
 import { NonBillableComponent } from "./non-billable/non-billable.component";
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { DummyTimesheetComponent } from "../../dummy-timesheet/dummy-timesheet.component";
 
 @Component({
   selector: 'app-admin',
@@ -24,7 +25,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     NonBillableComponent,
     RouterLink,
     RouterOutlet,
-    RouterLinkActive
+    RouterLinkActive,
+    DummyTimesheetComponent
 ],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,

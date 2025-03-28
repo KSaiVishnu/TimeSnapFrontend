@@ -3,12 +3,17 @@ import { RegistrationComponent } from './registration/registration.component';
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
 import { trigger, style, animate, transition, query } from "@angular/animations";
 
+import { LogoComponent } from '../logo/logo.component';
+import { LoadingComponent } from '../loading/loading.component';
+import { CommonModule } from '@angular/common';
+
+
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, LoadingComponent, LogoComponent, CommonModule],
   templateUrl: './user.component.html',
-  styles: ``,
+  styleUrl: './user.component.scss',
   animations: [
     trigger('routerFadeIn', [
       transition('* <=> *', [
@@ -21,11 +26,17 @@ import { trigger, style, animate, transition, query } from "@angular/animations"
   ]
 })
 export class UserComponent {
+  loading: boolean = false;
 
   constructor(private context: ChildrenOutletContexts) { }
 
   getRouteUrl() {
     return this.context.getContext('primary')?.route?.url;
   }
+
+    // Method to show/hide loading animation
+    showLoading(show: boolean): void {
+      this.loading = show
+    }
 
 }

@@ -35,20 +35,15 @@
     </div>
   </div>
 </ng-template> -->
-
+<div style="text-align: center;">
+uploading Time Sheets.<br>
+getting users tasks by time, - (like how many tasks they did)
+</div>
 <div class="admin-main-container">
 
 <div class="flex-container">
   <div class="row">
-    <!-- <div class="d-flex" style="list-style-type: none;">
-      <li routerLink="upload"><button>Import</button></li>
-      <li routerLink="billable"><button>Billable</button></li>
-      <li routerLink="non-billable"><button>Non-Billable</button></li>
-      <li routerLink="all-employees"><button>Employees</button></li>
-    </div> -->
-
-
-    <!-- <div class="d-flex" style="list-style-type: none;">
+    <!-- <div class="nav-container">
       <li>
         <button routerLink="upload" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Import</button>
       </li>
@@ -61,26 +56,56 @@
       <li>
         <button routerLink="all-employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Employees</button>
       </li>
+      <li>
+        <button routerLink="worklog-leaves" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Worklog Leaves</button>
+      </li>
     </div> -->
+    
 
 
-    <div class="nav-container">
-      <li>
-        <button routerLink="upload" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Import</button>
-      </li>
-      <li>
-        <button routerLink="billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Billable</button>
-      </li>
-      <li>
-        <button routerLink="non-billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Non-Billable</button>
-      </li>
-      <li>
-        <button routerLink="all-employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Employees</button>
-      </li>
+    <div class="admin-nav-container">
+      <nav class="modern-nav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a routerLink="upload" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-file-import"></i>
+              <span>Import</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-dollar-sign"></i>
+              <span>Billable</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="non-billable" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-ban"></i>
+              <span>Non-Billable</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="all-employees" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-users"></i>
+              <span>Employees</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="worklog-leaves" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Worklog Leaves</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
     
     
-    
+
+
+    <div>
+      <!-- <app-dummy-timesheet></app-dummy-timesheet> -->
+    </div>
     
 
 
@@ -91,3 +116,8 @@
 
 </div>
 </div>
+
+
+
+
+<!-- admin.html -->

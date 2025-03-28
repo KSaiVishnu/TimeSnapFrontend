@@ -1,4 +1,4 @@
-<div class="mb-4">
+<!-- <div class="mb-4">
   <h2 class="text-success">Sign in</h2>
   <div>
     Don't have an account?
@@ -8,8 +8,8 @@
       >Sign up</a
     >
   </div>
-</div>
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+</div> -->
+<!-- <form [formGroup]="form" (ngSubmit)="onSubmit()"> -->
   <!-- <div class="mb-3">
     <input
       class="form-control"
@@ -28,7 +28,7 @@
     </div>
   </div> -->
 
-  <div class="example-container">
+  <!-- <div class="example-container">
     <mat-form-field class="w-100" appearance="outline">
       <mat-label>Enter your email</mat-label>
       <input
@@ -42,7 +42,7 @@
       <mat-error>{{ errorMessage() }}</mat-error>
       }
     </mat-form-field>
-  </div>
+  </div> -->
 
   <!-- <div class="mb-3">
     <div class="d-flex">
@@ -75,7 +75,7 @@
     </div>
   </div> -->
 
-  <mat-form-field
+  <!-- <mat-form-field
     class="password-field w-100"
     appearance="outline"
     [ngClass]="{
@@ -104,7 +104,7 @@
     <mat-error *ngIf="form.controls['password'].hasError('required')">
       Please enter your password.
     </mat-error>
-  </mat-form-field>
+  </mat-form-field> -->
 
   <!-- <mat-form-field style="padding: 0px !important; margin: 0px !important;" appearance="outline">
     <mat-label>Enter your password</mat-label>
@@ -121,22 +121,22 @@
     </button>
   </mat-form-field> -->
 
-  <div class="mb-4 submit-button">
+  <!-- <div class="mb-4 submit-button">
     <button type="submit" class="btn btn-success w-100 rounded-3">
       Sign in
     </button>
-  </div>
-</form>
+  </div> -->
+<!-- </form> -->
 
 <!-- <li style="list-style-type: none; margin-left: 45%;">or</li> -->
-<div
+<!-- <div
   class="dropdown-divider"
   style="border: 1px solid black; margin-bottom: 15px"
-></div>
+></div> -->
 
 <!-- <app-google-login></app-google-login> -->
 
-<div id="google-button"></div>
+<!-- <div id="google-button"></div> -->
 <!-- Google Sign-In Button -->
 <!-- <div id="google-button"></div> -->
 
@@ -148,3 +148,92 @@
 </div>
 
 <div class="g_id_signin" data-type="standard"></div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="auth-header">
+  <h2>Welcome Back</h2>
+  <p>Don't have an account? <a routerLink="/signup" class="text-primary">Sign up</a></p>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="email">Email</label>
+    <div class="input-container">
+      <i class="material-icons">email</i>
+      <input 
+        id="email" 
+        type="email" 
+        class="form-control" 
+        placeholder="Enter your email" 
+        formControlName="email"
+        (blur)="updateErrorMessage()"
+      >
+    </div>
+    <div class="error-message" *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+      {{ errorMessage() }}
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="password">Password</label>
+    <div class="input-container">
+      <i class="material-icons">lock</i>
+      <input 
+        id="password" 
+        [type]="hide() ? 'password' : 'text'" 
+        class="form-control" 
+        placeholder="Enter your password" 
+        formControlName="password"
+      >
+      <button 
+        type="button" 
+        class="password-toggle" 
+        (click)="hide.set(!hide())"
+      >
+        <i class="material-icons">{{ hide() ? 'visibility_off' : 'visibility' }}</i>
+      </button>
+    </div>
+    <div class="error-message" *ngIf="form.controls['password'].invalid && form.controls['password'].touched">
+      Please enter your password.
+    </div>
+  </div>
+  
+  <div class="form-group forgot-password">
+    <a href="#" class="text-primary">Forgot password?</a>
+  </div>
+  
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-block" [disabled]="form.invalid || isSubmitted">
+      <span *ngIf="!isSubmitted">Sign In</span>
+      <span *ngIf="isSubmitted" class="spinner"></span>
+    </button>
+  </div>
+</form>
+
+<div class="social-login">
+  <div class="divider">
+    <span>or continue with</span>
+  </div>
+  
+  <div class="social-buttons">
+    <button type="button" class="btn btn-social" id="google-button">
+      <img src="assets/google-icon.svg" alt="Google">
+      <span>Google</span>
+    </button>
+  </div>
+</div>
+

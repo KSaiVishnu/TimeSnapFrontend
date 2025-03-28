@@ -1,0 +1,63 @@
+.btn {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    text-transform: uppercase;
+    
+    &:hover {
+      background: linear-gradient(135deg, #0072ff, #00c6ff);
+    }
+  
+    &::before {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(45deg);
+      transition: 0.5s;
+    }
+  
+    &:hover::before {
+      top: 0;
+      left: 0;
+    }
+  }
+
+  header, .profile-menu {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 12px 20px;
+  }
+  
+  .profile-menu {
+    transition: 0.3s ease-in-out;
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  
+  .profile-container:hover .profile-menu {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .decoration {
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  

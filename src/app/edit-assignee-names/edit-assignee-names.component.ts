@@ -96,9 +96,13 @@ export class EditAssigneeNamesComponent implements OnInit {
   ngOnInit() {
     console.log(this.assignee);
     console.log(this.taskId);
-    for (let item of this.assignee) {
-      this.fruits.set([...this.fruits(), item]);
-    }
+    // for (let item of this.assignee) {
+    //   this.fruits.set([...this.fruits(), item]);
+    // }
+
+    this.fruits.set([...this.assignee]);
+    console.log(this.fruits());
+
     // this.fetchAssignees(); // Fetch data when component loads
     console.log(this.allAssignees);
     this.allFruits = this.allAssignees;
@@ -132,6 +136,37 @@ export class EditAssigneeNamesComponent implements OnInit {
         // console.log(this.allFruits);
       });
   }
+
+
+  // Add this method to your component class
+getChipColor(index: number): { [key: string]: string } {
+  // Array of color combinations (background and text color)
+  const colors = [
+    { bg: '#e3f2fd', color: '#1976d2' }, // Blue
+    { bg: '#f3e5f5', color: '#9c27b0' }, // Purple
+    { bg: '#e8f5e9', color: '#388e3c' }, // Green
+    { bg: '#fff8e1', color: '#ffa000' }, // Amber
+    { bg: '#ffebee', color: '#d32f2f' }, // Red
+    { bg: '#e0f7fa', color: '#0097a7' }, // Cyan
+    { bg: '#f1f8e9', color: '#689f38' }, // Light Green
+    { bg: '#fce4ec', color: '#c2185b' }  // Pink
+  ];
+  
+  // // Use modulo to cycle through colors
+  // const colorIndex = index % colors.length;
+  // return {
+  //   backgroundColor: colors[colorIndex].bg,
+  //   color: colors[colorIndex].color
+  // };
+
+    // Generate a random index
+    const randomIndex = Math.floor(Math.random() * colors.length);
+  
+    return {
+      backgroundColor: colors[randomIndex].bg,
+      color: colors[randomIndex].color
+    };
+}
 
   // filterAssignees(){
   //   this.allFruits = this.allFruits.filter(
@@ -201,18 +236,18 @@ export class EditAssigneeNamesComponent implements OnInit {
   saveTaskChanges() {
     // console.log(task);
     // console.log(this.fruits());
-    var assignee = this.fruits().map((each: any) => {
+    var assignees = this.fruits().map((each: any) => {
       return {
-        assigneeName: each.assignee,
+        assignee: each.fullName,
         empId: each.empId,
       };
     });
-    console.log(assignee);
+
+    console.log(this.taskId);
+    console.log(assignees);
 
     this.http
-      .put<any>(`${this.baseURL}/tasks/update-task/${this.taskId}`, {
-        assignees: assignee,
-      })
+      .put<any>(`${this.baseURL}/tasks/update-task-assignees/${this.taskId}`, assignees)
       .subscribe({
         next: (response) => {
           console.log('Task updated successfully');
@@ -261,17 +296,17 @@ export class EditAssigneeNamesComponent implements OnInit {
 
     // Add back to the available list for autocomplete
     this.allFruits.push({
-      userName: fruit.assignee,
+      userName: fruit.fullName,
       empId: fruit.empId,
     });
 
-    this.announcer.announce(`Removed ${fruit.assignee}`);
+    this.announcer.announce(`Removed ${fruit.fullName}`);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     // console.log(event.option);
     let newItem = {
-      assignee: event.option.value.userName,
+      fullName: event.option.value.userName,
       empId: event.option.value.empId,
     };
     this.fruits.update((fruits: any) => [newItem, ...fruits]);

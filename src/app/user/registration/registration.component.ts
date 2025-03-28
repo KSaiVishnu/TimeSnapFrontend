@@ -35,7 +35,7 @@ import { MatInputModule } from '@angular/material/input';
     MatIconModule,
   ],
   templateUrl: './registration.component.html',
-  styles: ``,
+  styleUrl: './registration.component.scss',
 })
 export class RegistrationComponent implements OnInit {
   form: FormGroup;

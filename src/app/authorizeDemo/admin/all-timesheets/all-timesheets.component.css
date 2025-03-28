@@ -9,3 +9,272 @@
   .no-tasks-image{
     height: 300px;
   }
+
+
+
+  /* all-timesheets.component.scss */
+.timesheets-container {
+  padding: 1rem;
+}
+
+.filters-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  
+  .date-filter {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .date-range-field {
+    width: 100%;
+  }
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: #3182ce;
+  }
+}
+
+.timesheets-data {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.timesheets-header {
+  display: flex;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.header-cell, .timesheet-cell {
+  padding: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.id-cell {
+  width: 10%;
+}
+
+.task-cell {
+  width: 30%;
+}
+
+.hours-cell {
+  width: 15%;
+}
+
+.notes-cell {
+  width: 15%;
+}
+
+.date-cell {
+  width: 15%;
+}
+
+.billing-cell {
+  width: 15%;
+}
+
+.user-timesheet-group {
+  margin-bottom: 1rem;
+}
+
+.user-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #6c5ce7;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.total-hours {
+  font-weight: 600;
+  color: #6c5ce7;
+}
+
+.timesheet-row {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background-color: #f8fafc;
+  }
+}
+
+.billing-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  
+  &.billable {
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+  }
+  
+  &.non-billable {
+    background-color: rgba(237, 100, 166, 0.1);
+    color: #d53f8c;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  
+  .empty-image {
+    width: 200px;
+    margin-bottom: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: #718096;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.reset-btn {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: #5649c0;
+  }
+}
+
+@media (max-width: 768px) {
+  .timesheets-header {
+    display: none;
+  }
+  
+  .timesheet-row {
+    flex-direction: column;
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .timesheet-cell {
+    width: 100%;
+    padding: 0.5rem 0;
+    display: flex;
+    
+    &::before {
+      content: attr(data-label);
+      font-weight: 600;
+      width: 40%;
+      margin-right: 1rem;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.toggle-icon {
+  float: right;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.pagination {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.pagination button {
+  margin: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

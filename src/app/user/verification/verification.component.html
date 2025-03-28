@@ -1,6 +1,6 @@
-<h5>Enter Your 6 digit code Verification Code</h5>
+<!-- <h5>Enter Your 6 digit code Verification Code</h5>
 <p>- Check your email inbox</p>
-<input class="form-control mt-3" type="text" [(ngModel)] = "otpValue" />
+<input class="form-control mt-3" type="text" [(ngModel)] = "otpValue" /> -->
 <!-- <div class="container">
     <div id="inputs" class="inputs">
       <input #otpInput class="input" type="text" inputmode="numeric" maxlength="1" />
@@ -11,4 +11,83 @@
 </div> -->
   
   
-<button class="btn btn-success mt-4" (click)="onVerifyOtp()">Verify</button>
+<!-- <button class="btn btn-success mt-4" (click)="onVerifyOtp()">Verify</button>
+
+
+
+<br><br> -->
+
+
+<div class="verification-container">
+  <div class="auth-header">
+    <h2>Verify Your Email</h2>
+    <p>We've sent a 6-digit code to your email</p>
+  </div>
+  
+  <div class="otp-container">
+    <div class="otp-input-group">
+      <div class="otp-inputs">
+        <input 
+          type="text" 
+          class="otp-digit" 
+          maxlength="1" 
+          (keyup)="onOtpDigitInput($event, 0)"
+          [(ngModel)]="otpDigits[0]"
+        >
+        <input 
+          type="text" 
+          class="otp-digit" 
+          maxlength="1" 
+          (keyup)="onOtpDigitInput($event, 1)"
+          [(ngModel)]="otpDigits[1]"
+        >
+        <input 
+          type="text" 
+          class="otp-digit" 
+          maxlength="1" 
+          (keyup)="onOtpDigitInput($event, 2)"
+          [(ngModel)]="otpDigits[2]"
+        >
+        <input 
+          type="text" 
+          class="otp-digit" 
+          maxlength="1" 
+          (keyup)="onOtpDigitInput($event, 3)"
+          [(ngModel)]="otpDigits[3]"
+        >
+        <input 
+          type="text" 
+          class="otp-digit" 
+          maxlength="1" 
+          (keyup)="onOtpDigitInput($event, 4)"
+          [(ngModel)]="otpDigits[4]"
+        >
+        <input 
+          type="text" 
+          class="otp-digit" 
+          maxlength="1" 
+          (keyup)="onOtpDigitInput($event, 5)"
+          [(ngModel)]="otpDigits[5]"
+        >
+      </div>
+    </div>
+    
+    <div class="resend-code">
+      Didn't receive the code? <a href="#" class="text-primary">Resend</a>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <button type="button" class="btn btn-primary btn-block" (click)="onVerifyOtp()" [disabled]="!isOtpComplete() || isVerifying">
+      <span *ngIf="!isVerifying">Verify</span>
+      <span *ngIf="isVerifying" class="spinner"></span>
+    </button>
+  </div>
+  
+  <div class="back-link">
+    <a routerLink="/signin" class="text-secondary">
+      <i class="material-icons">arrow_back</i> Back to Sign In
+    </a>
+  </div>
+</div>
+

@@ -25,6 +25,17 @@
       </div>
   </div>
 
+  <div class="form-group">
+    <label class="form-label">Notes</label>
+    <div class="input-wrapper">
+      <select [(ngModel)]="notesValue" class="form-input form-control mb-3">
+        <option *ngFor="let option of notesOptions" [value]="option.value">
+          {{ option.text }}
+        </option>
+      </select>
+    </div>
+  </div>
+
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

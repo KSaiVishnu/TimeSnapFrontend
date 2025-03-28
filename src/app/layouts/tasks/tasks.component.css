@@ -61,7 +61,7 @@
   justify-content: space-around;
   gap: 20px;
   padding: 20px 20px 40px 20px;
-  background: #f8f9fa;
+  /* background: #f8f9fa; */
   min-height: 80vh;
 }
 
@@ -69,41 +69,75 @@
 .task-column {
   /* flex: 1; */
   width: 30%;
-  padding: 15px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background 0.3s ease-in-out;
 }
-/* 
+
+.task-column:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
 @media screen and (max-width:768px){
   .task-column {
     width: 80%;
   }
-} */
+}
 
 /* Column Colors */
 .task-column.todo {
-  background: #e6f7ff; /* Light Blue */
-  border-top: 5px solid #1e90ff;
+  /* border-top: 5px solid #1e90ff; */
+  /* background: #C5BAFF; Light Blue */
+  background: #F5EFFF;
+  border-top: 5px solid #C68EFD;
 }
 
 .task-column.in-progress {
-  background: #fff3cd; /* Light Yellow */
-  border-top: 5px solid #ffcc00; /* Deep Yellow */
+  /* background: #fff3cd;  */
+  background: #FDFCE5; 
+
+  border-top: 5px solid #FFAB73; 
 }
 
 .task-column.completed {
-  background: #e6ffe6; /* Light Green */
-  border-top: 5px solid #28a745;
+  background: #E7FBE6; /* Light Green */
+  border-top: 5px solid #88D66C;
 }
 
 /* Column Title */
 .column-title {
   text-align: center;
   font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  padding: 10px;
+  font-weight: 550;
+  /* margin-bottom: 12px; */
+  padding: 10px 10px 5px 10px;
+  border-radius: 3px;
+  font-family:  "Roboto Condensed", sans-serif;
+  display: inline-block;
+  position: relative; 
+  /* color: #938F94; */
+  color: white;
+  width: 100%;
+}
+
+.todo-title{
+  color: #C68EFD;
+  border-bottom: 1px solid #C68EFD;
+
+}
+
+.inprogress-title{
+  color: #FFAB73;
+  border-bottom: 1px solid #FFAB73;
+
+}
+
+.completed-title{
+  color: #88D66C;
+  border-bottom: 1px solid #88D66C;
+
 }
 
 /* Task Card Styling */
@@ -111,12 +145,33 @@
   background: white;
   padding: 12px;
   margin: 10px 0;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   cursor: grab;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border-left: 5px solid transparent;
+  /* border: 1px solid lightgray; */
 }
+
+.task-card h6{
+  font-family: "Roboto";
+}
+
+
+.due-date-para{
+color: #FF5449;
+font-weight: 400;
+}
+
+.due-date-para-completed{
+  color: #4eb528;
+  font-weight: 400;
+  }
+
+  .due-date-para-inprogress{
+    color: #e6803c;
+    font-weight: 400;
+    }
 
 /* Different Task Status Colors */
 .task-status {
@@ -130,7 +185,7 @@
 
 /* Task Hover & Drag Effect */
 .task-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
 }
 
 .task-card:active {

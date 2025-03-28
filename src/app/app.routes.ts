@@ -16,6 +16,8 @@ import { FileUploadComponent } from './authorizeDemo/admin/file-upload/file-uplo
 import { BillableComponent } from './authorizeDemo/admin/billable/billable.component';
 import { NonBillableComponent } from './authorizeDemo/admin/non-billable/non-billable.component';
 import { EmployeesComponent } from './authorizeDemo/admin/employees/employees.component';
+import { AccountComponent } from './account/account.component';
+import { WorklogLeavesComponent } from './authorizeDemo/admin/worklog-leaves/worklog-leaves.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/signin', pathMatch: 'full' },
@@ -33,6 +35,9 @@ export const routes: Routes = [
       children: [
         {
           path: 'dashboard', component: DashboardComponent
+        },
+        {
+          path: 'account', component:AccountComponent
         },
         // {
         //   path: 'admin', component: AdminComponent,
@@ -62,7 +67,7 @@ export const routes: Routes = [
             { path: 'billable', component: BillableComponent },
             { path: 'non-billable', component: NonBillableComponent },
             { path: 'all-employees', component: EmployeesComponent },
-
+            { path: 'worklog-leaves', component: WorklogLeavesComponent },
 
             { path: '', redirectTo: 'upload', pathMatch: 'full' } // Default admin route
           ]

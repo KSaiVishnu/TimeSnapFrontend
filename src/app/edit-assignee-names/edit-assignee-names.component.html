@@ -125,7 +125,7 @@
         <mat-chip-grid #chipGrid aria-label="Assignee selection">
           @for (fruit of fruits(); track $index) {
           <mat-chip-row (removed)="remove(fruit)">
-            {{ fruit.assignee }}
+            {{ fruit.fullName }}
             <button matChipRemove [attr.aria-label]="'remove ' + fruit.assignee">
               <mat-icon>cancel</mat-icon>
             </button>
@@ -159,23 +159,10 @@
   <div *ngIf="taskId !== currentlyEditingTaskId">
     <div class="edit-container">
       <div class="chip-scroll-container">
-        <!-- <mat-chip-grid #chipGrid aria-label="Assignee selection">
-          @for (fruit of fruits(); track $index) {
-          <mat-chip-row>{{ fruit.assignee }}</mat-chip-row>
-          }
-        </mat-chip-grid> -->
-
-
-
-        <!-- @for (fruit of fruits(); track $index) {
-          <li>{{fruit.assignee}}</li>
-        } -->
-
-
         <ul class="custom-chip-grid">
           @for (fruit of fruits(); track $index) {
-            <li class="custom-chip-row">
-              {{ fruit.assignee }}
+            <li class="custom-chip-row" [ngStyle]="getChipColor($index)">
+              {{ fruit.fullName }}
             </li>
           }
         </ul>
@@ -218,6 +205,101 @@
     </button>
   </div>
 </div>
+
+
+
+
+
+
+<!-- v0 - vercel -->
+
+
+<!-- edit-assignee-names.component.html -->
+<!-- <div class="assignee-editor">
+  <form *ngIf="taskId === currentlyEditingTaskId" class="edit-form">
+    <mat-form-field class="chip-field" appearance="outline">
+      <div class="chip-container">
+        <mat-chip-grid #chipGrid aria-label="Assignee selection">
+          @for (fruit of fruits(); track $index) {
+          <mat-chip-row 
+            (removed)="remove(fruit)" 
+            [ngStyle]="getChipColor($index)"
+            class="custom-chip"
+          >
+            {{ fruit.assignee }}
+            <button matChipRemove [attr.aria-label]="'remove ' + fruit.assignee">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+          }
+        </mat-chip-grid>
+      </div>
+
+      <input
+        name="currentFruit"
+        placeholder="New Assignee..."
+        type="search"
+        #fruitInput
+        [(ngModel)]="currentFruit"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        class="assignee-input"
+      />
+
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event); fruitInput.value = ''"
+      >
+        @for (fruit of filteredFruits(); track fruit) {
+        <mat-option [value]="fruit">{{ fruit.userName }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+
+  <div *ngIf="taskId !== currentlyEditingTaskId" class="view-mode">
+    <div class="chip-display">
+      @for (fruit of fruits(); track $index) {
+        <div class="view-chip" [ngStyle]="getChipColor($index)">
+          {{ fruit.assignee }}
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <button
+      *ngIf="taskId === currentlyEditingTaskId"
+      (click)="saveTaskChanges()"
+      matTooltip="Save"
+      matTooltipPosition="right"
+      class="action-btn save"
+    >
+      <i class="fas fa-save"></i>
+    </button>
+
+    <button
+      *ngIf="taskId === currentlyEditingTaskId"
+      (click)="cross()"
+      matTooltip="Close"
+      matTooltipPosition="right"
+      class="action-btn cancel"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+
+    <button
+      *ngIf="taskId !== currentlyEditingTaskId"
+      (click)="onEdit()"
+      matTooltip="Edit"
+      matTooltipPosition="right"
+      class="action-btn edit"
+    >
+      <i class="fas fa-edit"></i>
+    </button>
+  </div>
+</div> -->
 
 
 

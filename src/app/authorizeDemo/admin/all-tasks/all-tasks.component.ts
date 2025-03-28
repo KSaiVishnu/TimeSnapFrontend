@@ -21,6 +21,7 @@ import { AddTaskPopupComponent } from '../../../add-task-popup/add-task-popup.co
 import { MatInputModule } from '@angular/material/input';
 import { environment } from '../../../../environments/environment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoadingComponent } from '../../../loading/loading.component';
 
 // const ELEMENT_DATA: any = [];
 
@@ -35,6 +36,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatIconModule,
     EditAssigneeNamesComponent,
     MatProgressSpinnerModule,
+    LoadingComponent
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './all-tasks.component.html',
@@ -167,42 +169,75 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
       next: (res: any) => {
         console.log(res);
         this.tasks = res;
-        const groupedTasks = this.tasks.reduce((acc, task) => {
-          let existingTask = acc.find(
-            (t: { taskID: any }) => t.taskID === task.taskID
-          );
+        // const groupedTasks = this.tasks.reduce((acc, task) => {
+        //   let existingTask = acc.find(
+        //     (t: { taskID: any }) => t.taskID === task.taskID
+        //   );
 
-          // Ensure assignee is an array of objects, each with assignee and empId
-          const assigneeArray = Array.isArray(task.assignee)
-            ? task.assignee
-            : [{ assignee: task.assignee, empId: task.empId }]; // If not an array, create it
+        //   // Ensure assignee is an array of objects, each with assignee and empId
+        //   const assigneeArray = Array.isArray(task.assignee)
+        //     ? task.assignee
+        //     : [{ assignee: task.assignee, empId: task.empId }]; // If not an array, create it
 
-          if (existingTask) {
-            // Merge assignees and prevent duplicates
-            existingTask.assignee = [
-              ...new Set([...existingTask.assignee, ...assigneeArray]),
-            ];
-          } else {
-            acc.push({
-              task: task.task,
-              assignee: assigneeArray,
-              startDate: task.startDate,
-              dueDate: task.dueDate,
-              billingType: task.billingType,
-              taskID: task.taskID,
-              isEditing: false, // Track edit mode
-              searchTerm: '',
-              showSuggestions: false,
-              filteredAssignees: [], // Filtered list
-            });
-          }
+        //   if (existingTask) {
+        //     // Merge assignees and prevent duplicates
+        //     existingTask.assignee = [
+        //       ...new Set([...existingTask.assignee, ...assigneeArray]),
+        //     ];
+        //   } else {
+        //     acc.push({
+        //       task: task.task,
+        //       assignee: assigneeArray,
+        //       startDate: task.startDate,
+        //       dueDate: task.dueDate,
+        //       billingType: task.billingType,
+        //       taskID: task.taskID,
+        //       isEditing: false, // Track edit mode
+        //       searchTerm: '',
+        //       showSuggestions: false,
+        //       filteredAssignees: [], // Filtered list
+        //     });
+        //   }
 
-          return acc;
-        }, []);
+        //   return acc;
+        // }, []);
 
-        this.groupedTasks = groupedTasks;
+        // const groupedTasks = this.tasks.reduce((acc, task) => {
+        //   // Find existing task by taskId
+        //   let existingTask = acc.find((t: { taskId: string }) => t.taskId === task.taskId);
+        
+        //   if (existingTask) {
+        //     // Merge assignees, ensuring no duplicates
+        //     const newAssignees = task.assignees.filter(
+        //       (newAssignee: { empId: string }) => 
+        //       !existingTask.assignees.some((a: { empId: string }) => a.empId === newAssignee.empId)
+        //     );
+            
+        //     existingTask.assignees = [...existingTask.assignees, ...newAssignees];
+        //   } else {
+        //     acc.push({
+        //       taskId: task.taskId,
+        //       taskName: task.taskName,
+        //       startDate: task.startDate,
+        //       dueDate: task.dueDate,
+        //       billingType: task.billingType,
+        //       assignees: task.assignees || [], // Ensure assignees is an array
+        //       isEditing: false, // Track edit mode
+        //       searchTerm: '',
+        //       showSuggestions: false,
+        //       filteredAssignees: [], // Filtered list
+        //     });
+        //   }
+        
+        //   return acc;
+        // }, []);
+        
+
+        // this.groupedTasks = groupedTasks;
+        // console.log(groupedTasks);
         // this.dataSource = groupedTasks;
 
+        const groupedTasks = this.tasks;
         
         this.isLoading = false;
         this.cdr.detectChanges(); // Forces UI to update
@@ -291,6 +326,8 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
 
   openEditTaskPopup(task: any) {
     let allAssignees = this.allAssignees;
+    console.log(allAssignees);
+    console.log(task);
     const dialogRef = this.dialog.open(EditTaskPopupComponent, {
       width: '50%',
       data: { allAssignees, task },

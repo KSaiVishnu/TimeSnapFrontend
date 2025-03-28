@@ -1,0 +1,218 @@
+.auth-header {
+    margin-bottom: 2.5rem;
+    
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #6f42c1;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    
+    p {
+      color: #6c757d;
+      font-size: 1.05rem;
+      
+      a {
+        color: #6f42c1;
+        font-weight: 600;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 1.75rem;
+    
+    label {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      color: #343a40;
+      font-size: 1.05rem;
+    }
+  }
+  
+  .input-container {
+    position: relative;
+    
+    i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #adb5bd;
+      font-size: 20px;
+    }
+    
+    .form-control {
+      padding: 14px 16px 14px 50px;
+      height: 56px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      
+      &:focus {
+        border-color: #6f42c1;
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(111, 66, 193, 0.1);
+      }
+      
+      &::placeholder {
+        color: #adb5bd;
+      }
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #adb5bd;
+      cursor: pointer;
+      
+      &:hover {
+        color: #6f42c1;
+      }
+      
+      i {
+        position: static;
+        transform: none;
+      }
+    }
+  }
+  
+  .error-message {
+    color: #e53e3e;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .forgot-password {
+    text-align: right;
+    
+    a {
+      font-size: 0.95rem;
+      color: #6f42c1;
+      text-decoration: none;
+      font-weight: 500;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  
+  .btn-block {
+    width: 100%;
+    height: 56px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #6f42c1, #5e60ce);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(111, 66, 193, 0.3);
+    }
+    
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+  
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .social-login {
+    margin-top: 2.5rem;
+  }
+  
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    
+    &::before, &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: #e2e8f0;
+    }
+    
+    span {
+      padding: 0 1rem;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+  }
+  
+  .social-buttons {
+    display: flex;
+    justify-content: center;
+    
+    .btn-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #4b5563;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      
+      img {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+      }
+      
+      &:hover {
+        background-color: #f8fafc;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+  }
+  
+  .text-primary {
+    color: #6f42c1;
+  }
+  
+  

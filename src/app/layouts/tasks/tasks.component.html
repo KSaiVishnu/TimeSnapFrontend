@@ -1,12 +1,15 @@
 <div style="background-color: white" class="p-3">
-  <div class="tasks-heading-main-container">
+  <!-- <div class="tasks-heading-main-container">
     <div class="description-container">
       <h1>Task List</h1>
       <p>{{ name | titlecase }} - {{ empId }}</p>
     </div>
-    <!-- <div>
-      <input type="search" class="form-control" />
-    </div> -->
+    <div class="date-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Task</mat-label>
+        <input matInput />
+      </mat-form-field>
+    </div>
     <div class="date-container">
       <mat-form-field class="date-picker" appearance="outline">
         <mat-label>Enter a date range</mat-label>
@@ -31,14 +34,8 @@
         <mat-error>Invalid end date</mat-error>
         }
       </mat-form-field>
-      <!-- X (Clear) Icon -->
       <div class="date-remove-icon">
-        <!-- <mat-icon 
-              class="clear-icon" 
-              (click)="clearDateRange()" 
-              *ngIf="range.value.start || range.value.end">
-              close
-            </mat-icon> -->
+
         <button
           (click)="clearDateRange()"
           *ngIf="range.value.start || range.value.end"
@@ -52,148 +49,202 @@
     <div style="width: 300px">
       <app-pie-chart [empId]="empId"></app-pie-chart>
     </div>
-  </div>
+  </div> -->
+
   <!-- <p>{{email}}</p> -->
   <!-- <app-file-upload /> -->
   <!-- <div style="width: 100%;">
     <app-edit-assignee-names></app-edit-assignee-names>
   </div> -->
 
-  <div class="d-flex flex-column" style="background: #f8f9fa;">
-  
-  <div class="p-1 ml-auto" style="margin: 20px 30px 0px 30px;">
-      <button (click)="openAddTaskPopup()" class="btn btn-success">Add Task</button>
-  </div>
-  <div class="task-container" cdkDropListGroup>
-    <!-- To Do Column -->
-    <div
-      class="task-column todo"
-      cdkDropList
-      id="todoContainer"
-      [cdkDropListData]="pendingTasks"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <h3 class="column-title">To Do</h3>
+  <div class="d-flex flex-row" style="background: white">
+    <div style="width: 20%; border-right: 1px solid lightgray; padding: 20px; max-height: 100vh;">
+      <div class="d-flex flex-row">
+      <p>Filters</p>
+      <button (click)="onClearFilters()" class="btn p-0 ml-auto">Clear Filters</button>
+    </div>
+      <div class="d-flex flex-column">
+        
+        <div>
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Search Task</mat-label>
+            <input matInput type="search" [(ngModel)]="searchText" (input)="applyFilters()" placeholder="Enter task name">
+          </mat-form-field>
+          
+        </div>
 
-      <!-- <ng-container *ngIf="loading">
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Filter by Due Date</mat-label>
+            <mat-select [(value)]="selectedDate" (valueChange)="applyFilters()">
+              <mat-option value="all">All</mat-option>
+              <mat-option value="today">Today</mat-option>
+              <mat-option value="week">This Week</mat-option>
+              <mat-option value="month">This Month</mat-option>
+            </mat-select>
+          </mat-form-field>          
+        </div>
+
+        <div>
+          <mat-form-field appearance="outline">
+            <mat-label>Filter by Billing Type</mat-label>
+            <mat-select [(value)]="selectedType" (valueChange)="applyFilters()">
+              <mat-option value="all">All</mat-option>
+              <mat-option value="Billable">Billable</mat-option>
+              <mat-option value="Non-Billable">Non-Billable</mat-option>
+            </mat-select>
+          </mat-form-field>          
+        </div>
+      </div>
+    </div>
+    <div style="width: 80%;">
+      <div class="d-flex flex-row">
+        <h2 style="margin: 20px 0px 0px 30px">Tasks</h2>
+        <button
+          (click)="openAddTaskPopup()"
+          style="margin-left: auto; margin: 20px 20px 0px 0px"
+          class="btn btn-success ml-auto"
+        >
+          Add Task
+        </button>
+      </div>
+      <div class="task-container" cdkDropListGroup>
+        <!-- To Do Column -->
+        <div
+          class="task-column todo"
+          cdkDropList
+          id="todoContainer"
+          [cdkDropListData]="pendingTasks"
+          (cdkDropListDropped)="drop($event)"
+        >
+          <h3 class="column-title todo-title">To Do</h3>
+          
+
+          <!-- <ng-container *ngIf="loading">
         <div class="skeleton-card" *ngFor="let i of [1, 2, 3]"></div>
       </ng-container> -->
 
-      <ng-container *ngIf="loading">
-        <div class="task-card skeleton-card" *ngFor="let _ of [1,2,3]">
-          <!-- <div class="skeleton-avatar"></div> -->
-          <div class="skeleton-content">
-            <h5 class="skeleton-line skeleton-title"></h5>
-            <p class="skeleton-line"></p>
-            <!-- <br> -->
-            <span class="skeleton-line skeleton-status"></span>
-          </div>
-        </div>
-      </ng-container>
+          <ng-container *ngIf="loading">
+            <div class="task-card skeleton-card" *ngFor="let _ of [1, 2, 3]">
+              <!-- <div class="skeleton-avatar"></div> -->
+              <div class="skeleton-content">
+                <h5 class="skeleton-line skeleton-title"></h5>
+                <p class="skeleton-line"></p>
+                <!-- <br> -->
+                <span class="skeleton-line skeleton-status"></span>
+              </div>
+            </div>
+          </ng-container>
 
-      <ng-container *ngIf="!loading">
+          <ng-container *ngIf="!loading">
+            <div
+              class="task-card"
+              *ngFor="let task of pendingTasks"
+              cdkDrag
+              [cdkDragData]="task"
+              (mousedown)="dragging = false"
+              (cdkDragStarted)="dragging = true"
+              (click)="!dragging && goToTaskDetails(task)"
+            >
+              <h6>{{ task.taskName }}</h6>
+              <p class="task-details">
+                <!-- {{ task.assignee }} | -->
+                 Due:
+                <span class="due-date-para">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+              </p>
+              <span class="task-status todo">To Do</span>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- In Progress Column -->
         <div
-          class="task-card"
-          *ngFor="let task of pendingTasks"
-          cdkDrag
-          [cdkDragData]="task"
-          (mousedown)="dragging = false"
-          (cdkDragStarted)="dragging = true"
-          (click)="!dragging && goToTaskDetails(task.id)"
+          class="task-column in-progress"
+          cdkDropList
+          id="inProgressContainer"
+          [cdkDropListData]="inProgressTasks"
+          (cdkDropListDropped)="drop($event)"
         >
-          <h5>{{ task.task }}</h5>
-          <p class="task-details">
-            {{ task.assignee }} | Due: {{ task.dueDate | date : "MMM d, yyyy" }}
-          </p>
-          <span class="task-status todo">To Do</span>
-        </div>
-      </ng-container>
-    </div>
+          <h3 class="column-title inprogress-title">In Progress</h3>
 
-    <!-- In Progress Column -->
-    <div
-      class="task-column in-progress"
-      cdkDropList
-      id="inProgressContainer"
-      [cdkDropListData]="inProgressTasks"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <h3 class="column-title">In Progress</h3>
+          <ng-container *ngIf="loading">
+            <div class="task-card skeleton-card" *ngFor="let _ of [1, 2, 3]">
+              <!-- <div class="skeleton-avatar"></div> -->
+              <div class="skeleton-content">
+                <h5 class="skeleton-line skeleton-title"></h5>
+                <p class="skeleton-line"></p>
+                <!-- <br> -->
+                <span class="skeleton-line skeleton-status"></span>
+              </div>
+            </div>
+          </ng-container>
 
-      <ng-container *ngIf="loading">
-        <div class="task-card skeleton-card" *ngFor="let _ of [1,2,3]">
-          <!-- <div class="skeleton-avatar"></div> -->
-          <div class="skeleton-content">
-            <h5 class="skeleton-line skeleton-title"></h5>
-            <p class="skeleton-line"></p>
-            <!-- <br> -->
-            <span class="skeleton-line skeleton-status"></span>
-          </div>
+          <ng-container *ngIf="!loading">
+            <div
+              class="task-card"
+              *ngFor="let task of inProgressTasks"
+              cdkDrag
+              [cdkDragData]="task"
+              (mousedown)="dragging = false"
+              (cdkDragStarted)="dragging = true"
+              (click)="!dragging && goToTaskDetails(task)"
+            >
+              <h6>{{ task.taskName }}</h6>
+              <p class="task-details">
+                <!-- {{ task.assignee }} | -->
+                 Due:
+                <span class="due-date-para-inprogress">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+
+              </p>
+              <span class="task-status in-progress">In Progress</span>
+            </div>
+          </ng-container>
         </div>
-      </ng-container>
-      
-      <ng-container *ngIf="!loading">
-      
-      <div
-        class="task-card"
-        *ngFor="let task of inProgressTasks"
-        cdkDrag
-        [cdkDragData]="task"
-        (mousedown)="dragging = false"
-        (cdkDragStarted)="dragging = true"
-        (click)="!dragging && goToTaskDetails(task.id)"
-      >
-        <h5>{{ task.task }}</h5>
-        <p class="task-details">
-          {{ task.assignee }} | Due: {{ task.dueDate | date : "MMM d, yyyy" }}
-        </p>
-        <span class="task-status in-progress">In Progress</span>
+
+        <!-- Completed Column -->
+        <div
+          class="task-column completed"
+          cdkDropList
+          id="completedContainer"
+          [cdkDropListData]="completedTasks"
+          (cdkDropListDropped)="drop($event)"
+        >
+          <h3 class="column-title completed-title">Completed</h3>
+
+
+          <ng-container *ngIf="loading">
+            <div class="task-card skeleton-card" *ngFor="let _ of [1, 2, 3]">
+              <!-- <div class="skeleton-avatar"></div> -->
+              <div class="skeleton-content">
+                <h5 class="skeleton-line skeleton-title"></h5>
+                <p class="skeleton-line"></p>
+                <!-- <br> -->
+                <span class="skeleton-line skeleton-status"></span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!loading">
+            <div
+              class="task-card"
+              *ngFor="let task of completedTasks"
+              cdkDrag
+              [cdkDragData]="task"
+              (mousedown)="dragging = false"
+              (cdkDragStarted)="dragging = true"
+              (click)="!dragging && goToTaskDetails(task.id)"
+            >
+              <h6>{{ task.task }}</h6>
+              <p class="task-details">
+                <!-- {{ task.assignee }} | -->
+                 Completed:
+                 <span class="due-date-para-completed">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+                </p>
+              <span class="task-status completed">Completed</span>
+            </div>
+          </ng-container>
+        </div>
       </div>
-    </ng-container>
     </div>
-
-    <!-- Completed Column -->
-    <div
-      class="task-column completed"
-      cdkDropList
-      id="completedContainer"
-      [cdkDropListData]="completedTasks"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <h3 class="column-title">Completed</h3>
-
-      <ng-container *ngIf="loading">
-        <div class="task-card skeleton-card" *ngFor="let _ of [1,2,3]">
-          <!-- <div class="skeleton-avatar"></div> -->
-          <div class="skeleton-content">
-            <h5 class="skeleton-line skeleton-title"></h5>
-            <p class="skeleton-line"></p>
-            <!-- <br> -->
-            <span class="skeleton-line skeleton-status"></span>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="!loading">
-
-      <div
-        class="task-card"
-        *ngFor="let task of completedTasks"
-        cdkDrag
-        [cdkDragData]="task"
-        (mousedown)="dragging = false"
-        (cdkDragStarted)="dragging = true"
-        (click)="!dragging && goToTaskDetails(task.id)"
-      >
-        <h5>{{ task.task }}</h5>
-        <p class="task-details">
-          {{ task.assignee }} | Completed:
-          {{ task.dueDate | date : "MMM d, yyyy" }}
-        </p>
-        <span class="task-status completed">Completed</span>
-      </div>
-      </ng-container>
-    </div>
-  </div>
   </div>
 
   <ng-template #noTasks>

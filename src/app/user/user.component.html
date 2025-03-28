@@ -1,11 +1,12 @@
-<div class="container">
+<!-- <div class="flex-container">
   <div class="row vh-100 align-items-center">
     <div class="col-xxl-6 offset-xxl-3 col-lg-8 offset-lg-2 col-10 offset-1">
-      <div class="row rounded-4 border-0 shadow-lg bg-white" style="min-height:450px;">
-        <div class="col-md-5 d-md-flex d-none bg-success rounded-start-4 align-items-center justify-content-center">
+      <div class="row rounded-1 border-0 shadow-lg bg-light" style="min-height:450px;">
+        <div style="border-right: 2px solid lightgray;" class="col-md-5 d-md-flex d-none bg-light rounded-start-4 align-items-center justify-content-center">
           <div class="text-center text-white">
-            <img src="logo.png" class="w-50 mb-3">
-            <h2 class="fw-bolder">Time Snap</h2>
+            <img  class="main-image-logo" src="main-logo-1.1.png" class="w-50 mb-3">
+            <iframe src='https://my.spline.design/techinspired3dassetsstopwatchtimer-daa2ceb513b3f0005d5462552a2f162c/' frameborder='0' width='100%' height='100%'></iframe>
+            <h2 style="color: black;" class="fw-bolder  user-title-heading">Time Snap</h2>
           </div>
         </div>
         <div class="col-md-7 col-12 d-flex justify-content-start align-items-center">
@@ -17,4 +18,80 @@
     </div>
 
   </div>
+</div> -->
+
+<!-- <div class="flex-container">
+  <div class="row">
+    <div class="col-12 col-md-6 logo-container">
+      <img  class="main-image-logo" src="logo.png" class="w-50 mb-3">
+      <h2 style="color: black;" class="fw-bolder">Time Snap</h2>
+    </div>
+
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+<div class="app-container">
+  <div *ngIf="loading" class="loading-overlay">
+    <app-loading></app-loading>
+  </div>
+  
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-sidebar">
+        <div class="decorative-pattern"></div>
+        <div class="auth-logo">
+          <app-logo [size]="'large'"></app-logo>
+        </div>
+        <div class="auth-tagline">
+          <h2>Track Time, Boost Productivity</h2>
+          <p>Effortlessly manage your time and accomplish more</p>
+        </div>
+        <div class="feature-highlights">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="material-icons">timer</i>
+            </div>
+            <div class="feature-text">
+              <h4>Time Tracking</h4>
+              <p>Track hours with precision</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="material-icons">insert_chart</i>
+            </div>
+            <div class="feature-text">
+              <h4>Analytics</h4>
+              <p>Visualize your productivity</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="material-icons">notifications</i>
+            </div>
+            <div class="feature-text">
+              <h4>Reminders</h4>
+              <p>Never miss tracking time</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <app-loading></app-loading> -->
+      <div class="auth-content">
+        <div class="auth-form-container" [@routerFadeIn]="getRouteUrl()">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+

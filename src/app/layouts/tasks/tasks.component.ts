@@ -42,11 +42,13 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Router } from '@angular/router';
-import { EditAssigneeNamesComponent } from "../../edit-assignee-names/edit-assignee-names.component";
+import { EditAssigneeNamesComponent } from '../../edit-assignee-names/edit-assignee-names.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { environment } from '../../../environments/environment';
 import { AddTaskPopupComponent } from '../../add-task-popup/add-task-popup.component';
-
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { TaskService } from '../../shared/services/task.service';
 
 // export const ELEMENT_DATA: any = [];
 
@@ -66,8 +68,10 @@ import { AddTaskPopupComponent } from '../../add-task-popup/add-task-popup.compo
     MatFormFieldModule,
     MatDatepickerModule,
     ReactiveFormsModule,
-    MatProgressBarModule
-],
+    MatProgressBarModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css',
@@ -86,19 +90,21 @@ export class TasksComponent {
 
   allAssignees: { userName: string; employeeId: string; email: string }[] = []; // Store all users
 
-    // Fetch all assignees from the UserEmployee table (API call)
-    fetchAssignees() {
-      this.http
-        .get<{ userName: string; employeeId: string; email: string }[]>(
-          `${this.baseURL}/user-employee`
-        )
-        .subscribe((data) => {
-          this.allAssignees = data;
-          console.log(this.allAssignees);
-        });
-    }
+  selectedDate = 'all';
+  searchText = '';
+  selectedType = 'all';
 
-
+  // Fetch all assignees from the UserEmployee table (API call)
+  fetchAssignees() {
+    this.http
+      .get<{ userName: string; employeeId: string; email: string }[]>(
+        `${this.baseURL}/user-employee`
+      )
+      .subscribe((data) => {
+        this.allAssignees = data;
+        console.log(this.allAssignees);
+      });
+  }
 
   // @ViewChild('table', { static: true }) table: MatTable<any> | undefined;
   // displayedColumns: string[] = [
@@ -149,15 +155,13 @@ export class TasksComponent {
         totalMinutes: 0,
       };
 
-      this.http
-        .post(`${this.baseURL}/timesheet`, timesheetEntry)
-        .subscribe({
-          next: (res: any) => {
-            this.timesheetId = res.id;
-          },
-          error: (err: any) =>
-            console.log('error while adding time sheet:\n', err),
-        });
+      this.http.post(`${this.baseURL}/timesheet`, timesheetEntry).subscribe({
+        next: (res: any) => {
+          this.timesheetId = res.id;
+        },
+        error: (err: any) =>
+          console.log('error while adding time sheet:\n', err),
+      });
     }
 
     task.isStarted = true;
@@ -230,21 +234,19 @@ export class TasksComponent {
   }
 
   getTimesheetsForTask(taskId: number): void {
-    this.http
-      .get(`${this.baseURL}/tasks/${taskId}/timesheets`)
-      .subscribe({
-        next: (response: any) => {
-          this.timesheets = response;
-          console.log('Timesheets:', this.timesheets);
-        },
-        error: (error: any) => {
-          if (error.status === 404) {
-            this.timesheets = [];
-          } else {
-            console.error('Error fetching timesheets:', error);
-          }
-        },
-      });
+    this.http.get(`${this.baseURL}/tasks/${taskId}/timesheets`).subscribe({
+      next: (response: any) => {
+        this.timesheets = response;
+        console.log('Timesheets:', this.timesheets);
+      },
+      error: (error: any) => {
+        if (error.status === 404) {
+          this.timesheets = [];
+        } else {
+          console.error('Error fetching timesheets:', error);
+        }
+      },
+    });
   }
 
   openTask(task: any) {
@@ -285,6 +287,7 @@ export class TasksComponent {
     private http: HttpClient,
     private authService: AuthService,
     private userService: UserService,
+    private tasksService: TaskService,
     private dialog: MatDialog,
     private router: Router
   ) {
@@ -320,12 +323,12 @@ export class TasksComponent {
     let userDetails = {
       name: this.name,
       email: this.email,
-      empId: this.empId
-    }
+      empId: this.empId,
+    };
 
     const dialogRef = this.dialog.open(AddTaskPopupComponent, {
       width: '50%',
-      data: { allAssignees, billingType, isEmployee: true, userDetails},
+      data: { allAssignees, billingType, isEmployee: true, userDetails },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -334,28 +337,34 @@ export class TasksComponent {
       }
     });
   }
+  searchControl = new FormControl('');
 
   ngOnInit() {
     this.currentStatus = 'loading';
     let userDetails = this.userService.getUserDetails();
     console.log(userDetails());
-    if(!userDetails()){
+    if (!userDetails()) {
       this.userService.getUserProfile().subscribe({
         next: (res: any) => {
           this.name = res.fullName;
           this.email = res.email;
           this.empId = res.empId;
-          this.fetchTasks();
+          // this.fetchTasks();
+          this.loadTasks();
         },
         error: (err: any) =>
           console.log('error while retrieving user profile:\n', err),
       });
-    }
-    else{
+    } else {
       this.name = userDetails().fullName;
       this.email = userDetails().email;
       this.empId = userDetails().empId;
-      this.fetchTasks();
+      // this.fetchTasks();
+      this.loadTasks();
+          // Apply search filtering in real-time
+    this.searchControl.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
     }
 
     this.range.valueChanges.subscribe(() => {
@@ -368,6 +377,26 @@ export class TasksComponent {
   pendingTasks: any = [];
   inProgressTasks: any = [];
   completedTasks: any = [];
+
+  filteredPendingTasks: any[] = []; // These will be modified when filtering
+  filteredInProgressTasks: any[] = [];
+  filteredCompletedTasks: any[] = [];
+
+  filterTasks() {
+    const search = this.searchText.toLowerCase();
+
+    this.filteredPendingTasks = this.pendingTasks.filter((task: any) =>
+      task.task.toLowerCase().includes(search)
+    );
+
+    this.filteredInProgressTasks = this.inProgressTasks.filter((task: any) =>
+      task.task.toLowerCase().includes(search)
+    );
+
+    this.filteredCompletedTasks = this.completedTasks.filter((task: any) =>
+      task.task.toLowerCase().includes(search)
+    );
+  }
 
   categorizeTasks() {
     const startDate = this.range.value.start
@@ -427,7 +456,8 @@ export class TasksComponent {
       this.currentStatus = 'no-tasks';
     }
   }
-loading = true;
+  loading = true;
+  allTasks: any[] = []; // Stores all tasks fetched from API
 
   fetchTasks() {
     if (!this.empId) {
@@ -435,63 +465,173 @@ loading = true;
       return;
     }
     this.loading = true; // Show skeletons while fetching data
-    
 
-    this.http
-      .get<any[]>(`${this.baseURL}/tasks/${this.empId}`)
-      .subscribe({
-        next: (res: any) => {
-          this.pendingTasks = [];
-          this.inProgressTasks = [];
-          this.completedTasks = [];
+    this.http.get<any[]>(`${this.baseURL}/tasks/${this.empId}`).subscribe({
+      next: (res: any) => {
+        this.pendingTasks = [];
+        this.inProgressTasks = [];
+        this.completedTasks = [];
 
-          const data = res.map((eachItem: any) => {
-            console.log(eachItem);
-            if (eachItem.status === 'NotStarted') {
-              this.pendingTasks = eachItem.tasks;
-            } else if (eachItem.status === 'InProgress') {
-              this.inProgressTasks = eachItem.tasks;
-            } else if (eachItem.status === 'Completed') {
-              this.completedTasks = eachItem.tasks;
-            }
-            this.tasks = [...this.tasks, ...eachItem.tasks];
-            console.log(eachItem.tasks);
-          });
+        console.log(res);
 
-          console.log(this.pendingTasks);
-          console.log(this.inProgressTasks);
-          console.log(this.completedTasks);
-
-          if (this.tasks.length > 0) {
-            this.currentStatus = 'success';
-          } else {
-            this.currentStatus = 'no-tasks';
+        const data = res.map((eachItem: any) => {
+          console.log(eachItem);
+          if (eachItem.status === 'NotStarted') {
+            this.pendingTasks = eachItem.tasks;
+          } else if (eachItem.status === 'InProgress') {
+            this.inProgressTasks = eachItem.tasks;
+          } else if (eachItem.status === 'Completed') {
+            this.completedTasks = eachItem.tasks;
           }
-          
+          this.tasks = [...this.tasks, ...eachItem.tasks];
+          console.log(eachItem.tasks);
+        });
 
-          this.loading = false; // Hide skeletons when data is loaded
+        console.log(this.pendingTasks);
+        console.log(this.inProgressTasks);
+        console.log(this.completedTasks);
 
+        this.filteredPendingTasks = [...this.pendingTasks];
+        this.filteredInProgressTasks = [...this.inProgressTasks];
+        this.filteredCompletedTasks = [...this.completedTasks];
 
-          // this.tasks = res.map((task: any) => ({
-          //   ...task,
-          //   hh: 0,
-          //   mm: 0,
-          //   ss: 0,
-          //   isRunning: false,
-          //   isStarted: false,
-          //   timerId: null,
-          // }));
-          // this.categorizeTasks();
+        if (this.tasks.length > 0) {
+          this.currentStatus = 'success';
+        } else {
+          this.currentStatus = 'no-tasks';
+        }
 
-          // console.log(this.tasks);
-        },
-        error: (err) => {
-          console.log(err);
-          this.loading = false; // Hide skeletons when data is loaded
+        this.loading = false; // Hide skeletons when data is loaded
 
-        },
-      });
+        // this.tasks = res.map((task: any) => ({
+        //   ...task,
+        //   hh: 0,
+        //   mm: 0,
+        //   ss: 0,
+        //   isRunning: false,
+        //   isStarted: false,
+        //   timerId: null,
+        // }));
+        // this.categorizeTasks();
+
+        // console.log(this.tasks);
+      },
+      error: (err) => {
+        console.log(err);
+        this.loading = false; // Hide skeletons when data is loaded
+      },
+    });
   }
+
+  // STARTED HERE
+
+  loadTasks() {
+    this.tasksService.getTasks(this.empId).subscribe((tasks: any[]) => {
+      this.loading = false;
+      this.allTasks = tasks;
+      console.log(this.allTasks);
+      this.applyFilters(); // Apply filters initially
+    });
+  }
+
+  applyFilters() {
+    let filtered = [...this.allTasks];
+
+    // Search by task name
+    const searchText = this.searchText.toLowerCase();
+    if (searchText) {
+      filtered = filtered.filter(task =>
+        task.task.toLowerCase().includes(searchText)
+      );
+    }
+
+    // Filter by due date
+
+    if (this.selectedDate === 'today') {
+      filtered = filtered.filter(task =>
+        new Date(task.dueDate).toDateString() === new Date().toDateString()
+      );
+    }
+    
+    else if (this.selectedDate === 'week') {
+      const today = new Date();
+      const weekEnd = new Date(today);
+      weekEnd.setDate(today.getDate() + 7);
+      console.log(weekEnd);
+      filtered = filtered.filter(task =>
+        new Date(task.dueDate) >= today && new Date(task.dueDate) <= weekEnd
+      );
+    } else if (this.selectedDate === 'month') {
+      const today = new Date();
+      const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      filtered = filtered.filter(task =>
+        new Date(task.dueDate) >= today && new Date(task.dueDate) <= monthEnd
+      );
+    }
+
+
+    if(this.selectedType === 'Billable'){
+      filtered = filtered.filter(task =>
+        task.billingType === 'Billable'
+            );
+    }
+    else if(this.selectedType === 'Non-Billable'){
+      filtered = filtered.filter(task =>
+        task.billingType === 'Non-Billable'
+            );
+    }
+
+    // Categorize into 3 status groups
+    this.pendingTasks = filtered.filter(t => t.status === 0);
+    this.inProgressTasks = filtered.filter(t => t.status === 1);
+    this.completedTasks = filtered.filter(t => t.status === 2);
+  }
+
+  onFilterChange() {
+    this.applyFilters();
+  }
+
+
+  onClearFilters(){
+    console.log("d")
+    this.selectedDate = 'all';
+    this.searchText = '';
+    this.selectedType = 'all';
+    this.applyFilters();
+  }
+
+  // onFilterChange() {
+  //   this.tasksService
+  //     .getFilteredTasks(
+  //       this.empId,
+  //       this.searchText,
+  //       this.selectedDate,
+  //       this.selectedType
+  //     )
+  //     .subscribe((data) => {
+  //       this.tasks = data;
+  //       this.categorizeTasks_1();
+  //     });
+  // }
+
+  categorizeTasks_1() {
+    this.pendingTasks = this.tasks.filter(
+      (task) => task.status === 0
+    );
+    this.inProgressTasks = this.tasks.filter(
+      (task) => task.status === 1
+    );
+    this.completedTasks = this.tasks.filter(
+      (task) => task.status === 2
+    );
+
+    console.log(this.pendingTasks);
+    console.log(this.inProgressTasks);
+    console.log(this.completedTasks);
+
+  }
+
+  // ENDED HERE.
 
   // filterTasksAfterSaving(updatedTask:any){
   //   this.tasks = this.tasks.filter(t => t.id !== updatedTask.id);
@@ -526,42 +666,86 @@ loading = true;
 
     console.log('Updating Task:', updatedTask);
 
-    this.http
-      .put(`${this.baseURL}/tasks/${task.id}`, updatedTask)
-      .subscribe({
-        next: (response: any) => {
-          console.log('Task updated:', response);
-          // this.fetchTasks();
-          // alert('Task updated successfully!');
-          // Remove the task from the old list
+    this.http.put(`${this.baseURL}/tasks/${task.id}`, updatedTask).subscribe({
+      next: (response: any) => {
+        console.log('Task updated:', response);
 
-          // console.log(this.tasks);
-          // this.filterTasksAfterSaving(updatedTask);
+        // this.pendingTasks = this.pendingTasks.filter((task: any) => task.status == 0);
+        // this.inProgressTasks = this.inProgressTasks.filter((task: any) => task.status == 1);
+        // this.completedTasks = this.completedTasks.filter((task: any) => task.status == 2);
 
-          // this.tasks = this.tasks.filter(t => t.id !== task.id);
-          // let updatedTask1 = {
-          //   ...updatedTask,
-          //   hh: 0,
-          //   mm: 0,
-          //   ss: 0,
-          //   isRunning: false,
-          //   timerId: null
-          // };
-          // this.tasks.push(updatedTask1);
-          // this.categorizeTasks();
+        this.pendingTasks = this.pendingTasks.filter((task: any) => {
+          if (task.status == 0) {
+            return true;
+          } else if (task.status == 1) {
+            this.inProgressTasks.push(task);
+            return false;
+          } else {
+            this.completedTasks.push(task);
+            return false;
+          }
+        });
 
-          // location.reload();
-          //  Update the task locally without refreshing
-          // let index = this.tasks.findIndex(t => t.id === task.id);
-          // if (index !== -1) {
-          //   this.tasks[index] = { ...this.tasks[index], ...updatedTask };
-          // }
-        },
-        error: (err) => {
-          console.error('Error updating task:', err);
-          alert('Error updating task');
-        },
-      });
+        this.inProgressTasks = this.inProgressTasks.filter((task: any) => {
+          if (task.status == 0) {
+            this.pendingTasks.push(task);
+            return false;
+          } else if (task.status == 1) {
+            return true;
+          } else {
+            this.completedTasks.push(task);
+            return false;
+          }
+        });
+
+        this.completedTasks = this.completedTasks.filter((task: any) => {
+          if (task.status == 0) {
+            this.pendingTasks.push(task);
+            return false;
+          } else if (task.status == 1) {
+            this.inProgressTasks.push(task);
+            return false;
+          } else {
+            return true;
+          }
+        });
+
+        console.log(this.pendingTasks);
+        console.log(this.inProgressTasks);
+        console.log(this.completedTasks);
+
+        // this.fetchTasks();
+        // this.fetchTasks();
+        // alert('Task updated successfully!');
+        // Remove the task from the old list
+
+        // console.log(this.tasks);
+        // this.filterTasksAfterSaving(updatedTask);
+
+        // this.tasks = this.tasks.filter(t => t.id !== task.id);
+        // let updatedTask1 = {
+        //   ...updatedTask,
+        //   hh: 0,
+        //   mm: 0,
+        //   ss: 0,
+        //   isRunning: false,
+        //   timerId: null
+        // };
+        // this.tasks.push(updatedTask1);
+        // this.categorizeTasks();
+
+        // location.reload();
+        //  Update the task locally without refreshing
+        // let index = this.tasks.findIndex(t => t.id === task.id);
+        // if (index !== -1) {
+        //   this.tasks[index] = { ...this.tasks[index], ...updatedTask };
+        // }
+      },
+      error: (err) => {
+        console.error('Error updating task:', err);
+        alert('Error updating task');
+      },
+    });
   }
 
   // drop(event: CdkDragDrop<any[]>) {
@@ -623,7 +807,12 @@ loading = true;
 
       // Update status after moving
       const movedTask = event.container.data[event.currentIndex];
+      movedTask.previousStatus = this.getStatusFromContainer(
+        event.previousContainer.id
+      );
       movedTask.status = this.getStatusFromContainer(event.container.id);
+
+      console.log(event.previousContainer.data);
 
       this.onSaveTask(movedTask);
 
@@ -634,11 +823,10 @@ loading = true;
   }
   dragging: boolean = false;
 
-  goToTaskDetails(id: any) {
-    console.log(id);
-    this.router.navigate(['tasks', id]); // Correct path format
+  goToTaskDetails(task: any) {
+    console.log(task);
+    this.router.navigate(['tasks', task.taskId]); // Correct path format
   }
-  
 
   getStatusFromContainer(containerId: string): number {
     switch (containerId) {

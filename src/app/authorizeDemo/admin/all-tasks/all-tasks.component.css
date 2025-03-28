@@ -126,3 +126,276 @@
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* v0 - vercel */
+
+
+/* all-tasks.component.scss */
+.tasks-container {
+  padding: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.add-task-btn {
+  display: flex;
+  align-items: center;
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  i {
+    margin-right: 0.5rem;
+  }
+  
+  &:hover {
+    background-color: #5649c0;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.table-wrapper {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.responsive-table {
+  overflow-x: auto;
+}
+
+.modern-table {
+  width: 100%;
+  
+  .mat-mdc-header-cell {
+    background-color: #f8fafc;
+    color: #4a5568;
+    font-weight: 600;
+    padding: 1rem;
+    white-space: nowrap;
+  }
+  
+  .mat-mdc-cell {
+    padding: 0.75rem 1rem;
+    color: #2d3748;
+  }
+  
+  .mat-mdc-row {
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: #f8fafc;
+    }
+  }
+}
+
+.date-cell {
+  display: flex;
+  align-items: center;
+  
+  i {
+    color: #6c5ce7;
+    margin-right: 0.5rem;
+  }
+}
+
+/* .billing-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  
+  &.billable {
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+  }
+  
+  &.non-billable {
+    background-color: rgba(237, 100, 166, 0.1);
+    color: #d53f8c;
+  }
+} */
+
+
+.billing-cell {
+  white-space: nowrap; /* Prevents wrapping */
+  text-align: center;  /* Aligns the text */
+}
+
+.billing-badge {
+  display: inline-flex;  /* Prevents breaking */
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  white-space: nowrap; /* Ensures it stays in one line */
+  &.billable {
+    background-color: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+  }
+  
+  &.non-billable {
+    background-color: rgba(237, 100, 166, 0.1);
+    color: #d53f8c;
+  }
+}
+
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &.edit {
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #3182ce;
+    
+    &:hover {
+      background-color: rgba(66, 153, 225, 0.2);
+    }
+  }
+  
+  &.delete {
+    background-color: rgba(245, 101, 101, 0.1);
+    color: #e53e3e;
+    
+    &:hover {
+      background-color: rgba(245, 101, 101, 0.2);
+    }
+  }
+}
+
+
+
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  
+  .empty-image {
+    width: 200px;
+    margin-bottom: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: #718096;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .add-task-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+
+/* gpt */
+.ng-container[matColumnDef="task"] {
+  th, td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+}
+
+.date-cell {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  max-width: 120px; 
+}
+
+
+.task-id-column {
+  white-space: nowrap;
+  text-align: left;
+}
+
+.task-name-column {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px; /* Adjust width as needed */
+  text-align: right; /* Move text to the right */
+}
+
+.task-assignee-container{
+  max-width: 450px; /* Adjust width as needed */
+
+}

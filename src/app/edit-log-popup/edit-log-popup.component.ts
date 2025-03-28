@@ -40,6 +40,22 @@ export class EditLogPopupComponent {
   totalMin: number = 0;
   timeSheetId: any;
 
+  notesOptions = [
+    { value: 'Complex Story Brainstorming', text: 'Complex Story Brainstorming' },
+    { value: 'Requirements Review', text: 'Requirements Review' },
+    { value: 'Estimation', text: 'Estimation' },
+    { value: 'Research', text: 'Research' },
+    { value: 'Software Design', text: 'Software Design' },
+    { value: 'Coding', text: 'Coding' },
+    { value: 'Testing', text: 'Testing' },
+    { value: 'Demonstrations', text: 'Demonstrations' },
+    { value: 'Bug Fix', text: 'Bug Fix' },
+    { value: 'Management', text: 'Management' }
+  ];
+
+  notesValue: string = 'Coding'; // Default selected value
+
+
   hoursRange: number[] = Array.from({ length: 13 }, (_, i) => i); // Generates hours 1-12
   minRange: number[] = Array.from({ length: 60 }, (_, i) => i);
 
@@ -55,6 +71,7 @@ export class EditLogPopupComponent {
       this.totalHours = Math.floor(data.log.totalMinutes / 60); // Extract hours
       this.totalMin = data.log.totalMinutes % 60; // Extract remaining minutes
       this.timeSheetId = data.log.id;
+      this.notesValue = data.log.notes;
     }
   }
 
@@ -72,6 +89,7 @@ export class EditLogPopupComponent {
     const timesheet = {
       date: new Date(this.date),
       totalMinutes: Number(this.totalHours * 60) + Number(this.totalMin), // Converts the selected hours to minutes
+      notes: this.notesValue,
     };
     console.log(this.totalHours, typeof this.totalHours);
     console.log(this.totalMin, typeof this.totalMin);

@@ -30,7 +30,7 @@ import {merge} from 'rxjs';
   selector: 'app-login',
   imports: [CommonModule, ReactiveFormsModule, RouterLink, GoogleLoginComponent, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
@@ -140,9 +140,6 @@ export class LoginComponent implements OnInit {
     const button = document.getElementById('google-button');
     if (button) {
       google.accounts.id.renderButton(button, {
-        theme: 'filled_blue',
-        size: 'large',
-        shape: 'rectangle',
         width: 300,
       });
     }

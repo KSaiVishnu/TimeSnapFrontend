@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 import { HttpClient } from '@angular/common/http';
@@ -17,6 +17,7 @@ import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarComponent } from '../../snackbar/snackbar.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LineChartComponent } from "../../line-chart/line-chart.component";
 
 @Component({
   selector: 'app-task-details',
@@ -29,9 +30,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     FormsModule,
     CommonModule,
     MatProgressSpinnerModule,
-  ],
+    LineChartComponent
+],
   templateUrl: './task-details.component.html',
-  styleUrl: './task-details.component.css',
+  styleUrls: ['./task-details.component.css', './task-details.component.scss']
 })
 export class TaskDetailsComponent implements OnInit {
   taskId: any;
@@ -123,7 +125,8 @@ export class TaskDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     private userService: UserService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {
     this.setTodayDate();
   }
@@ -140,27 +143,28 @@ export class TaskDetailsComponent implements OnInit {
     if (!userDetails()) {
       this.userService.getUserProfile().subscribe({
         next: (res: any) => {
-          // this.name = res.fullName;
-          // this.email = res.email;
           this.empId = res.empId;
-          // console.log("Through API")
+          if (this.empId) {
+            this.getTimesheetsForTask(this.taskId, this.empId); // Call API after setting EmpId
+          }
         },
         error: (err: any) =>
           console.log('error while retrieving user profile:\n', err),
       });
     } else {
-      // this.name = userDetails().fullName;
-      // this.email = userDetails().email;
       this.empId = userDetails().empId;
+      if (this.empId) {
+        this.getTimesheetsForTask(this.taskId, this.empId); // Call API after setting EmpId
+      }
     }
 
     this.getTaskDetails(this.taskId);
-    this.getTimesheetsForTask(this.taskId);
+    // this.getTimesheetsForTask(this.taskId, this.empId);
   }
 
-  getTaskDetails(taskId: number) {
+  getTaskDetails(taskId: string) {
     this.isLoading_taskDetails = true;
-    this.http.get(`${this.baseURL}/tasks/details/${taskId}`).subscribe({
+    this.http.get(`${this.baseURL}/task/${taskId}`).subscribe({
       next: (response: any) => {
         this.taskDetails = response;
         console.log('Task Details:', this.taskDetails);
@@ -176,15 +180,55 @@ export class TaskDetailsComponent implements OnInit {
     this.isLoading_taskDetails = false;
   }
 
-  getTimesheetsForTask(taskId: number): void {
-    this.isLoading = true;
-    this.http.get(`${this.baseURL}/tasks/${taskId}/timesheets`).subscribe({
-      next: (response: any) => {
-        // const oneTimeSheetData = response[0];
-        // this.startDate = oneTimeSheetData.startDate;
-        // this.dueDate = oneTimeSheetData.dueDate;
-        // this.billingType = oneTimeSheetData.billingType;
+  // getTimesheetsForTask(taskId: number): void {
+  //   this.isLoading = true;
+  //   this.http.get(`${this.baseURL}/timesheet`).subscribe({
+  //     next: (response: any) => {
+  //       // const oneTimeSheetData = response[0];
+  //       // this.startDate = oneTimeSheetData.startDate;
+  //       // this.dueDate = oneTimeSheetData.dueDate;
+  //       // this.billingType = oneTimeSheetData.billingType;
 
+  //       let timeSheets = response.map((eachSheet: any) => {
+  //         this.totalTimeInMinutes += eachSheet.totalMinutes;
+  //         return {
+  //           ...eachSheet,
+  //           isEditing: false,
+  //           totalMin: eachSheet.totalMinutes % 60,
+  //           totalHours: Math.floor(eachSheet.totalMinutes / 60),
+  //         };
+  //       });
+  //       // this.timesheets = timeSheets;
+  //       this.timesheets = [...timeSheets]; // Create a new array reference
+
+  //       console.log('Timesheets:', this.timesheets);
+  //       this.cdr.detectChanges(); // Force update to reflect changes
+
+  //       this.isLoading = false;
+  //     },
+  //     error: (error: any) => {
+  //       if (error.status === 404) {
+  //         this.timesheets = [];
+  //       } else {
+  //         console.error('Error fetching timesheets:', error);
+  //       }
+  //       this.isLoading = false;
+  //     },
+  //   });
+  // }
+
+
+  getTimesheetsForTask(taskId: string, empId: string): void {
+    if (!empId) return; // Ensure EmpId is available before making request
+
+    this.isLoading = true;
+
+    this.http.get(`${this.baseURL}/timesheet`, {
+      params: { taskId, empId }
+    }).subscribe({
+      next: (response: any) => {
+        this.totalTimeInMinutes = 0; // Reset before calculation
+  
         let timeSheets = response.map((eachSheet: any) => {
           this.totalTimeInMinutes += eachSheet.totalMinutes;
           return {
@@ -194,9 +238,11 @@ export class TaskDetailsComponent implements OnInit {
             totalHours: Math.floor(eachSheet.totalMinutes / 60),
           };
         });
-        this.timesheets = timeSheets;
-
+  
+        this.timesheets = [...timeSheets]; // Create a new array reference
         console.log('Timesheets:', this.timesheets);
+  
+        this.cdr.detectChanges(); // Force update to reflect changes
         this.isLoading = false;
       },
       error: (error: any) => {
@@ -209,6 +255,11 @@ export class TaskDetailsComponent implements OnInit {
       },
     });
   }
+  
+
+
+
+
 
   notesOptions = [
     { value: 'Complex Story Brainstorming', text: 'Complex Story Brainstorming' },
@@ -269,6 +320,8 @@ export class TaskDetailsComponent implements OnInit {
         if (index !== -1) {
           this.timesheets[index].totalMinutes = updatedLog.totalMinutes;
           this.timesheets[index].date = updatedLog.date;
+          this.timesheets[index].notes = updatedLog.notes;
+
         }
         console.log(this.timesheets);
       }

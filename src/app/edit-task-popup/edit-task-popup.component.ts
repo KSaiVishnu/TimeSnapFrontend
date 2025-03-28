@@ -48,8 +48,8 @@ export class EditTaskPopupComponent {
     console.log(data.task);
     this.form = this.formBuilder.group(
       {
-        taskId: [{value: data.task.taskID, disabled: true,}, Validators.required],
-        taskName: [data.task.task, Validators.required],
+        taskId: [{value: data.task.taskId, disabled: true,}, Validators.required],
+        taskName: [data.task.taskName, Validators.required],
         searchTerm: [''],
         startDate: [data.task.startDate.split('T')[0], [Validators.required]],
         dueDate: [data.task.dueDate.split('T')[0], [Validators.required]],
@@ -57,7 +57,7 @@ export class EditTaskPopupComponent {
       },
       { validators: this.dateMatchValidator }
     );
-    this.assigneeList = [...data.task.assignee];
+    this.assigneeList = [...data.task.assignees];
     console.log(this.assigneeList);
   }
 
@@ -98,9 +98,14 @@ export class EditTaskPopupComponent {
 
   onEditTask() {
     let details = {
-      taskID: this.data.task.taskID,
-      task: this.form.value.taskName,
-      assignee: this.assigneeList,
+      taskId: this.data.task.taskId,
+      taskName: this.form.value.taskName,
+      assignee: this.assigneeList.map((each: any) => {
+        return ({
+          assignee: each.fullName,
+          empId: each.empId
+        })
+      }),
       startDate: new Date(this.form.value.startDate),
       dueDate: new Date(this.form.value.dueDate),
       billingType: this.form.value.billingType,
@@ -108,24 +113,24 @@ export class EditTaskPopupComponent {
 
     console.log(details);
 
-    let taskDetails = details.assignee.map((each: any) => {
-      return {
-        task: details.task,
-        taskID: details.taskID,
-        assignee: each.assignee,
-        empId: each.empId,
-        startDate: details.startDate,
-        dueDate: details.dueDate,
-        billingType: details.billingType,
-      };
-    });
+    // let taskDetails = details.assignee.map((each: any) => {
+    //   return {
+    //     task: details.taskName,
+    //     taskId: details.taskId,
+    //     assignee: each.fullName,
+    //     empId: each.empId,
+    //     startDate: details.startDate,
+    //     dueDate: details.dueDate,
+    //     billingType: details.billingType,
+    //   };
+    // });
 
-    console.log(taskDetails);
+    // console.log(taskDetails);
 
-    this.onReset();
+    // this.onReset();
 
     this.http
-      .put(`${this.baseURL}/tasks/update-task`, taskDetails)
+      .put(`${this.baseURL}/tasks/update-task`, details)
       .subscribe({
         next: (res: any) => {
           this.toastr.success('Task Updated!', 'Task Updation Successful');
@@ -188,7 +193,7 @@ export class EditTaskPopupComponent {
   selectAssignee(assignee: any) {
     console.log(assignee);
     this.assigneeList.push({
-      assignee: assignee.userName,
+      fullName: assignee.userName,
       empId: assignee.empId,
     });
     console.log(this.assigneeList);

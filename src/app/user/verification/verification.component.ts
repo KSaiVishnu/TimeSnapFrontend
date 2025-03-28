@@ -7,15 +7,55 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-verification',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './verification.component.html',
-  styleUrl: './verification.component.css',
+  styleUrl: './verification.component.scss',
 })
 export class VerificationComponent {
   constructor(private authService: AuthService, private router: Router,
     private toastr: ToastrService,) {}
   // inputValue: string = "";
   otpValue: string = '';
+
+  otpDigits: string[] = ["", "", "", "", "", ""]
+  isVerifying = false
+
+  @ViewChildren("otpInput") otpInputs: QueryList<ElementRef> | undefined
+
+  onOtpDigitInput(event: any, index: number): void {
+    const input = event.target
+
+    // Add filled class when digit is entered
+    if (input.value) {
+      input.classList.add("filled")
+    } else {
+      input.classList.remove("filled")
+    }
+
+    // Auto-focus next input
+    if (input.value && index < 5) {
+      const inputs = document.getElementsByClassName("otp-digit")
+      if (inputs[index + 1]) {
+        ;(inputs[index + 1] as HTMLInputElement).focus()
+      }
+    }
+
+    // Handle backspace
+    if (event.key === "Backspace" && !input.value && index > 0) {
+      const inputs = document.getElementsByClassName("otp-digit")
+      if (inputs[index - 1]) {
+        ;(inputs[index - 1] as HTMLInputElement).focus()
+      }
+    }
+  }
+
+  isOtpComplete(): boolean {
+    return this.otpDigits.every((digit) => digit !== "")
+  }
+
+  getOtpValue(): string {
+    return this.otpDigits.join("")
+  }
 
   onVerifyOtp() {
     console.log(this.otpValue);

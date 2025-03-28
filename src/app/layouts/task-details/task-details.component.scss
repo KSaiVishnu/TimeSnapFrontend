@@ -1,0 +1,594 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sriracha&display=swap');
+// Modern variables
+$primary-color: #4a6cfa;
+$secondary-color: #f8f9fa;
+$text-primary: #2c3e50;
+$text-secondary: #7f8c8d;
+$success-color: #10b981;
+$danger-color: #ef4444;
+$border-radius: 12px;
+$box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+.task-details-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.task-card {
+  background-color: white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  overflow: hidden;
+  border: none;
+  margin-top: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.task-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $text-primary;
+  color: #323033;
+  font-family: "Nunito", sans-serif;
+  margin: 0;
+  padding-bottom: 16px;
+}
+
+.task-status {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-billable {
+  background-color: rgba($success-color, 0.1);
+  color: $success-color;
+}
+
+.status-non-billable {
+  background-color: rgba($danger-color, 0.1);
+  color: $danger-color;
+}
+
+.task-content {
+  padding: 24px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  color: $text-secondary;
+  color: $text-primary;
+
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 1.125rem;
+  color: $text-primary;
+  color: $text-secondary;
+
+  font-weight: 500;
+}
+
+// Skeleton loader
+.skeleton-loader {
+  background-color: white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  overflow: hidden;
+  padding: 24px;
+}
+
+.skeleton-header {
+  height: 32px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.skeleton-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.skeleton-line {
+  height: 48px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes loading {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+// Responsive design
+@media screen and (max-width: 768px) {
+  .task-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .task-status {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+
+
+
+
+
+
+
+// Modern variables
+$primary-color: #4a6cfa;
+$primary-light: rgba($primary-color, 0.1);
+$primary-dark: darken($primary-color, 10%);
+$success-color: #10b981;
+$success-dark: darken($success-color, 10%);
+$text-primary: #2c3e50;
+$text-secondary: #64748b;
+$border-color: #e2e8f0;
+$background-color: #ffffff;
+$card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$border-radius: 12px;
+$input-radius: 8px;
+
+.add-log-container {
+  width: 100%;
+  padding: 16px;
+}
+
+.add-log-card {
+  background-color: $background-color;
+  border-radius: $border-radius;
+  box-shadow: $card-shadow;
+  padding: 24px;
+  border: 1px solid $border-color;
+}
+
+.add-log-title {
+  color: $text-primary;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $border-color;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  color: $text-secondary;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 1rem;
+  color: $text-primary;
+  background-color: #f8fafc;
+  border: 1px solid $border-color;
+  border-radius: $input-radius;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  }
+  
+  &:hover:not(:focus) {
+    border-color: darken($border-color, 10%);
+  }
+}
+
+.date-input {
+  font-family: inherit;
+}
+
+.time-input-group {
+  display: flex;
+  align-items: center;
+}
+
+.time-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.time-input {
+  text-align: center;
+  padding-bottom: 24px;
+}
+
+.time-input-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: $text-secondary;
+  padding-bottom: 4px;
+}
+
+.time-separator {
+  margin: 0 12px;
+  font-size: 1.5rem;
+  color: $text-secondary;
+  align-self: flex-start;
+  padding-top: 8px;
+}
+
+.form-actions {
+  margin-top: 28px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $success-color;
+  color: white;
+  border: none;
+  border-radius: $input-radius;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $success-dark;
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.save-icon {
+  margin-right: 8px;
+  font-size: 1.125rem;
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .time-input-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .time-separator {
+    margin: 12px 0;
+    align-self: center;
+  }
+  
+  .time-input-wrapper {
+    width: 100%;
+  }
+}
+
+
+
+
+
+
+
+
+// Modern variables - matching previous components
+$primary-color: #4a6cfa;
+$primary-light: rgba($primary-color, 0.1);
+$primary-dark: darken($primary-color, 10%);
+$success-color: #10b981;
+$success-dark: darken($success-color, 10%);
+$danger-color: #ef4444;
+$danger-dark: darken($danger-color, 10%);
+$warning-color: #f59e0b;
+$warning-dark: darken($warning-color, 10%);
+$text-primary: #2c3e50;
+$text-secondary: #64748b;
+$border-color: #e2e8f0;
+$background-color: #ffffff;
+$card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$border-radius: 12px;
+$input-radius: 8px;
+
+.timesheet-container {
+  width: 100%;
+  padding: 16px;
+}
+
+.timesheet-card {
+  background-color: $background-color;
+  border-radius: $border-radius;
+  box-shadow: $card-shadow;
+  overflow: hidden;
+  border: 1px solid $border-color;
+}
+
+.timesheet-title {
+  color: $text-primary;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 24px 24px 16px;
+  margin: 0;
+  border-bottom: 1px solid $border-color;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.timesheet-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  
+  // Override Material styles
+  &.mat-table {
+    background: transparent;
+  }
+  
+  th.mat-header-cell {
+    color: $text-secondary;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 16px 24px;
+    border-bottom: 1px solid $border-color;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  td.mat-cell {
+    color: $text-primary;
+    font-size: 0.9375rem;
+    padding: 16px 24px;
+    border-bottom: 1px solid $border-color;
+    vertical-align: middle;
+  }
+  
+  tr.mat-row:hover {
+    background-color: rgba($primary-color, 0.02);
+  }
+  
+  tr.mat-row:last-child td.mat-cell {
+    border-bottom: none;
+  }
+}
+
+.cell-content {
+  display: block;
+  padding: 8px 0;
+}
+
+.notes-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Edit mode styles
+.edit-date-container,
+.edit-time-container {
+  padding: 8px 0;
+}
+
+// .form-input {
+//   width: 100%;
+//   padding: 8px 12px;
+//   font-size: 0.9375rem;
+//   color: $text-primary;
+//   background-color: #f8fafc;
+//   border: 1px solid $border-color;
+//   border-radius: $input-radius;
+//   transition: all 0.2s ease;
+  
+//   &:focus {
+//     outline: none;
+//     border-color: $primary-color;
+//     box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+//   }
+// }
+
+.date-input {
+  font-family: inherit;
+  min-width: 140px;
+}
+
+.time-input-group {
+  display: flex;
+  align-items: center;
+}
+
+.time-input-wrapper {
+  flex: 1;
+}
+
+.time-input {
+  text-align: center;
+  min-width: 60px;
+}
+
+.time-separator {
+  margin: 0 8px;
+  font-size: 1.25rem;
+  color: $text-secondary;
+}
+
+// Action buttons
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-button,
+.save-button,
+.delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: $input-radius;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.edit-button {
+  background-color: $primary-light;
+  color: $primary-color;
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.2);
+  }
+}
+
+.save-button {
+  background-color: $success-color;
+  color: white;
+  
+  &:hover {
+    background-color: $success-dark;
+  }
+}
+
+.delete-button {
+  background-color: rgba($danger-color, 0.1);
+  color: $danger-color;
+  
+  &:hover {
+    background-color: rgba($danger-color, 0.2);
+  }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+}
+
+.button-icon {
+  margin-right: 6px;
+  font-size: 1rem;
+}
+
+// Empty state
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background-color: $background-color;
+  border-radius: $border-radius;
+  box-shadow: $card-shadow;
+  border: 1px solid $border-color;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.empty-state-title {
+  color: $text-primary;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.empty-state-message {
+  color: $text-secondary;
+  font-size: 1rem;
+  max-width: 300px;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .timesheet-table {
+    th.mat-header-cell,
+    td.mat-cell {
+      padding: 12px 16px;
+    }
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .edit-button,
+  .save-button,
+  .delete-button {
+    width: 100%;
+  }
+}
+

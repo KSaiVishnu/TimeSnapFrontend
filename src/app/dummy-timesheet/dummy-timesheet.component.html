@@ -1,0 +1,47 @@
+<div>
+    <h2>Timesheet Logs</h2>
+  
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Emp ID</th>
+          <th>Task Name</th>
+          <th>Date</th>
+          <th>Billing Type</th>
+          <th>Timesheet ID</th>
+          <th>Total Minutes</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let user of timesheets">
+          <ng-container *ngFor="let sheet of user.timesheets">
+            <tr>
+              <td>{{ sheet.userName }}</td>
+              <td>{{ sheet.empId }}</td>
+              <td>{{ sheet.taskName }}</td>
+              <td>{{ sheet.date | date }}</td>
+              <td>{{ sheet.billingType }}</td>
+              <td>{{ sheet.timesheetId }}</td>
+              <td>{{ sheet.totalMinutes }}</td>
+              <td>{{ sheet.notes }}</td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
+  
+    <!-- Pagination Controls -->
+    <div style="margin-top: 10px;">
+      <button (click)="prevPage()" [disabled]="pageNumber === 1">Prev</button>
+      <span>Page {{ pageNumber }}</span>
+      <button (click)="nextPage()" [disabled]="pageNumber * pageSize >= totalUsers">Next</button>
+    </div>
+  
+    <!-- Error Message Display -->
+    <div *ngIf="errorMessage" style="color: red; margin-top: 10px;">
+      {{ errorMessage }}
+    </div>
+  </div>
+  

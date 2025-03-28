@@ -158,8 +158,8 @@ export class AddTaskPopupComponent {
 
   onAddTask() {
     let details = {
-      taskID: this.form.value.taskId,
-      task: this.form.value.taskName,
+      taskId: this.form.value.taskId,
+      taskName: this.form.value.taskName,
       assignee: this.assigneeList,
       startDate: new Date(this.form.value.startDate),
       dueDate: new Date(this.form.value.dueDate),
@@ -183,8 +183,8 @@ export class AddTaskPopupComponent {
 
     let taskDetails = details.assignee.map((each: any) => {
       return {
-        task: details.task,
-        taskID: details.taskID,
+        taskName: details.taskName,
+        taskId: details.taskId,
         assignee: each.assignee,
         empId: each.empId,
         startDate: details.startDate,
@@ -197,9 +197,10 @@ export class AddTaskPopupComponent {
     // this.onReset();
 
     if (this.toUpdateTask) {
+      console.log(details);
       console.log(taskDetails);
       this.http
-        .put(`${this.baseURL}/tasks/update-task`, taskDetails)
+        .put(`${this.baseURL}/tasks/update-task`, details)
         .subscribe({
           next: (res: any) => {
             this.toastr.success('Task Updated!', 'Task Updation Successful');
@@ -208,14 +209,14 @@ export class AddTaskPopupComponent {
             console.log(res);
             this.onReset();
           },
-          error: (err: any) => console.log('error while adding task:\n', err),
+          error: (err: any) => console.log('error while updating task:\n', err),
         });
 
     } else {
       console.log("ADD task")
       this.onReset();
 
-      this.http.post(`${this.baseURL}/tasks/upload`, taskDetails).subscribe({
+      this.http.post(`${this.baseURL}/tasks/add-task`, details).subscribe({
         next: (res: any) => {
           // this.onReset();
           this.toastr.success('New Task created!', 'Task Creation Successful');
@@ -230,21 +231,21 @@ export class AddTaskPopupComponent {
   checkTaskId() {
     const taskId = this.form.get('taskId')?.value;
     if (taskId) {
-      this.http.get<any>(`${this.baseURL}/tasks/users/${taskId}`).subscribe({
+      this.http.get<any>(`${this.baseURL}/task-details/${taskId}`).subscribe({
         next: (res: any) => {
           console.log(res);
 
-          if (res['taskID'] != null || res['taskID'] != undefined) {
+          if (res['taskId'] != null || res['taskId'] != undefined) {
             this.toUpdateTask = true;
 
             this.form.patchValue({
-              taskName: res.task,
+              taskName: res.taskName,
               dueDate: res.dueDate.split('T')[0],
               startDate: res.startDate.split('T')[0],
               billingType: res.billingType,
             });
             // this.assigneeList = [...res.assignee]
-            console.log(res.assignee);
+            // console.log(res.assignee);
 
             // if (this.data.isEmployee) {
             //   if (!res.assignee.empId.includes(this.data.userDetails.empId)) {
@@ -256,15 +257,16 @@ export class AddTaskPopupComponent {
             //   }
             // }
 
-            const transformedData = res.assignee.assignee.map(
-              (name: any, index: any) => ({
-                assignee: name,
-                empId: res.assignee.empId[index],
-              })
-            );
+            // const transformedData = res.assignee.assignee.map(
+            //   (name: any, index: any) => ({
+            //     assignee: name,
+            //     empId: res.assignee.empId[index],
+            //   })
+            // );
 
-            console.log(transformedData, this.toUpdateTask);
-            this.assigneeList = transformedData;
+            // console.log(transformedData, this.toUpdateTask);
+            // this.assigneeList = transformedData;
+            this.assigneeList = res.assignedEmployees;
           } else {
             this.toUpdateTask = false;
 
@@ -315,6 +317,8 @@ export class AddTaskPopupComponent {
       this.filteredAssignees = [];
       return;
     }
+
+    console.log(this.data.allAssignees)
 
     this.filteredAssignees = this.data.allAssignees.filter(
       (user: any) =>

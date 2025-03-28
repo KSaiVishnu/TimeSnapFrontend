@@ -47,4 +47,42 @@
   .add-margin {
     margin-top: 10px; /* Adjust as needed */
   }
+
+  /* .signin-heading{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+    background: linear-gradient(to bottom right, #4A90E2, #D0021B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2rem;
+    font-weight: bold; 
+  } */
+
+
+
+
+
+
+
+  .btn-purple {
+    background-color: #9333ea;
+    color: white;
+    width: 100%;
+    border: none;
+  }
   
+  .btn-purple:hover {
+    background-color: #7e22ce;
+  }
+  
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #d1d5db;
+  }
+  
+  ::ng-deep .mat-form-field.mat-focused .mat-form-field-outline {
+    color: #9333ea;
+  }
+  
+  ::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #9333ea;
+  }
