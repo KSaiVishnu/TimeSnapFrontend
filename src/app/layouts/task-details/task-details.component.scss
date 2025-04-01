@@ -1,4 +1,542 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sriracha&display=swap');
+// // _variables.scss (you can import this in each component)
+// $primary: #3a7bd5;
+// $primary-light: #6fa1ff;
+// $primary-dark: #0d47a1;
+// $secondary: #00bcd4;
+// $accent: #ff5722;
+// $success: #4caf50;
+// $warning: #ffc107;
+// $danger: #f44336;
+// $light: #f5f7fa;
+// $dark: #2c3e50;
+// $gray-100: #f8f9fa;
+// $gray-200: #e9ecef;
+// $gray-300: #dee2e6;
+// $gray-400: #ced4da;
+// $gray-500: #adb5bd;
+// $gray-600: #6c757d;
+// $gray-700: #495057;
+// $gray-800: #343a40;
+// $gray-900: #212529;
+
+// // Typography
+// $font-family-base: 'Roboto', 'Segoe UI', sans-serif;
+// $font-family-heading: 'Montserrat', 'Segoe UI', sans-serif;
+
+
+
+// // styles.scss
+// @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+// body {
+//   font-family: $font-family-base;
+//   background-color: $light;
+//   color: $gray-800;
+//   line-height: 1.6;
+// }
+
+// h1, h2, h3, h4, h5, h6 {
+//   font-family: $font-family-heading;
+//   font-weight: 600;
+//   color: $dark;
+//   margin-top: 0;
+// }
+
+// .mat-card {
+//   border-radius: 12px !important;
+//   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+//   border: none !important;
+// }
+
+// .mat-form-field-appearance-outline .mat-form-field-outline {
+//   color: $gray-300;
+// }
+
+// .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+//   color: $primary;
+// }
+
+// .mat-form-field-appearance-outline .mat-form-field-infix {
+//   padding: 0.8em 0 0.8em 0;
+// }
+
+// .mat-raised-button.mat-primary {
+//   background-color: $primary;
+// }
+
+// .mat-raised-button.mat-accent {
+//   background-color: $secondary;
+// }
+
+// .mat-spinner circle {
+//   stroke: $primary !important;
+// }
+
+// .flex-container {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+// // Custom loading animation
+// .mat-spinner {
+//   position: relative;
+  
+//   &::before {
+//     content: '';
+//     position: absolute;
+//     width: 80%;
+//     height: 80%;
+//     top: 10%;
+//     left: 10%;
+//     border-radius: 50%;
+//     border: 2px solid transparent;
+//     border-top-color: $primary-light;
+//     animation: spinner-secondary 1.5s linear infinite;
+//   }
+// }
+
+// @keyframes spinner-secondary {
+//   0% { transform: rotate(0deg); }
+//   100% { transform: rotate(360deg); }
+// }
+
+
+
+// // task-details.component.scss
+// .task-details-main-container {
+//   font-family: $font-family-base;
+//   color: $gray-800;
+  
+//   .task-card {
+//     background: white;
+//     border-radius: 12px;
+//     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+//     overflow: hidden;
+//     transition: all 0.3s ease;
+//     border: none;
+    
+//     &:hover {
+//       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+//     }
+    
+//     .task-header {
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: center;
+//       padding: 20px 24px;
+//       border-bottom: 1px solid $gray-200;
+      
+//       .task-title {
+//         font-family: $font-family-heading;
+//         font-weight: 600;
+//         font-size: 1.5rem;
+//         color: $dark;
+//         margin: 0;
+//       }
+      
+//       .task-status {
+//         padding: 6px 12px;
+//         border-radius: 20px;
+//         font-size: 0.8rem;
+//         font-weight: 500;
+//         letter-spacing: 0.5px;
+//         text-transform: uppercase;
+        
+//         &.status-billable {
+//           background-color: rgba($success, 0.15);
+//           color: darken($success, 10%);
+//         }
+        
+//         &.status-non-billable {
+//           background-color: rgba($gray-500, 0.15);
+//           color: $gray-700;
+//         }
+//       }
+//     }
+    
+//     .task-content {
+//       padding: 20px 24px;
+      
+//       .info-grid {
+//         display: grid;
+//         grid-template-columns: repeat(3, 1fr);
+//         gap: 20px;
+        
+//         @media (max-width: 768px) {
+//           grid-template-columns: repeat(2, 1fr);
+//         }
+        
+//         @media (max-width: 576px) {
+//           grid-template-columns: 1fr;
+//         }
+        
+//         .info-item {
+//           .info-label {
+//             font-size: 0.85rem;
+//             color: $gray-600;
+//             margin-bottom: 5px;
+//             text-transform: uppercase;
+//             letter-spacing: 0.5px;
+//           }
+          
+//           .info-value {
+//             font-size: 1.1rem;
+//             font-weight: 500;
+//             color: $gray-800;
+//           }
+//         }
+//       }
+//     }
+//   }
+  
+//   .skeleton-card {
+//     height: 200px;
+//     background: linear-gradient(90deg, $gray-200 25%, $gray-300 50%, $gray-200 75%);
+//     background-size: 200% 100%;
+//     animation: loading 1.5s infinite;
+//     border-radius: 12px;
+//   }
+  
+//   .add-log-container {
+//     margin-top: 20px;
+    
+//     .add-log-card {
+//       background: white;
+//       border-radius: 12px;
+//       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+//       padding: 24px;
+      
+//       .add-log-title {
+//         font-family: $font-family-heading;
+//         font-weight: 600;
+//         font-size: 1.25rem;
+//         color: $dark;
+//         margin: 0 0 20px 0;
+//         padding-bottom: 12px;
+//         border-bottom: 1px solid $gray-200;
+//       }
+      
+//       .form-group {
+//         margin-bottom: 20px;
+        
+//         .form-label {
+//           display: block;
+//           font-size: 0.9rem;
+//           font-weight: 500;
+//           color: $gray-700;
+//           margin-bottom: 8px;
+//         }
+        
+//         .input-wrapper {
+//           position: relative;
+          
+//           .form-input {
+//             width: 100%;
+//             padding: 10px 14px;
+//             border: 1px solid $gray-300;
+//             border-radius: 8px;
+//             font-size: 1rem;
+//             transition: all 0.2s ease;
+//             background-color: white;
+            
+//             &:focus {
+//               outline: none;
+//               border-color: $primary;
+//               box-shadow: 0 0 0 3px rgba($primary, 0.15);
+//             }
+            
+//             &.date-input {
+//               padding-right: 30px;
+//             }
+//           }
+//         }
+        
+//         .time-input-group {
+//           display: flex;
+//           align-items: center;
+          
+//           .time-input-wrapper {
+//             flex: 1;
+//             position: relative;
+            
+//             .time-input {
+//               width: 100%;
+//               padding: 10px 14px;
+//               border: 1px solid $gray-300;
+//               border-radius: 8px;
+//               font-size: 1rem;
+//               transition: all 0.2s ease;
+              
+//               &:focus {
+//                 outline: none;
+//                 border-color: $primary;
+//                 box-shadow: 0 0 0 3px rgba($primary, 0.15);
+//               }
+//             }
+            
+//             .time-input-label {
+//               position: absolute;
+//               right: 15px;
+//               top: 50%;
+//               transform: translateY(-50%);
+//               font-size: 0.8rem;
+//               color: $gray-600;
+//               pointer-events: none;
+//             }
+//           }
+          
+//           .time-separator {
+//             margin: 0 10px;
+//             font-size: 1.2rem;
+//             font-weight: 500;
+//             color: $gray-600;
+//           }
+//         }
+//       }
+      
+//       .form-actions {
+//         margin-top: 24px;
+        
+//         .save-button {
+//           display: flex;
+//           align-items: center;
+//           justify-content: center;
+//           width: 100%;
+//           padding: 12px;
+//           background-color: $primary;
+//           color: white;
+//           border: none;
+//           border-radius: 8px;
+//           font-size: 1rem;
+//           font-weight: 500;
+//           cursor: pointer;
+//           transition: all 0.2s ease;
+          
+//           &:hover {
+//             background-color: darken($primary, 5%);
+//           }
+          
+//           .save-icon {
+//             margin-right: 8px;
+//             font-size: 1.1rem;
+//           }
+//         }
+//       }
+//     }
+//   }
+  
+//   .timesheet-container {
+//     margin-top: 40px;
+    
+//     .timesheet-card {
+//       background: white;
+//       border-radius: 12px;
+//       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+//       overflow: hidden;
+      
+//       .timesheet-title {
+//         font-family: $font-family-heading;
+//         font-weight: 600;
+//         font-size: 1.25rem;
+//         color: $dark;
+//         margin: 0;
+//         padding: 20px 24px;
+//         border-bottom: 1px solid $gray-200;
+//       }
+      
+//       .table-responsive {
+//         overflow-x: auto;
+        
+//         .timesheet-table {
+//           width: 100%;
+//           border-collapse: separate;
+//           border-spacing: 0;
+          
+//           th {
+//             background-color: $gray-100;
+//             color: $gray-700;
+//             font-weight: 600;
+//             font-size: 0.85rem;
+//             text-transform: uppercase;
+//             letter-spacing: 0.5px;
+//             padding: 16px 20px;
+//             text-align: left;
+//             border-bottom: 1px solid $gray-200;
+//           }
+          
+//           td {
+//             padding: 16px 20px;
+//             border-bottom: 1px solid $gray-200;
+//             color: $gray-800;
+//             font-size: 0.95rem;
+            
+//             .cell-content {
+//               display: block;
+              
+//               &.notes-cell {
+//                 max-width: 200px;
+//                 white-space: nowrap;
+//                 overflow: hidden;
+//                 text-overflow: ellipsis;
+//               }
+//             }
+            
+//             .edit-date-container, .edit-time-container {
+//               .form-input {
+//                 width: 100%;
+//                 padding: 8px 12px;
+//                 border: 1px solid $gray-300;
+//                 border-radius: 6px;
+//                 font-size: 0.95rem;
+                
+//                 &:focus {
+//                   outline: none;
+//                   border-color: $primary;
+//                   box-shadow: 0 0 0 3px rgba($primary, 0.15);
+//                 }
+//               }
+              
+//               .time-input-group {
+//                 display: flex;
+//                 align-items: center;
+                
+//                 .time-input-wrapper {
+//                   flex: 1;
+                  
+//                   .time-input {
+//                     width: 100%;
+//                     padding: 8px 12px;
+//                     border: 1px solid $gray-300;
+//                     border-radius: 6px;
+//                     font-size: 0.95rem;
+                    
+//                     &:focus {
+//                       outline: none;
+//                       border-color: $primary;
+//                       box-shadow: 0 0 0 3px rgba($primary, 0.15);
+//                     }
+//                   }
+//                 }
+                
+//                 .time-separator {
+//                   margin: 0 8px;
+//                   font-size: 1.1rem;
+//                   font-weight: 500;
+//                   color: $gray-600;
+//                 }
+//               }
+//             }
+            
+//             .action-buttons {
+//               display: flex;
+//               gap: 8px;
+              
+//               button {
+//                 display: flex;
+//                 align-items: center;
+//                 padding: 6px 12px;
+//                 border: none;
+//                 border-radius: 6px;
+//                 font-size: 0.85rem;
+//                 font-weight: 500;
+//                 cursor: pointer;
+//                 transition: all 0.2s ease;
+                
+//                 .button-content {
+//                   display: flex;
+//                   align-items: center;
+                  
+//                   .button-icon {
+//                     margin-right: 6px;
+//                     font-size: 0.9rem;
+//                   }
+//                 }
+                
+//                 &.edit-button {
+//                   background-color: rgba($primary, 0.1);
+//                   color: $primary;
+                  
+//                   &:hover {
+//                     background-color: rgba($primary, 0.2);
+//                   }
+//                 }
+                
+//                 &.save-button {
+//                   background-color: rgba($success, 0.1);
+//                   color: $success;
+                  
+//                   &:hover {
+//                     background-color: rgba($success, 0.2);
+//                   }
+//                 }
+                
+//                 &.delete-button {
+//                   background-color: rgba($danger, 0.1);
+//                   color: $danger;
+                  
+//                   &:hover {
+//                     background-color: rgba($danger, 0.2);
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+  
+//   .empty-state {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     padding: 60px 20px;
+//     background-color: white;
+//     border-radius: 12px;
+//     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+//     margin-top: 40px;
+    
+//     .empty-state-icon {
+//       font-size: 3rem;
+//       color: $gray-400;
+//       margin-bottom: 20px;
+//     }
+    
+//     .empty-state-title {
+//       font-family: $font-family-heading;
+//       font-weight: 600;
+//       font-size: 1.5rem;
+//       color: $gray-700;
+//       margin: 0 0 10px 0;
+//     }
+    
+//     .empty-state-message {
+//       font-size: 1rem;
+//       color: $gray-600;
+//       margin: 0;
+//       text-align: center;
+//     }
+//   }
+// }
+
+// @keyframes loading {
+//   0% { background-position: 200% 0; }
+//   100% { background-position: -200% 0; }
+// }
+
+
+
+
+
+
+
+
+
+
+
+// @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Sriracha&display=swap');
 // Modern variables
 $primary-color: #4a6cfa;
 $secondary-color: #f8f9fa;
@@ -177,7 +715,7 @@ $input-radius: 8px;
 
 .add-log-container {
   width: 100%;
-  padding: 16px;
+  padding: 24px 0px 0px 8px;
 }
 
 .add-log-card {
@@ -251,6 +789,9 @@ $input-radius: 8px;
 .time-input {
   text-align: center;
   padding-bottom: 24px;
+}
+.time-input-onedit{
+  text-align: center;
 }
 
 .time-input-label {
@@ -351,7 +892,7 @@ $input-radius: 8px;
 
 .timesheet-container {
   width: 100%;
-  padding: 16px;
+  padding: 18px 0px 0px 0px;
 }
 
 .timesheet-card {
@@ -592,3 +1133,52 @@ $input-radius: 8px;
   }
 }
 
+
+
+.editing-mode{
+  min-width: 200px
+}
+
+
+/* Pagination buttons */
+.pagination-buttons-container{
+  display: flex;
+  padding: 20px;
+}
+.pagination-buttons{
+  margin-left: auto;
+}
+
+.pagination-button {
+  background: white;
+  border: 1px solid #d1c4e9;
+  color: #5e35b1;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 10px;
+  box-shadow: 0 2px 5px rgba(94, 53, 177, 0.05);
+}
+
+.pagination-button:hover:not([disabled]) {
+  background: #f5f0ff;
+  border-color: #7c4dff;
+}
+
+.pagination-button:active:not([disabled]) {
+  transform: translateY(1px);
+}
+
+.pagination-button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {  
+  .pagination-button {
+    padding: 8px 16px;
+  }
+}

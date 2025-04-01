@@ -12,12 +12,14 @@ import { claimReq } from './shared/utils/claimReq-utils';
 import { VerificationComponent } from './user/verification/verification.component';
 import { TasksComponent } from './layouts/tasks/tasks.component';
 import { TaskDetailsComponent } from './layouts/task-details/task-details.component';
-import { FileUploadComponent } from './authorizeDemo/admin/file-upload/file-upload.component';
+import { TaskUploadComponent } from './authorizeDemo/admin/import/task-upload/task-upload.component';
 import { BillableComponent } from './authorizeDemo/admin/billable/billable.component';
 import { NonBillableComponent } from './authorizeDemo/admin/non-billable/non-billable.component';
 import { EmployeesComponent } from './authorizeDemo/admin/employees/employees.component';
 import { AccountComponent } from './account/account.component';
-import { WorklogLeavesComponent } from './authorizeDemo/admin/worklog-leaves/worklog-leaves.component';
+import { WorklogLeavesComponent } from './authorizeDemo/admin/import/worklog-leaves/worklog-leaves.component';
+import { ReportsComponent } from './authorizeDemo/admin/reports/reports.component';
+import { ImportComponent } from './authorizeDemo/admin/import/import.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/signin', pathMatch: 'full' },
@@ -63,11 +65,12 @@ export const routes: Routes = [
           path: 'admin', component: AdminComponent, data: { claimReq: claimReq.admin },
           children: [
             // Define admin-specific child routes here
-            { path: 'upload', component: FileUploadComponent },
+            { path: 'upload', component: ImportComponent },
             { path: 'billable', component: BillableComponent },
             { path: 'non-billable', component: NonBillableComponent },
             { path: 'all-employees', component: EmployeesComponent },
             { path: 'worklog-leaves', component: WorklogLeavesComponent },
+            { path: 'reports', component: ReportsComponent },
 
             { path: '', redirectTo: 'upload', pathMatch: 'full' } // Default admin route
           ]

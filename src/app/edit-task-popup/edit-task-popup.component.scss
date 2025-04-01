@@ -1,0 +1,257 @@
+// Variables
+$primary-color: #6F43C0;
+$primary-light: #9168E0;
+$primary-dark: #5d37a3;
+$secondary-color: #43c069;
+$background-color: #f9fafc;
+$foreground-color: #333333;
+$muted-color: #666666;
+$border-color: #e0e0e0;
+$card-color: #ffffff;
+$error-color: #e53935;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+// Mixins
+@mixin card-shadow {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+@mixin transition {
+  transition: all 0.2s ease;
+}
+
+// Component Styles
+.task-popup-container {
+  background-color: $card-color;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 700px;
+  @include card-shadow;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $foreground-color;
+    margin: 0;
+  }
+}
+
+.close-button {
+  background: none;
+  border: 1px solid $primary-light;
+  color: $muted-color;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  @include transition;
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+  }
+  
+  i {
+    font-size: 14px;
+  }
+}
+
+.task-form {
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -12px;
+    
+    .form-group {
+      flex: 1;
+      min-width: 250px;
+      padding: 0 12px;
+      margin-bottom: 20px;
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+    
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: $foreground-color;
+      margin-bottom: 8px;
+    }
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: $foreground-color;
+    background-color: $background-color;
+    @include transition;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+    
+    &[readonly] {
+      background-color: lighten($border-color, 5%);
+    }
+  }
+  
+  .error-message {
+    color: $error-color;
+    font-size: 0.8rem;
+    margin-top: 6px;
+  }
+  
+  .required-indicator {
+    color: $error-color;
+  }
+}
+
+// Assignee section
+.assignee-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.assignee-tag {
+  display: flex;
+  align-items: center;
+  background-color: rgba($primary-color, 0.1);
+  color: $primary-color;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  
+  .remove-assignee {
+    background: none;
+    border: none;
+    color: $primary-color;
+    margin-left: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    
+    &:hover {
+      background-color: rgba($primary-color, 0.2);
+    }
+    
+    i {
+      font-size: 10px;
+    }
+  }
+}
+
+.search-container {
+  position: relative;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: $card-color;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  @include card-shadow;
+}
+
+.suggestion-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  @include transition;
+  
+  &:hover {
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+// Form actions
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  @include transition;
+  border: none;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-reset {
+  background-color: transparent;
+  border: 1px solid $primary-color;
+  color: $primary-color;
+  
+  &:hover:not(:disabled) {
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+.btn-update {
+  background-color: $primary-color;
+  color: white;
+  box-shadow: 0 4px 12px rgba($primary-color, 0.2);
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-dark;
+    transform: translateY(-2px);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    
+    .form-group {
+      width: 100%;
+    }
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+}

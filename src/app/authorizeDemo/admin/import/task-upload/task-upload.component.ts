@@ -5,16 +5,16 @@ import { FormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 
 import { v4 as uuidv4 } from 'uuid';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'app-file-upload',
+  selector: 'app-task-upload',
   imports: [FormsModule, CommonModule],
-  templateUrl: './file-upload.component.html',
-  styleUrl: './file-upload.component.css',
+  templateUrl: './task-upload.component.html',
+  styleUrl: './task-upload.component.scss',
 })
 
-export class FileUploadComponent {
+export class TaskUploadComponent {
   files: File[] = [];
   parsedData: any[] = [];
 

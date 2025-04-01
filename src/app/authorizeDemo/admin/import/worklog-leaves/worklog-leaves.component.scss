@@ -1,0 +1,133 @@
+/* worklog_leaves.component.scss */
+$font-family-heading: 'Montserrat', 'Segoe UI', sans-serif;
+$dark: #2c3e50;
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-heading;
+  font-weight: 600;
+  color: $dark;
+  margin-top: 0;
+}
+
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  
+  .dropzone {
+    width: 100%;
+    min-height: 250px;
+    border: 2px dashed #6c5ce7;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    cursor: pointer;
+  }
+  
+  .dropzone.active {
+    border-color: #3498db;
+    background-color: rgba(108, 92, 231, 0.05);
+  }
+  
+  .upload-icon {
+    font-size: 3rem;
+    color: #6c5ce7;
+    margin-bottom: 1rem;
+  }
+  
+  .dropzone h3 {
+    margin: 0.5rem 0;
+    color: #2d3436;
+    font-weight: 600;
+  }
+  
+  .dropzone p {
+    color: #636e72;
+    margin: 0.5rem 0;
+  }
+  
+  .file-input-label {
+    background-color: #6c5ce7;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 1rem 0;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+  
+  .file-input-label:hover {
+    background-color: #5649c0;
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .selected-file {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #e2e8f0;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .selected-file span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .clear-btn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .upload-btn {
+    margin-top: 1.5rem;
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .upload-btn:hover:not(:disabled) {
+    background-color: #5649c0;
+  }
+  
+  .upload-btn:disabled {
+    background-color: #b2bec3;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    .dropzone {
+      min-height: 200px;
+      padding: 1.5rem;
+    }
+    
+    .upload-icon {
+      font-size: 2.5rem;
+    }
+  }

@@ -13,22 +13,31 @@ import { AuthService } from '../../shared/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { TOKEN_KEY } from '../../shared/constants';
 import { error } from 'node:console';
-import { GoogleLoginComponent } from "../google-login/google-login.component";
+import { GoogleLoginComponent } from '../google-login/google-login.component';
 
-import {ChangeDetectionStrategy, signal} from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
+import { ChangeDetectionStrategy, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
-
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import { FormsModule} from '@angular/forms';
-import {merge} from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { merge } from 'rxjs';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, GoogleLoginComponent, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    GoogleLoginComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    FormsModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,19 +57,18 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
-    
+
     merge(
       this.form.controls['email'].statusChanges,
       this.form.controls['email'].valueChanges
     )
-    .pipe(takeUntilDestroyed())
-    .subscribe(() => this.updateErrorMessage());
-    
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.updateErrorMessage());
   }
 
   updateErrorMessage() {
     const emailControl = this.form.controls['email'];
-  
+
     if (emailControl.hasError('required')) {
       this.errorMessage.set('You must enter a value');
     } else if (emailControl.hasError('email')) {
@@ -69,7 +77,6 @@ export class LoginComponent implements OnInit {
       this.errorMessage.set('');
     }
   }
-  
 
   ngOnInit(): void {
     if (this.service.getToken()) {
@@ -82,7 +89,6 @@ export class LoginComponent implements OnInit {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  
 
   // ngAfterViewInit(): void {
   //   if (typeof google !== 'undefined') {
@@ -109,7 +115,6 @@ export class LoginComponent implements OnInit {
   //   }
   // }
 
-
   ngAfterViewInit(): void {
     this.loadGoogleAPI();
   }
@@ -133,16 +138,21 @@ export class LoginComponent implements OnInit {
       client_id:
         '257848338595-hs3vnsefa2mpgq2esjk6clpdq8pu062v.apps.googleusercontent.com',
       callback: (res: any) => this.handleGoogleLogin(res),
-      ux_mode: "popup"  // Open login in a popup window
+      ux_mode: 'popup', // Open login in a popup window
     });
 
     // Render button if element exists
     const button = document.getElementById('google-button');
     if (button) {
-      google.accounts.id.renderButton(button, {
-        width: 300,
-      });
+      google.accounts.id.renderButton(button, {});
     }
+
+    // const button = document.getElementById('google-button');
+    // if (button) {
+    //   button.addEventListener('click', () => {
+    //     google.accounts.id.prompt(); // Opens Google sign-in popup
+    //   });
+    // }
 
     // Make callback globally available
     (window as any).handleGoogleLogin = this.handleGoogleLogin.bind(this);
@@ -245,14 +255,13 @@ export class LoginComponent implements OnInit {
   //   }
   // }
 
-
   // handleGoogleLogin(response: any) {
   //   if (!response || !response.credential) {
   //     this.toastr.error('Invalid Google response.', 'Login Failed');
   //     return;
   //   }
   //   console.log(response);
-  
+
   //   this.service.googleLogin({ token: response.credential }).subscribe({
   //     next: (res: any) => {
   //       this.service.saveToken(res.token);
@@ -264,17 +273,18 @@ export class LoginComponent implements OnInit {
   //     },
   //   });
   // }
-  
-
 
   handleGoogleLogin(response: any) {
     if (!response || !response.credential) {
-      this.toastr.error('Invalid Google response. Please try again.', 'Login Failed');
+      this.toastr.error(
+        'Invalid Google response. Please try again.',
+        'Login Failed'
+      );
       return;
     }
-  
+
     console.log(response);
-  
+
     this.service.googleLogin({ token: response.credential }).subscribe({
       next: (res: any) => {
         this.service.saveToken(res.token);
@@ -282,33 +292,38 @@ export class LoginComponent implements OnInit {
       },
       error: (err: any) => {
         console.log('Login error:', err);
-  
+
         // Handle specific errors
         if (err.status === 400) {
           if (err.error.includes('Invalid Google token')) {
-            this.toastr.error('Invalid Google token. Please try again.', 'Login Failed');
+            this.toastr.error(
+              'Invalid Google token. Please try again.',
+              'Login Failed'
+            );
           } else if (err.error.includes('Employee not found')) {
-            this.toastr.error('Your email is not registered as an employee.', 'Access Denied');
+            this.toastr.error(
+              'Your email is not registered as an employee.',
+              'Access Denied'
+            );
           } else if (err.error.includes('User registration failed')) {
-            this.toastr.error('User creation failed. Contact support.', 'Registration Error');
+            this.toastr.error(
+              'User creation failed. Contact support.',
+              'Registration Error'
+            );
           } else {
             this.toastr.error(err.error, 'Login Failed');
           }
         } else if (err.status === 500) {
-          this.toastr.error('Server error. Please try again later.', 'Login Failed');
+          this.toastr.error(
+            'Server error. Please try again later.',
+            'Login Failed'
+          );
         } else {
           this.toastr.error('An unexpected error occurred.', 'Login Failed');
         }
       },
     });
   }
-  
-
-
-
-
-
-
 
   isSubmitted: boolean = false;
 

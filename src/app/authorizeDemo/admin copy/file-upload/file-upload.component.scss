@@ -1,0 +1,279 @@
+// styles.scss
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+// _variables.scss (you can import this in each component)
+$primary: #3a7bd5;
+$primary-light: #6fa1ff;
+$primary-dark: #0d47a1;
+$secondary: #00bcd4;
+$accent: #ff5722;
+$success: #4caf50;
+$warning: #ffc107;
+$danger: #f44336;
+$light: #f5f7fa;
+$dark: #2c3e50;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+
+// Typography
+$font-family-base: 'Roboto', 'Segoe UI', sans-serif;
+$font-family-heading: 'Montserrat', 'Segoe UI', sans-serif;
+
+body {
+  font-family: $font-family-base;
+  background-color: $light;
+  color: $gray-800;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-heading;
+  font-weight: 600;
+  color: $dark;
+  margin-top: 0;
+}
+
+.mat-card {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: $gray-300;
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: $primary;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.8em 0 0.8em 0;
+}
+
+.mat-raised-button.mat-primary {
+  background-color: $primary;
+}
+
+.mat-raised-button.mat-accent {
+  background-color: $secondary;
+}
+
+.mat-spinner circle {
+  stroke: $primary !important;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Custom loading animation
+.mat-spinner {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: $primary-light;
+    animation: spinner-secondary 1.5s linear infinite;
+  }
+}
+
+@keyframes spinner-secondary {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// file-upload.component.scss
+
+.upload-box {
+  background-color: white;
+  border: 2px dashed $gray-300;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 30px;
+  
+  &:hover {
+    border-color: $primary-light;
+    background-color: rgba($primary, 0.02);
+  }
+  
+  &.drag-over {
+    border-color: $primary;
+    background-color: rgba($primary, 0.05);
+  }
+  
+  i {
+    font-size: 3rem;
+    color: $primary;
+    margin-bottom: 16px;
+    display: block;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    color: $gray-700;
+    margin: 10px 0;
+  }
+  
+  .upload-button {
+    background-color: $primary;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 20px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: darken($primary, 5%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($primary, 0.3);
+    }
+  }
+  
+  .file-list {
+    margin-top: 20px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    
+    .add-file-container {
+      margin-bottom: 16px;
+      
+      .add-btn {
+        display: inline-block;
+        background-color: $primary;
+        color: white;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: darken($primary, 5%);
+        }
+      }
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: $gray-100;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      
+      .file-name {
+        font-size: 0.95rem;
+        color: $gray-800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80%;
+      }
+      
+      .remove-btn {
+        background: none;
+        border: none;
+        color: $gray-600;
+        cursor: pointer;
+        font-size: 0.9rem;
+        padding: 4px;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          color: $danger;
+        }
+      }
+    }
+  }
+  
+  .btn-primary {
+    background-color: $primary;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: darken($primary, 5%);
+    }
+  }
+}
+
+
+// .container {
+//     display: flex;
+//     gap: 20px;
+//   }
+  
+//   .left-panel {
+//     width: 200px;
+//     padding: 20px;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+//   }
+  
+//   .right-panel {
+//     flex-grow: 1;
+//   }
+  
+//   .upload-box {
+//     padding: 20px;
+//     border: 2px dashed #18a7ff;
+//     text-align: center;
+//     cursor: pointer;
+//   }
+  
+//   .file-list {
+//     margin-top: 10px;
+//   }
+  
+//   .add-file-container {
+//     margin-bottom: 10px;
+//   }
+  
+//   .remove-btn {
+//     background: none;
+//     border: none;
+//     color: red;
+//     cursor: pointer;
+//     font-size: 16px;
+//   }
+  
+//   .upload-button {
+//     background-color: #18a7ff;
+//     color: white;
+//     border: none;
+//     padding: 10px;
+//     cursor: pointer;
+//     border-radius: 5px;
+//   }
+  

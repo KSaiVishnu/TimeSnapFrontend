@@ -169,6 +169,20 @@
   <p>Don't have an account? <a routerLink="/signup" class="text-primary">Sign up</a></p>
 </div>
 
+<div class="social-login">
+  <div class="social-buttons">
+    <button type="button" class="btn btn-social" id="google-button">
+      <img src="assets/google-icon.svg" alt="Google">
+      <span>Google</span>
+    </button>
+  </div>
+
+  <div class="divider">
+    <span>or continue with</span>
+  </div>
+</div>
+
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div class="form-group">
     <label for="email">Email</label>
@@ -224,16 +238,4 @@
   </div>
 </form>
 
-<div class="social-login">
-  <div class="divider">
-    <span>or continue with</span>
-  </div>
-  
-  <div class="social-buttons">
-    <button type="button" class="btn btn-social" id="google-button">
-      <img src="assets/google-icon.svg" alt="Google">
-      <span>Google</span>
-    </button>
-  </div>
-</div>
 

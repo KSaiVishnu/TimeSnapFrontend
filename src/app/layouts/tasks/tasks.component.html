@@ -1,354 +1,172 @@
-<div style="background-color: white" class="p-3">
-  <!-- <div class="tasks-heading-main-container">
-    <div class="description-container">
-      <h1>Task List</h1>
-      <p>{{ name | titlecase }} - {{ empId }}</p>
-    </div>
-    <div class="date-container">
-      <mat-form-field appearance="outline">
-        <mat-label>Task</mat-label>
-        <input matInput />
-      </mat-form-field>
-    </div>
-    <div class="date-container">
-      <mat-form-field class="date-picker" appearance="outline">
-        <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-          <input
-            matStartDate
-            formControlName="start"
-            placeholder="Start date"
-          />
-          <input matEndDate formControlName="end" placeholder="End date" />
-        </mat-date-range-input>
-        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
+<div class="tasks-container">
+  <div class="tasks-layout">
+    <!-- Filters Panel -->
+    <div class="filters-panel">
+      <div class="filters-header">
+        <h3>Filters</h3>
+        <button (click)="onClearFilters()" class="clear-btn">Clear Filters</button>
+      </div>
+      
+      <div class="filter-group">
+        <label for="search-task">Search Task</label>
+        <div class="search-input">
+          <i class="fas fa-search"></i>
+          <input 
+            id="search-task"
+            type="search" 
+            [(ngModel)]="searchText" 
+            (input)="applyFilters()" 
+            placeholder="Enter task name"
+          >
+        </div>
+      </div>
 
-        @if (range.controls.start.hasError('matStartDateInvalid')) {
-        <mat-error>Invalid start date</mat-error>
-        } @if (range.controls.end.hasError('matEndDateInvalid')) {
-        <mat-error>Invalid end date</mat-error>
-        }
-      </mat-form-field>
-      <div class="date-remove-icon">
 
-        <button
-          (click)="clearDateRange()"
-          *ngIf="range.value.start || range.value.end"
-          class="btn border border-danger date-clear-button clear-icon"
-        >
-          ❌
+
+      <div class="filter-group">
+        <label class="form-label">Filter by Due Date</label>
+        <div class="input-wrapper">
+          <select [(ngModel)]="selectedDate" (change)="applyFilters()" class="custom-select">
+            <option value="all">All</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="filter-group">
+        <label class="form-label">Filter by Billing Type</label>
+        <div class="input-wrapper">
+          <select [(ngModel)]="selectedType" (change)="applyFilters()" class="custom-select">
+            <option value="all">All</option>
+            <option value="Billable">Billable</option>
+            <option value="Non-Billable">Non-Billable</option>
+          </select>
+        </div>
+      </div>
+
+            <!-- <div class="filter-group">
+        <label for="filter-date">Filter by Due Date</label>
+        <mat-form-field appearance="outline" class="custom-select">
+          <mat-select [(value)]="selectedDate" (valueChange)="applyFilters()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="today">Today</mat-option>
+            <mat-option value="week">This Week</mat-option>
+            <mat-option value="month">This Month</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div> -->
+
+
+
+
+      <!-- <div class="filter-group">
+        <label for="filter-type">Filter by Billing Type</label>
+        <mat-form-field appearance="outline" class="custom-select">
+          <mat-select [(value)]="selectedType" (valueChange)="applyFilters()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="Billable">Billable</mat-option>
+            <mat-option value="Non-Billable">Non-Billable</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div> -->
+
+
+
+
+    </div>
+
+    <!-- Tasks Board -->
+    <div class="tasks-board">
+      <div class="tasks-header">
+        <h2>Tasks</h2>
+        <button (click)="openAddTaskPopup()" class="add-task-btn">
+          <i class="fas fa-plus"></i> Add Task
         </button>
       </div>
-    </div>
 
-    <div style="width: 300px">
-      <app-pie-chart [empId]="empId"></app-pie-chart>
-    </div>
-  </div> -->
-
-  <!-- <p>{{email}}</p> -->
-  <!-- <app-file-upload /> -->
-  <!-- <div style="width: 100%;">
-    <app-edit-assignee-names></app-edit-assignee-names>
-  </div> -->
-
-  <div class="d-flex flex-row" style="background: white">
-    <div style="width: 20%; border-right: 1px solid lightgray; padding: 20px; max-height: 100vh;">
-      <div class="d-flex flex-row">
-      <p>Filters</p>
-      <button (click)="onClearFilters()" class="btn p-0 ml-auto">Clear Filters</button>
-    </div>
-      <div class="d-flex flex-column">
-        
-        <div>
-          <mat-form-field class="example-full-width" appearance="outline">
-            <mat-label>Search Task</mat-label>
-            <input matInput type="search" [(ngModel)]="searchText" (input)="applyFilters()" placeholder="Enter task name">
-          </mat-form-field>
-          
-        </div>
-
-        <div>
-          <mat-form-field appearance="outline">
-            <mat-label>Filter by Due Date</mat-label>
-            <mat-select [(value)]="selectedDate" (valueChange)="applyFilters()">
-              <mat-option value="all">All</mat-option>
-              <mat-option value="today">Today</mat-option>
-              <mat-option value="week">This Week</mat-option>
-              <mat-option value="month">This Month</mat-option>
-            </mat-select>
-          </mat-form-field>          
-        </div>
-
-        <div>
-          <mat-form-field appearance="outline">
-            <mat-label>Filter by Billing Type</mat-label>
-            <mat-select [(value)]="selectedType" (valueChange)="applyFilters()">
-              <mat-option value="all">All</mat-option>
-              <mat-option value="Billable">Billable</mat-option>
-              <mat-option value="Non-Billable">Non-Billable</mat-option>
-            </mat-select>
-          </mat-form-field>          
+      <div *ngIf="loading" class="loading-container">
+        <div class="loading-clock">
+          <div class="clock-face"></div>
+          <div class="hour-hand"></div>
+          <div class="minute-hand"></div>
+          <div class="center-dot"></div>
         </div>
       </div>
-    </div>
-    <div style="width: 80%;">
-      <div class="d-flex flex-row">
-        <h2 style="margin: 20px 0px 0px 30px">Tasks</h2>
-        <button
-          (click)="openAddTaskPopup()"
-          style="margin-left: auto; margin: 20px 20px 0px 0px"
-          class="btn btn-success ml-auto"
-        >
-          Add Task
-        </button>
-      </div>
-      <div class="task-container" cdkDropListGroup>
+
+      <div *ngIf="!loading" class="task-container" cdkDropListGroup>
         <!-- To Do Column -->
-        <div
-          class="task-column todo"
-          cdkDropList
-          id="todoContainer"
-          [cdkDropListData]="pendingTasks"
-          (cdkDropListDropped)="drop($event)"
-        >
+        <div class="task-column todo-column" cdkDropList id="todoContainer" [cdkDropListData]="pendingTasks" (cdkDropListDropped)="drop($event)">
           <h3 class="column-title todo-title">To Do</h3>
           
-
-          <!-- <ng-container *ngIf="loading">
-        <div class="skeleton-card" *ngFor="let i of [1, 2, 3]"></div>
-      </ng-container> -->
-
-          <ng-container *ngIf="loading">
-            <div class="task-card skeleton-card" *ngFor="let _ of [1, 2, 3]">
-              <!-- <div class="skeleton-avatar"></div> -->
-              <div class="skeleton-content">
-                <h5 class="skeleton-line skeleton-title"></h5>
-                <p class="skeleton-line"></p>
-                <!-- <br> -->
-                <span class="skeleton-line skeleton-status"></span>
-              </div>
-            </div>
-          </ng-container>
-
-          <ng-container *ngIf="!loading">
-            <div
-              class="task-card"
-              *ngFor="let task of pendingTasks"
-              cdkDrag
-              [cdkDragData]="task"
-              (mousedown)="dragging = false"
-              (cdkDragStarted)="dragging = true"
-              (click)="!dragging && goToTaskDetails(task)"
-            >
-              <h6>{{ task.taskName }}</h6>
-              <p class="task-details">
-                <!-- {{ task.assignee }} | -->
-                 Due:
-                <span class="due-date-para">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
-              </p>
+          <div *ngFor="let task of pendingTasks" class="task-card todo" cdkDrag [cdkDragData]="task" (mousedown)="dragging = false" (cdkDragStarted)="dragging = true" (click)="!dragging && goToTaskDetails(task)">
+            <h4>{{ task.taskName }}</h4>
+            <p class="task-details">
+              <i class="far fa-calendar-alt"></i> Due:
+              <span class="due-date">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+            </p>
+            <div class="task-footer">
               <span class="task-status todo">To Do</span>
+              <span *ngIf="task.billingType === 'Billable'" class="billing-badge">
+                <i class="fas fa-tag"></i> Billable
+              </span>
             </div>
-          </ng-container>
+          </div>
+          
+          <div *ngIf="pendingTasks.length === 0" class="empty-column">
+            <i class="far fa-clipboard"></i>
+            <p>No tasks to do</p>
+          </div>
         </div>
 
         <!-- In Progress Column -->
-        <div
-          class="task-column in-progress"
-          cdkDropList
-          id="inProgressContainer"
-          [cdkDropListData]="inProgressTasks"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <h3 class="column-title inprogress-title">In Progress</h3>
-
-          <ng-container *ngIf="loading">
-            <div class="task-card skeleton-card" *ngFor="let _ of [1, 2, 3]">
-              <!-- <div class="skeleton-avatar"></div> -->
-              <div class="skeleton-content">
-                <h5 class="skeleton-line skeleton-title"></h5>
-                <p class="skeleton-line"></p>
-                <!-- <br> -->
-                <span class="skeleton-line skeleton-status"></span>
-              </div>
-            </div>
-          </ng-container>
-
-          <ng-container *ngIf="!loading">
-            <div
-              class="task-card"
-              *ngFor="let task of inProgressTasks"
-              cdkDrag
-              [cdkDragData]="task"
-              (mousedown)="dragging = false"
-              (cdkDragStarted)="dragging = true"
-              (click)="!dragging && goToTaskDetails(task)"
-            >
-              <h6>{{ task.taskName }}</h6>
-              <p class="task-details">
-                <!-- {{ task.assignee }} | -->
-                 Due:
-                <span class="due-date-para-inprogress">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
-
-              </p>
+        <div class="task-column progress-column" cdkDropList id="inProgressContainer" [cdkDropListData]="inProgressTasks" (cdkDropListDropped)="drop($event)">
+          <h3 class="column-title progress-title">In Progress</h3>
+          
+          <div *ngFor="let task of inProgressTasks" class="task-card in-progress" cdkDrag [cdkDragData]="task" (mousedown)="dragging = false" (cdkDragStarted)="dragging = true" (click)="!dragging && goToTaskDetails(task)">
+            <h4>{{ task.taskName }}</h4>
+            <p class="task-details">
+              <i class="far fa-calendar-alt"></i> Due:
+              <span class="due-date">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+            </p>
+            <div class="task-footer">
               <span class="task-status in-progress">In Progress</span>
+              <span *ngIf="task.billingType === 'Billable'" class="billing-badge">
+                <i class="fas fa-tag"></i> Billable
+              </span>
             </div>
-          </ng-container>
+          </div>
+          
+          <div *ngIf="inProgressTasks.length === 0" class="empty-column">
+            <i class="fas fa-spinner"></i>
+            <p>No tasks in progress</p>
+          </div>
         </div>
 
         <!-- Completed Column -->
-        <div
-          class="task-column completed"
-          cdkDropList
-          id="completedContainer"
-          [cdkDropListData]="completedTasks"
-          (cdkDropListDropped)="drop($event)"
-        >
+        <div class="task-column completed-column" cdkDropList id="completedContainer" [cdkDropListData]="completedTasks" (cdkDropListDropped)="drop($event)">
           <h3 class="column-title completed-title">Completed</h3>
-
-
-          <ng-container *ngIf="loading">
-            <div class="task-card skeleton-card" *ngFor="let _ of [1, 2, 3]">
-              <!-- <div class="skeleton-avatar"></div> -->
-              <div class="skeleton-content">
-                <h5 class="skeleton-line skeleton-title"></h5>
-                <p class="skeleton-line"></p>
-                <!-- <br> -->
-                <span class="skeleton-line skeleton-status"></span>
-              </div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="!loading">
-            <div
-              class="task-card"
-              *ngFor="let task of completedTasks"
-              cdkDrag
-              [cdkDragData]="task"
-              (mousedown)="dragging = false"
-              (cdkDragStarted)="dragging = true"
-              (click)="!dragging && goToTaskDetails(task.id)"
-            >
-              <h6>{{ task.task }}</h6>
-              <p class="task-details">
-                <!-- {{ task.assignee }} | -->
-                 Completed:
-                 <span class="due-date-para-completed">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
-                </p>
+          
+          <div *ngFor="let task of completedTasks" class="task-card completed" cdkDrag [cdkDragData]="task" (mousedown)="dragging = false" (cdkDragStarted)="dragging = true" (click)="!dragging && goToTaskDetails(task)">
+            <h4>{{ task.taskName }}</h4>
+            <p class="task-details">
+              <i class="far fa-calendar-check"></i> Completed:
+              <span class="due-date">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+            </p>
+            <div class="task-footer">
               <span class="task-status completed">Completed</span>
+              <span *ngIf="task.billingType === 'Billable'" class="billing-badge">
+                <i class="fas fa-tag"></i> Billable
+              </span>
             </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <ng-template #noTasks>
-    <div class="no-tasks-container">
-      <img class="no-tasks-image" src="NoTasks.jpg" />
-      <div>
-        <h3>No Tasks Found</h3>
-      </div>
-    </div>
-    <!-- <div
-      style="height: 70vh"
-      class="d-flex flex-row justify-content-center align-items-center"
-    >
-      <mat-spinner aria-valuemax="20" aria-valuemin="10"></mat-spinner>
-    </div> -->
-  </ng-template>
-
-  <!-- <app-timesheet></app-timesheet> -->
-
-  <div style="padding: 20px" *ngIf="tasks.length > 0">
-    <!-- Sliding Panel -->
-    <div class="side-panel" [class.open]="isPanelOpen">
-      <button
-        style="border: 1px solid; margin-left: 90%"
-        class="btn mt-3 p-1"
-        (click)="closePanel()"
-      >
-        ❌
-      </button>
-      <div class="pt-3">
-        <h2 class="mb-4 pl-5">{{ selectedTask?.task }}</h2>
-        <div class="pl-5">
-          <table class="table mb-5" style="width: 70%">
-            <tbody>
-              <tr>
-                <td>Assignee</td>
-                <td>{{ selectedTask?.assignee }}</td>
-              </tr>
-              <tr>
-                <td>Status</td>
-                <td>{{ convertStatus(selectedTask?.status) }}</td>
-              </tr>
-              <tr>
-                <td>Start Date</td>
-                <td>{{ selectedTask?.startDate | date }}</td>
-              </tr>
-              <tr>
-                <td>Due Date</td>
-                <td>{{ selectedTask?.dueDate | date }}</td>
-              </tr>
-              <tr>
-                <td>Billing Type</td>
-                <td>{{ selectedTask?.billingType }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- <div class="dropdown-divider"></div> -->
-        <div class="mt-4 pr-3 pl-4 mb-5">
-          <div class="d-flex flex-row p-3">
-            <h3>Time Sheets</h3>
-            <button
-              mat-button
-              (click)="openAddLogModal(empId, selectedTask.id)"
-              class="btn btn-info ml-auto"
-            >
-              Add Timelog
-            </button>
           </div>
-
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <!-- <th >Task</th> -->
-                <th>Date</th>
-                <!-- <th>End Time</th> -->
-                <th>Time (In Min)</th>
-                <!-- <th style="width: 8%;">Stop</th>
-                  <th>Save</th> -->
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let timesheet of timesheets">
-                <!-- <td></td> -->
-                <td>
-                  {{ timesheet.date | date }}
-                </td>
-                <!-- <td *ngIf="timesheet.endTime; else err">
-                  {{ formatDateTime1(timesheet.endTime) }}
-                </td> -->
-                <!-- <ng-template #err>
-                  <td><p style="margin-left: 45%">-</p></td>
-                </ng-template> -->
-                <td>{{ roundOf(timesheet.totalMinutes) }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- <div class="dropdown-divider"></div> -->
-
-          <!-- <p><strong>EmpId:</strong> {{ timesheet.empId }}</p>
-            <p><strong>Start Time:</strong> </p>
-            <p><strong>End Time:</strong> </p>
-            <p><strong>Time Spent:</strong> </p> -->
+          
+          <div *ngIf="completedTasks.length === 0" class="empty-column">
+            <i class="fas fa-check-circle"></i>
+            <p>No completed tasks</p>
+          </div>
         </div>
       </div>
     </div>

@@ -25,11 +25,22 @@ export class MainLayoutComponent implements OnInit {
 
   title = 'explore-world';
   showProfileMenu = false;
-  
+  isMenuOpen = false;
+  hasAdminAccess = true; // This would typically be determined by a service
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) {
+      this.showProfileMenu = false;
+    }
+  }
+
+
 
   toggleProfileMenu() {
     this.showProfileMenu = !this.showProfileMenu;
   }
+
+
 
   async onLogout() {
     console.log("delete");

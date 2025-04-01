@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FileUploadComponent } from './file-upload/file-upload.component';
+import { TaskUploadComponent } from './import/task-upload/task-upload.component';
 import {  MatTabsModule } from '@angular/material/tabs';
 
 import { ChangeDetectionStrategy } from '@angular/core';
@@ -16,17 +16,10 @@ import { DummyTimesheetComponent } from "../../dummy-timesheet/dummy-timesheet.c
 @Component({
   selector: 'app-admin',
   imports: [
-    FileUploadComponent,
     MatTabsModule,
-    AllTasksComponent,
-    AllTimesheetsComponent,
-    EmployeesComponent,
-    BillableComponent,
-    NonBillableComponent,
     RouterLink,
     RouterOutlet,
     RouterLinkActive,
-    DummyTimesheetComponent
 ],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,

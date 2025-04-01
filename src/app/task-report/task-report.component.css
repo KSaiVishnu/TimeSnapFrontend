@@ -1,0 +1,259 @@
+/* Elegant Light with Soft Shadows - Task Report Component */
+
+:host {
+  display: block;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* padding: 20px; */
+}
+
+.main-container{
+  display: flex;
+}
+
+h2 {
+  color: #5e35b1;
+  font-weight: 500;
+  margin-bottom: 24px;
+  font-size: 28px;
+  position: relative;
+  padding-bottom: 10px;
+  align-self: center;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, #7c4dff, #5e35b1);
+  border-radius: 3px;
+}
+
+/* Filter controls */
+.select-range-container {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(94, 53, 177, 0.08);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+label {
+  font-weight: 500;
+  color: #5e35b1;
+  margin-right: 12px;
+  margin-top: 6px;
+}
+
+select {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #d1c4e9;
+  background-color: white;
+  color: #424242;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(94, 53, 177, 0.05);
+  outline: none;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: #7c4dff;
+  box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.2);
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(94, 53, 177, 0.1);
+  margin-bottom: 24px;
+}
+
+th {
+  /* background: linear-gradient(135deg, #7c4dff, #5e35b1); */
+  /* background-color: #f8f6f6; */
+  /* color: gray;
+  font-weight: 500;
+  text-align: left; */
+  /* padding: 16px; */
+  /* font-size: 18px; */
+  /* letter-spacing: 0.5px; */
+}
+
+th {
+    font-weight: 600;
+    color: #555;
+    background-color: #f8f9ff;
+    padding: 16px;
+  }
+
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #424242;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+
+.employee-info {
+    background-color: #fafafa; /* Light grey for employee row */
+    /* font-weight: bold; */
+  }
+
+
+  .odd-r1ow {
+    background-color: #fafafa;
+  }
+  
+  
+
+/* Employee info styling */
+tr td:first-child strong {
+  color: #5e35b1;
+  font-size: 15px;
+}
+
+/* Pagination buttons */
+
+.pagination-buttons-container{
+  display: flex;
+}
+
+.pagination-buttons{
+  margin-left: auto;
+}
+
+button {
+  background: white;
+  border: 1px solid #d1c4e9;
+  color: #5e35b1;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 10px;
+  box-shadow: 0 2px 5px rgba(94, 53, 177, 0.05);
+}
+
+button:hover:not([disabled]) {
+  background: #f5f0ff;
+  border-color: #7c4dff;
+}
+
+button:active:not([disabled]) {
+  transform: translateY(1px);
+}
+
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading animation */
+@keyframes clockRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes minuteHand {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes hourHand {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(720deg); }
+}
+
+ng-template p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  color: #5e35b1;
+  font-weight: 500;
+}
+
+ng-template p::before {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #d1c4e9;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+ng-template p::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  background: #7c4dff;
+  top: calc(50% - 20px);
+  left: calc(50% - 2px);
+  transform-origin: bottom center;
+  animation: minuteHand 6s linear infinite;
+}
+
+ng-template p::before::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 15px;
+  background: #5e35b1;
+  top: calc(50% - 15px);
+  left: calc(50% - 2px);
+  transform-origin: bottom center;
+  animation: hourHand 72s linear infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  table {
+    font-size: 13px;
+  }
+  
+  th, td {
+    padding: 12px 10px;
+  }
+  
+  button {
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  div:first-of-type {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  label {
+    margin-bottom: 8px;
+  }
+  
+  select {
+    width: 100%;
+  }
+}

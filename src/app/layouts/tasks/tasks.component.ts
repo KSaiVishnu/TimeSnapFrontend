@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { FileUploadComponent } from '../../authorizeDemo/admin/file-upload/file-upload.component';
+import { TaskUploadComponent } from '../../authorizeDemo/admin/import/task-upload/task-upload.component';
 import { AuthService } from '../../shared/services/auth.service';
 import { UserService } from '../../shared/services/user.service';
 
@@ -48,7 +48,8 @@ import { environment } from '../../../environments/environment';
 import { AddTaskPopupComponent } from '../../add-task-popup/add-task-popup.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TaskService } from '../../shared/services/task.service';
+import { TaskService, UpdateTask } from '../../shared/services/task.service';
+import { AnyAaaaRecord } from 'dns';
 
 // export const ELEMENT_DATA: any = [];
 
@@ -93,6 +94,10 @@ export class TasksComponent {
   selectedDate = 'all';
   searchText = '';
   selectedType = 'all';
+
+
+  dragging = false;
+
 
   // Fetch all assignees from the UserEmployee table (API call)
   fetchAssignees() {
@@ -333,7 +338,8 @@ export class TasksComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {
-        this.fetchTasks(); // Refresh the task list
+        // this.fetchTasks(); // Refresh the task list
+        this.loadTasks();
       }
     });
   }
@@ -386,15 +392,15 @@ export class TasksComponent {
     const search = this.searchText.toLowerCase();
 
     this.filteredPendingTasks = this.pendingTasks.filter((task: any) =>
-      task.task.toLowerCase().includes(search)
+      task.taskName.toLowerCase().includes(search)
     );
 
     this.filteredInProgressTasks = this.inProgressTasks.filter((task: any) =>
-      task.task.toLowerCase().includes(search)
+      task.taskName.toLowerCase().includes(search)
     );
 
     this.filteredCompletedTasks = this.completedTasks.filter((task: any) =>
-      task.task.toLowerCase().includes(search)
+      task.taskName.toLowerCase().includes(search)
     );
   }
 
@@ -541,7 +547,7 @@ export class TasksComponent {
     const searchText = this.searchText.toLowerCase();
     if (searchText) {
       filtered = filtered.filter(task =>
-        task.task.toLowerCase().includes(searchText)
+        task.taskName.toLowerCase().includes(searchText)
       );
     }
 
@@ -579,6 +585,8 @@ export class TasksComponent {
       filtered = filtered.filter(task =>
         task.billingType === 'Non-Billable'
             );
+
+            console.log(this.selectedType);
     }
 
     // Categorize into 3 status groups
@@ -651,101 +659,122 @@ export class TasksComponent {
 
   onSaveTask(task: any) {
     console.log(task);
-    let updatedTask = {
-      id: task.id,
-      task: task.task,
-      assignee: task.assignee,
-      startDate: task.startDate,
-      dueDate: task.dueDate,
-      status: this.taskStatusMap1[task.status],
-      // status:task.status,
-      billingType: task.billingType,
-      empId: task.empId,
-      taskID: task.taskID,
+    // let updatedTask = {
+    //   id: task.id,
+    //   task: task.task,
+    //   assignee: task.assignee,
+    //   startDate: task.startDate,
+    //   dueDate: task.dueDate,
+    //   status: this.taskStatusMap1[task.status],
+    //   // status:task.status,
+    //   billingType: task.billingType,
+    //   empId: task.empId,
+    //   taskID: task.taskID,
+    // };
+    // console.log('Updating Task:', updatedTask);
+
+    const updateTask: UpdateTask = {
+      status: task.status,
+      completedDate: task.status === 2 ? new Date().toISOString() : undefined, // Set completedDate only if status is 2
     };
 
-    console.log('Updating Task:', updatedTask);
+    console.log(updateTask)
+    console.log(task.taskId, this.empId);
 
-    this.http.put(`${this.baseURL}/tasks/${task.id}`, updatedTask).subscribe({
-      next: (response: any) => {
-        console.log('Task updated:', response);
-
-        // this.pendingTasks = this.pendingTasks.filter((task: any) => task.status == 0);
-        // this.inProgressTasks = this.inProgressTasks.filter((task: any) => task.status == 1);
-        // this.completedTasks = this.completedTasks.filter((task: any) => task.status == 2);
-
-        this.pendingTasks = this.pendingTasks.filter((task: any) => {
-          if (task.status == 0) {
-            return true;
-          } else if (task.status == 1) {
-            this.inProgressTasks.push(task);
-            return false;
-          } else {
-            this.completedTasks.push(task);
-            return false;
-          }
-        });
-
-        this.inProgressTasks = this.inProgressTasks.filter((task: any) => {
-          if (task.status == 0) {
-            this.pendingTasks.push(task);
-            return false;
-          } else if (task.status == 1) {
-            return true;
-          } else {
-            this.completedTasks.push(task);
-            return false;
-          }
-        });
-
-        this.completedTasks = this.completedTasks.filter((task: any) => {
-          if (task.status == 0) {
-            this.pendingTasks.push(task);
-            return false;
-          } else if (task.status == 1) {
-            this.inProgressTasks.push(task);
-            return false;
-          } else {
-            return true;
-          }
-        });
-
-        console.log(this.pendingTasks);
-        console.log(this.inProgressTasks);
-        console.log(this.completedTasks);
-
-        // this.fetchTasks();
-        // this.fetchTasks();
-        // alert('Task updated successfully!');
-        // Remove the task from the old list
-
-        // console.log(this.tasks);
-        // this.filterTasksAfterSaving(updatedTask);
-
-        // this.tasks = this.tasks.filter(t => t.id !== task.id);
-        // let updatedTask1 = {
-        //   ...updatedTask,
-        //   hh: 0,
-        //   mm: 0,
-        //   ss: 0,
-        //   isRunning: false,
-        //   timerId: null
-        // };
-        // this.tasks.push(updatedTask1);
-        // this.categorizeTasks();
-
-        // location.reload();
-        //  Update the task locally without refreshing
-        // let index = this.tasks.findIndex(t => t.id === task.id);
-        // if (index !== -1) {
-        //   this.tasks[index] = { ...this.tasks[index], ...updatedTask };
-        // }
+    this.tasksService.updateTaskStatus(task.taskId, this.empId, updateTask).subscribe({
+      next: (response) => {
+        console.log('Task updated successfully:', response);
       },
-      error: (err) => {
-        console.error('Error updating task:', err);
-        alert('Error updating task');
+      error: (error) => {
+        console.error('Error updating task:', error);
       },
     });
+
+
+
+    // this.http.put(`${this.baseURL}/tasks/${task.id}`, updatedTask).subscribe({
+    //   next: (response: any) => {
+    //     console.log('Task updated:', response);
+
+    //     // this.pendingTasks = this.pendingTasks.filter((task: any) => task.status == 0);
+    //     // this.inProgressTasks = this.inProgressTasks.filter((task: any) => task.status == 1);
+    //     // this.completedTasks = this.completedTasks.filter((task: any) => task.status == 2);
+
+    //     this.pendingTasks = this.pendingTasks.filter((task: any) => {
+    //       if (task.status == 0) {
+    //         return true;
+    //       } else if (task.status == 1) {
+    //         this.inProgressTasks.push(task);
+    //         return false;
+    //       } else {
+    //         this.completedTasks.push(task);
+    //         return false;
+    //       }
+    //     });
+
+    //     this.inProgressTasks = this.inProgressTasks.filter((task: any) => {
+    //       if (task.status == 0) {
+    //         this.pendingTasks.push(task);
+    //         return false;
+    //       } else if (task.status == 1) {
+    //         return true;
+    //       } else {
+    //         this.completedTasks.push(task);
+    //         return false;
+    //       }
+    //     });
+
+    //     this.completedTasks = this.completedTasks.filter((task: any) => {
+    //       if (task.status == 0) {
+    //         this.pendingTasks.push(task);
+    //         return false;
+    //       } else if (task.status == 1) {
+    //         this.inProgressTasks.push(task);
+    //         return false;
+    //       } else {
+    //         return true;
+    //       }
+    //     });
+
+    //     console.log(this.pendingTasks);
+    //     console.log(this.inProgressTasks);
+    //     console.log(this.completedTasks);
+
+    //     // this.fetchTasks();
+    //     // this.fetchTasks();
+    //     // alert('Task updated successfully!');
+    //     // Remove the task from the old list
+
+    //     // console.log(this.tasks);
+    //     // this.filterTasksAfterSaving(updatedTask);
+
+    //     // this.tasks = this.tasks.filter(t => t.id !== task.id);
+    //     // let updatedTask1 = {
+    //     //   ...updatedTask,
+    //     //   hh: 0,
+    //     //   mm: 0,
+    //     //   ss: 0,
+    //     //   isRunning: false,
+    //     //   timerId: null
+    //     // };
+    //     // this.tasks.push(updatedTask1);
+    //     // this.categorizeTasks();
+
+    //     // location.reload();
+    //     //  Update the task locally without refreshing
+    //     // let index = this.tasks.findIndex(t => t.id === task.id);
+    //     // if (index !== -1) {
+    //     //   this.tasks[index] = { ...this.tasks[index], ...updatedTask };
+    //     // }
+    //   },
+    //   error: (err) => {
+    //     console.error('Error updating task:', err);
+    //     alert('Error updating task');
+    //   },
+    // });
+  
+  
+  
   }
 
   // drop(event: CdkDragDrop<any[]>) {
@@ -821,7 +850,7 @@ export class TasksComponent {
       // console.log(event);
     }
   }
-  dragging: boolean = false;
+  // dragging: boolean = false;
 
   goToTaskDetails(task: any) {
     console.log(task);

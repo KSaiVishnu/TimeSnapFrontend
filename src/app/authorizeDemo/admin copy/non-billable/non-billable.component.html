@@ -1,0 +1,48 @@
+<!-- <div>
+    <mat-tab-group
+    mat-stretch-tabs="false"
+    animationDuration="0ms"
+    mat-align-tabs="start"
+  >
+    <mat-tab label="Tasks">
+      <app-all-tasks billingType = "non-billable"></app-all-tasks>
+    </mat-tab>
+    <mat-tab label="Time Sheets">
+      <app-all-timesheets billingType = "non-billable"></app-all-timesheets>
+    </mat-tab>
+  </mat-tab-group>
+</div> -->
+
+
+<!-- non-billable.html -->
+<div class="tab-container">
+  <mat-tab-group
+    mat-stretch-tabs="false"
+    animationDuration="300ms"
+    mat-align-tabs="start"
+    class="modern-tabs"
+  >
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          <i class="fas fa-tasks"></i>
+          <span>Tasks</span>
+        </div>
+      </ng-template>
+      <div class="tab-content">
+        <app-all-tasks billingType="non-billable"></app-all-tasks>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          <i class="fas fa-clock"></i>
+          <span>Time Sheets</span>
+        </div>
+      </ng-template>
+      <div class="tab-content">
+        <app-all-timesheets billingType="non-billable"></app-all-timesheets>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
