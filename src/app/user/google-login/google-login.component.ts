@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./google-login.component.css'],
 })
 export class GoogleLoginComponent {
-  private clientId = '257848338595-hs3vnsefa2mpgq2esjk6clpdq8pu062v.apps.googleusercontent.com';
+  private clientId = '';
   private redirectUri = 'http://localhost:4200'; // This should be your frontend URL
 
   constructor(
