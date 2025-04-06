@@ -94,6 +94,7 @@
           <div class="minute-hand"></div>
           <div class="center-dot"></div>
         </div>
+        <p class="loading-text">Loading...</p>
       </div>
 
       <!-- Error State -->
@@ -108,7 +109,7 @@
       *ngIf="apiStatus === 'SUCCESS' && allTasks.length === 0"
       class="no-data"
     >
-      <p>No employees found.</p>
+      <p>No tasks found.</p>
     </div>
 
       <div

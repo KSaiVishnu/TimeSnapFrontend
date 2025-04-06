@@ -123,6 +123,7 @@ export class VerificationComponent {
     const formData = {
       ...this.authService.getForm(),
       otp: this.otpValue,
+      role: 'Employee'
     };
 
     console.log(formData);

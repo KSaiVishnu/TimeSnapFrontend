@@ -24,6 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { merge } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -135,8 +136,7 @@ export class LoginComponent implements OnInit {
 
   initializeGoogleLogin() {
     google.accounts.id.initialize({
-      client_id:
-        '257848338595-hs3vnsefa2mpgq2esjk6clpdq8pu062v.apps.googleusercontent.com',
+      client_id: environment.googleClientId,
       callback: (res: any) => this.handleGoogleLogin(res),
       ux_mode: 'popup', // Open login in a popup window
     });

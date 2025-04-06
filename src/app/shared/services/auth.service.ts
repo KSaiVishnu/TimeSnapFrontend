@@ -44,7 +44,7 @@ export class AuthService {
 
   sendOtp(email: string): Observable<any> {
     console.log(email);
-    return this.http.post(`${this.baseURL}/send-otp`, { email: email });
+    return this.http.post(`${this.baseURL}/send-otp`, { email: email }, {withCredentials: true});
   }
 
   verifyOtp(email: string, otp: string) {
