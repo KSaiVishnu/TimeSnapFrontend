@@ -81,6 +81,37 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  hide = signal(true);
+  clickEvent(event: MouseEvent) {
+    this.hide.set(!this.hide());
+    event.stopPropagation();
+  }
+
+  // ngAfterViewInit(): void {
+  //   if (typeof google !== 'undefined') {
+  //     google.accounts.id.initialize({
+  //       client_id:
+  //         '257848338595-hs3vnsefa2mpgq2esjk6clpdq8pu062v.apps.googleusercontent.com',
+  //       callback: (res: any) => {
+  //         // console.log('Google Login Response:', res);
+  //         this.handleGoogleLogin(res);
+  //       },
+  //     });
+
+  //     google.accounts.id.renderButton(
+  //       document.getElementById('google-button'),
+  //       {
+  //         theme: 'filled_blue',
+  //         size: 'large',
+  //         shape: 'rectangle',
+  //         width: 300,
+  //       }
+  //     );
+  //   } else {
+  //     console.error('Google API not loaded.');
+  //   }
+  // }
+
   ngAfterViewInit(): void {
     this.loadGoogleAPI();
   }
