@@ -11,9 +11,6 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { TOKEN_KEY } from '../../shared/constants';
-import { error } from 'node:console';
-import { GoogleLoginComponent } from '../google-login/google-login.component';
 
 import { ChangeDetectionStrategy, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +29,6 @@ import { environment } from '../../../environments/environment';
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    GoogleLoginComponent,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
