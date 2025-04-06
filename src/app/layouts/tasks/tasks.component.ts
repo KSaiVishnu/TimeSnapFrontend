@@ -51,6 +51,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TaskService, UpdateTask } from '../../shared/services/task.service';
 import { AnyAaaaRecord } from 'dns';
 import { ErrorHandlerService } from '../../shared/services/error-handler.service';
+import { LoadingComponent } from "../../loading/loading.component";
 
 // export const ELEMENT_DATA: any = [];
 
@@ -80,7 +81,8 @@ enum ApiStatus {
     MatProgressBarModule,
     MatInputModule,
     MatSelectModule,
-  ],
+    LoadingComponent
+],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css',
