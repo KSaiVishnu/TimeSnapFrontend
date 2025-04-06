@@ -4,6 +4,7 @@
       <div [ngSwitch]="selectedOption" class="heading-container">
         <h2 *ngSwitchCase="'tasks'">Tasks Import</h2>
         <h2 *ngSwitchCase="'timesheet'">TimeSheets Import</h2>
+        <h2 *ngSwitchCase="'leaves'">Leaves Import</h2>
         <h2 *ngSwitchCase="'worklog-leaves'">Worklog Leaves</h2>
       </div>
       <div class="select-range-container">
@@ -11,6 +12,7 @@
         <select [(ngModel)]="selectedOption" id="importType">
           <option value="tasks">Tasks</option>
           <option value="timesheet">TimeSheet</option>
+          <option value="leaves">Leaves</option>
           <option value="worklog-leaves">Worklog Leaves</option>
         </select>
       </div>
@@ -24,6 +26,7 @@
         <app-worklog-leaves
           *ngSwitchCase="'worklog-leaves'"
         ></app-worklog-leaves>
+        <app-leaves-upload *ngSwitchCase="'leaves'"></app-leaves-upload>
       </div>
     </div>
   </div>

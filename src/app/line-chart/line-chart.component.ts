@@ -203,54 +203,82 @@ export class LineChartComponent implements OnChanges {
 
   @ViewChild('chart') chart!: ChartComponent;
   @Input() timesheets: any[] = [];
+  @Input() taskDetails: any;
 
   public chartOptions: Partial<ChartOptions> = {}; // Initialize to avoid undefined error
 
   constructor() {}
 
   ngOnChanges(): void {
-    // if (this.timesheets && this.timesheets.length) {
-    //   this.updateChart();
-    // }
-
     this.updateChart();
-
   }
 
   updateChart() {
+    // let categories: string[] = [];
+    // let hoursData: number[] = [];
+
+    // if (!this.timesheets || this.timesheets.length === 0) {
+    //   categories = ['No Data'];
+    //   hoursData = [0];
+    // } else {
+    //   const groupedData = new Map<string, number>();
+
+    //   this.timesheets.forEach((t) => {
+    //     const date = new Date(t.date).toLocaleDateString('en-CA');
+    //     const hours = t.totalMinutes / 60;
+    //     groupedData.set(date, (groupedData.get(date) || 0) + hours);
+    //   });
+
+    //   // Sort the dates in ascending order
+    //   const sortedEntries = Array.from(groupedData.entries()).sort(
+    //     (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime()
+    //   );
+
+    //   categories = sortedEntries.map((entry) => entry[0]); // Sorted dates
+    //   hoursData = sortedEntries.map((entry) => entry[1]); // Corresponding hours
+    // }
+
+
+
     let categories: string[] = [];
     let hoursData: number[] = [];
 
-    if (!this.timesheets || this.timesheets.length === 0) {
+    console.log(this.taskDetails)
+  
+    if (!this.taskDetails || !this.taskDetails.startDate || !this.taskDetails.dueDate) {
       categories = ['No Data'];
       hoursData = [0];
-      // return;
-    } else {
-      const groupedData = new Map<string, number>();
+      return;
+    }
+  
+    const startDate = new Date(this.taskDetails.startDate);
+    const dueDate = new Date(this.taskDetails.dueDate);
+    const groupedData = new Map<string, number>();
 
+    console.log(startDate, dueDate)
+  
+    // Initialize all dates in the range with 0 hours
+    for (let d = new Date(startDate); d <= dueDate; d.setDate(d.getDate() + 1)) {
+      groupedData.set(new Date(d).toLocaleDateString('en-CA'), 0);
+    }
+  
+    // Fill in timesheet data
+    if (this.timesheets && this.timesheets.length > 0) {
       this.timesheets.forEach((t) => {
-        // const date = new Date(t.date).toISOString().split("T")[0];
         const date = new Date(t.date).toLocaleDateString('en-CA');
         const hours = t.totalMinutes / 60;
-
-        // if (groupedData.has(date)) {
-        //   groupedData.set(date, groupedData.get(date)! + hours); // Sum hours
-        // } else {
-        //   groupedData.set(date, hours);
-        // }
-
-        groupedData.set(date, (groupedData.get(date) || 0) + hours);
-
+        if (groupedData.has(date)) {
+          groupedData.set(date, (groupedData.get(date) || 0) + hours);
+        }
       });
-
-      // Sort the dates in ascending order
-      const sortedEntries = Array.from(groupedData.entries()).sort(
-        (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime()
-      );
-
-      categories = sortedEntries.map((entry) => entry[0]); // Sorted dates
-      hoursData = sortedEntries.map((entry) => entry[1]); // Corresponding hours
     }
+  
+    // Extract sorted data
+    categories = Array.from(groupedData.keys());
+    hoursData = Array.from(groupedData.values());
+
+
+
 
     this.chartOptions = {
       series: [
@@ -264,15 +292,15 @@ export class LineChartComponent implements OnChanges {
         type: 'line',
         animations: { enabled: false },
         events: {
-            beforeMount: function () {
-                document.addEventListener(
-                    "touchstart",
-                    (e) => {
-                        if (e.cancelable) e.preventDefault();
-                    },
-                    { passive: false }
-                );
-            },
+          beforeMount: function () {
+            document.addEventListener(
+              'touchstart',
+              (e) => {
+                if (e.cancelable) e.preventDefault();
+              },
+              { passive: false }
+            );
+          },
         },
       },
       stroke: {

@@ -1,0 +1,300 @@
+// Main Layout Component SCSS
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --primary-color: #6366f1;
+  --primary-hover: #4f46e5;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --bg-light: #ffffff;
+  --bg-subtle: #f9fafb;
+  --border-color: #e5e7eb;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --transition-standard: all 0.2s ease-in-out;
+}
+
+.main-background-container {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+// Navbar styling
+.navbar {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm) !important;
+  padding: 0.75rem 1.5rem !important;
+  transition: var(--transition-standard);
+  
+  &.navbar-light {
+    .navbar-toggler {
+      border-color: transparent;
+      padding: 0.25rem;
+      
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+    }
+  }
+  
+  .navbar-brand {
+    padding: 0;
+    margin-right: 2rem;
+  }
+  
+  .navbar-nav {
+    align-items: center;
+    
+    .nav-item {
+      margin-left: 0.5rem;
+      
+      .nav-link {
+        color: var(--text-secondary);
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-md);
+        transition: var(--transition-standard);
+        
+        &:hover, &.active {
+          color: var(--primary-color);
+          background-color: rgba(99, 102, 241, 0.05);
+        }
+      }
+    }
+  }
+}
+
+// Logo styling
+.logo {
+  display: flex;
+  align-items: center;
+  
+  .logo-icon {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: var(--radius-md);
+    margin-right: 0.75rem;
+    
+    i {
+      font-size: 1.125rem;
+    }
+  }
+  
+  .title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    letter-spacing: -0.025em;
+  }
+}
+
+// Profile styling
+.profile-container {
+  position: relative;
+  margin-left: 1rem;
+  
+  .profile-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    
+    &:focus {
+      outline: none;
+    }
+    
+    .avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition-standard);
+      
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-md);
+      }
+      
+      &.large {
+        width: 3.5rem;
+        height: 3.5rem;
+        font-size: 1.25rem;
+      }
+    }
+  }
+  
+  .profile-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    width: 280px;
+    background-color: var(--bg-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    z-index: 1000;
+    
+    .profile-header {
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      
+      .user-info {
+        margin-left: 1rem;
+        
+        h4 {
+          margin: 0;
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+        
+        p {
+          margin: 0.25rem 0 0;
+          font-size: 0.875rem;
+          color: var(--text-secondary);
+        }
+      }
+    }
+    
+    .profile-actions {
+      padding: 0.75rem;
+      
+      .profile-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        transition: var(--transition-standard);
+        font-size: 0.9375rem;
+        
+        svg {
+          margin-right: 0.75rem;
+          color: var(--text-secondary);
+        }
+        
+        &:hover {
+          background-color: rgba(99, 102, 241, 0.05);
+          color: var(--primary-color);
+          
+          svg {
+            color: var(--primary-color);
+          }
+        }
+        
+        &.signout {
+          width: 100%;
+          text-align: left;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          font-family: inherit;
+          
+          &:hover {
+            color: #ef4444;
+            
+            svg {
+              color: #ef4444;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Alternative profile actions for mobile
+.profile-actions-1 {
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.5rem 0;
+    
+    .profile-item {
+      padding: 0.75rem 1rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition-standard);
+      font-size: 0.9375rem;
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      
+      &:hover {
+        background-color: rgba(99, 102, 241, 0.05);
+        color: var(--primary-color);
+      }
+      
+      &.signout {
+        cursor: pointer;
+        
+        &:hover {
+          color: #ef4444;
+        }
+      }
+    }
+  }
+}
+
+// Main content area
+#main {
+  padding: 1.5rem;
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .profile-container {
+    display: none;
+  }
+  
+  .navbar-collapse {
+    background-color: var(--bg-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .profile-actions-1 {
+    display: none;
+  }
+}
+

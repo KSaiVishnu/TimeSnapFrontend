@@ -2,72 +2,99 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TaskService, TaskCompletion } from '../shared/services/task.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LoadingComponent } from "../loading/loading.component";
+import { LoadingComponent } from '../loading/loading.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandlerService } from '../shared/services/error-handler.service';
+
+enum ApiStatus {
+  INITIAL = 'INITIAL',
+  IN_PROGRESS = 'IN_PROGRESS',
+  SUCCESS = 'SUCCESS',
+  FAILURE = 'FAILURE',
+}
 
 @Component({
   selector: 'app-task-report',
   imports: [CommonModule, FormsModule, LoadingComponent],
   templateUrl: './task-report.component.html',
-  styleUrl: './task-report.component.css'
+  styleUrl: './task-report.component.css',
 })
 export class TaskReportComponent implements OnInit {
+  selectedMonths: number = 12;
+  paginatedData: any;
+  groupedTasks: any[] = [];
   completedTasks: any[] = [];
-  groupedTasks: any;
-  currentPage = 1;
-  pageSize = 1; // Show 1 employee per page
+  currentPage: number = 1;
+  pageSize: number = 10;
+  apiStatus: ApiStatus = ApiStatus.INITIAL;
+  errorMessage: string = '';
+  errorStatus: number | null = null;
 
-  selectedMonths: any = 12;
-
-  constructor(private tasksService: TaskService,private cdr: ChangeDetectorRef) {}
+  constructor(
+    private tasksService: TaskService,
+    private errorHandler: ErrorHandlerService, // Injected error handler service
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadCompletedTasks();
   }
 
-  loadCompletedTasks() {
-    console.log(this.selectedMonths);
-
-    // if(this.selectedMonths == "6") this.selectedMonths = 6;
-    // else if (this.selectedMonths == "3") this.selectedMonths = 3;
-
-    this.tasksService.getCompletedTasks(this.selectedMonths).subscribe(
-      (data) => {
-        console.log(data);
+  loadCompletedTasks(): void {
+    this.apiStatus = ApiStatus.IN_PROGRESS;
+    this.tasksService.getCompletedTasks(this.selectedMonths).subscribe({
+      next: (data) => {
+        // data = [];
         this.completedTasks = data;
         this.groupedTasks = this.groupTasksByEmployee(this.completedTasks);
-        this.cdr.detectChanges(); // Force change detection
-
-
+        this.currentPage = 1;
+        this.paginateData();
+        this.apiStatus = ApiStatus.SUCCESS;
+        this.cdr.detectChanges();
       },
-      (error) => {
-        console.error('Error fetching completed tasks:', error);
-      }
+      error: (error: HttpErrorResponse) => {
+        this.apiStatus = ApiStatus.FAILURE;
+        const errorInfo = this.errorHandler.getErrorMessage(error); // Used reusable error handler
+        this.errorStatus = errorInfo.status;
+        this.errorMessage = errorInfo.message;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  getDaysDifference(startDate: string, completedDate: string): number {
+    const start = new Date(startDate);
+    const completed = new Date(completedDate);
+    const diffTime = Math.abs(completed.getTime() - start.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+  }
+
+  onRetry(): void {
+    this.loadCompletedTasks();
+  }
+
+  paginateData(): void {
+    const startIdx = (this.currentPage - 1) * this.pageSize;
+    this.paginatedData = this.groupedTasks.slice(
+      startIdx,
+      startIdx + this.pageSize
     );
+    // this.paginatedData = [];
   }
 
-  nextPage() {
-    if (this.currentPage * this.pageSize < this.groupedTasks.length) {
-      this.currentPage++;
-    }
-  }
-
-  prevPage() {
+  prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.paginateData();
     }
   }
 
-  get paginatedData() {
-    if (!this.groupedTasks || this.groupedTasks.length === 0) {
-      return []; // Return empty array if data is not yet available
+  nextPage(): void {
+    if (this.currentPage * this.pageSize < this.groupedTasks.length) {
+      this.currentPage++;
+      this.paginateData();
     }
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.groupedTasks.slice(start, start + this.pageSize);
   }
-  
-
-
-
 
   groupTasksByEmployee(tasks: any[]): any[] {
     const grouped = tasks.reduce((acc, task) => {
@@ -88,15 +115,13 @@ export class TaskReportComponent implements OnInit {
         startDate: task.startDate,
         completedDate: task.completedDate,
         totalHours: task.totalHours,
-        billingType: task.billingType
+        billingType: task.billingType,
       });
       acc[key].totalTasksCompleted++;
       acc[key].totalHoursSpent += task.totalHours;
       return acc;
     }, {} as Record<string, any>);
-  
+
     return Object.values(grouped);
   }
-  
-  
 }

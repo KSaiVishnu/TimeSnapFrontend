@@ -127,7 +127,10 @@ background: #FEF8FD;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #ff6b6b;
+  /* background-color: #ff6b6b; */
+  background: linear-gradient(135deg, #8A63D2 0%, #a29bfe 100%);
+  box-shadow: 0 4px 10px rgba(111, 67, 192, 0.3);
+  opacity: 0.9;
   color: white;
   display: flex;
   align-items: center;

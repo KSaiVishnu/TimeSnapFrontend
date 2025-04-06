@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import {
   Component,
   AfterViewInit,
@@ -22,8 +22,14 @@ import { MatInputModule } from '@angular/material/input';
 import { environment } from '../../../../environments/environment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingComponent } from '../../../loading/loading.component';
+import { ErrorHandlerService } from '../../../shared/services/error-handler.service';
 
-// const ELEMENT_DATA: any = [];
+enum ApiStatus {
+  INITIAL = 'INITIAL',
+  IN_PROGRESS = 'IN_PROGRESS',
+  SUCCESS = 'SUCCESS',
+  FAILURE = 'FAILURE',
+}
 
 @Component({
   selector: 'app-all-tasks',
@@ -49,7 +55,7 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     'assigneeNames',
     'startDate',
     'dueDate',
-    'billingType',
+    // 'billingType',
     'actions',
   ];
   dataSource = new MatTableDataSource<any>();
@@ -58,7 +64,8 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -70,7 +77,10 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   currentlyEditingTaskId: number | null = null; // Track which row is in editing mode
 
   isLoading = true;
-  // isLoading = false;
+
+  apiStatus: ApiStatus = ApiStatus.INITIAL;
+  errorMessage: string = '';
+  errorStatus: number | null = null;
 
   setEditingTask(taskId: number | null) {
     this.currentlyEditingTaskId = taskId;
@@ -88,22 +98,8 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     this.fetchTasks();
   }
 
-  // ngOnInit() {
-  //   this.loadData();
-  // }
-
-  // async loadData() {
-  //   try {
-  //     console.log(this.billingType);
-  //     await this.fetchAssignees();
-  //     await this.fetchTasks();
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // }
-
   tasks: any[] = [];
-  groupedTasks: any[] = [];
+  groupedTasks: any;
 
   allAssignees: { userName: string; employeeId: string; email: string }[] = []; // Store all users
 
@@ -121,7 +117,7 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   }
 
   removeAssignee(taskID: string, index: number) {
-    const task = this.groupedTasks.find((t) => t.taskID === taskID);
+    const task = this.groupedTasks.find((t: any) => t.taskID === taskID);
     if (task) {
       task.assignee.splice(index, 1);
     }
@@ -162,100 +158,37 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
 
     console.log(params);
 
-    this.isLoading = true;
-    // this.isLoading = false;
-
+    this.apiStatus = ApiStatus.IN_PROGRESS;
     this.http.get<any[]>(`${this.baseURL}/tasks`, { params }).subscribe({
       next: (res: any) => {
         console.log(res);
+        // res = [];
+        this.apiStatus = ApiStatus.SUCCESS;
         this.tasks = res;
-        // const groupedTasks = this.tasks.reduce((acc, task) => {
-        //   let existingTask = acc.find(
-        //     (t: { taskID: any }) => t.taskID === task.taskID
-        //   );
 
-        //   // Ensure assignee is an array of objects, each with assignee and empId
-        //   const assigneeArray = Array.isArray(task.assignee)
-        //     ? task.assignee
-        //     : [{ assignee: task.assignee, empId: task.empId }]; // If not an array, create it
-
-        //   if (existingTask) {
-        //     // Merge assignees and prevent duplicates
-        //     existingTask.assignee = [
-        //       ...new Set([...existingTask.assignee, ...assigneeArray]),
-        //     ];
-        //   } else {
-        //     acc.push({
-        //       task: task.task,
-        //       assignee: assigneeArray,
-        //       startDate: task.startDate,
-        //       dueDate: task.dueDate,
-        //       billingType: task.billingType,
-        //       taskID: task.taskID,
-        //       isEditing: false, // Track edit mode
-        //       searchTerm: '',
-        //       showSuggestions: false,
-        //       filteredAssignees: [], // Filtered list
-        //     });
-        //   }
-
-        //   return acc;
-        // }, []);
-
-        // const groupedTasks = this.tasks.reduce((acc, task) => {
-        //   // Find existing task by taskId
-        //   let existingTask = acc.find((t: { taskId: string }) => t.taskId === task.taskId);
-        
-        //   if (existingTask) {
-        //     // Merge assignees, ensuring no duplicates
-        //     const newAssignees = task.assignees.filter(
-        //       (newAssignee: { empId: string }) => 
-        //       !existingTask.assignees.some((a: { empId: string }) => a.empId === newAssignee.empId)
-        //     );
-            
-        //     existingTask.assignees = [...existingTask.assignees, ...newAssignees];
-        //   } else {
-        //     acc.push({
-        //       taskId: task.taskId,
-        //       taskName: task.taskName,
-        //       startDate: task.startDate,
-        //       dueDate: task.dueDate,
-        //       billingType: task.billingType,
-        //       assignees: task.assignees || [], // Ensure assignees is an array
-        //       isEditing: false, // Track edit mode
-        //       searchTerm: '',
-        //       showSuggestions: false,
-        //       filteredAssignees: [], // Filtered list
-        //     });
-        //   }
-        
-        //   return acc;
-        // }, []);
-        
-
-        // this.groupedTasks = groupedTasks;
-        // console.log(groupedTasks);
-        // this.dataSource = groupedTasks;
-
-        const groupedTasks = this.tasks;
-        
-        this.isLoading = false;
         this.cdr.detectChanges(); // Forces UI to update
 
-        this.dataSource = new MatTableDataSource(groupedTasks);
+        this.dataSource = new MatTableDataSource(this.tasks);
         this.dataSource.paginator = this.paginator;
-
-        console.log(groupedTasks);
-
-        // this.isLoading = false;
-        // this.cdr.detectChanges(); // Forces UI to update
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.log(err);
-        this.isLoading = false;
-        // this.cdr.detectChanges(); // Forces UI to update
+        this.apiStatus = ApiStatus.FAILURE;
+        this.handleError(err);
+        this.cdr.detectChanges(); // Forces UI update
       },
     });
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    const errorInfo = this.errorHandler.getErrorMessage(error);
+    this.errorStatus = errorInfo.status;
+    this.errorMessage = errorInfo.message;
+  }
+
+  
+  onRetry() {
+    this.fetchTasks();
   }
 
   // Fetch all assignees from the UserEmployee table (API call)

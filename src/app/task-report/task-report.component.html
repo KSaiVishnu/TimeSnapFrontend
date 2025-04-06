@@ -1,4 +1,4 @@
-
+<!-- 
   
   <div class="main-container">
   <h2>Completed Tasks</h2>
@@ -22,29 +22,33 @@
           <th>Task Name</th>
           <th>Start Date</th>
           <th>Completed Date</th>
+          <th>No.of days</th>
           <th>Total Hours</th>
           <th>Billing Type</th>
         </tr>
       </thead>
       <tbody>
         <ng-container *ngFor="let employee of paginatedData">
-          <!-- Employee Info Row -->
+          Employee Info Row
           <tr class="employee-info">
             <td><strong>{{ employee.userName }} ({{ employee.employeeId }})</strong></td>
             <td><strong>{{ employee.totalTasksCompleted }} Tasks</strong></td>
             <td></td>
             <td></td>
+            <td></td>
             <td><strong>{{ employee.totalHoursSpent }} Hrs</strong></td>
-            <td colspan="5"></td> <!-- Empty cells for alignment -->
+            <td colspan="5"></td> 
+            Empty cells for alignment
           </tr>
   
-          <!-- Task Details -->
+          Task Details
           <tr class="task -details" *ngFor="let task of employee.tasks; let i = index" [class.odd-row]="i % 2 !== 0">
 
             <td>{{ task.taskId }}</td>
             <td>{{ task.taskName }}</td>
             <td>{{ task.startDate | date: 'MMM dd, yyyy' }}</td>
             <td>{{ task.completedDate | date: 'MMM dd, yyyy' }}</td>
+            <td>{{ getDaysDifference(task.startDate, task.completedDate) }} days</td>
             <td>{{ task.totalHours }}</td>
             <td>{{ task.billingType }}</td>
           </tr>
@@ -54,7 +58,7 @@
   </div>
   
   <ng-template #loading>
-    <!-- <p>Loading data...</p> -->
+    <p>Loading data...</p>
      <app-loading></app-loading>
   </ng-template>
   
@@ -67,4 +71,120 @@
     Next
   </button>
   </div>
+</div> -->
+
+<div class="reports-main-container">
+<div class="header-container">
+  <h2>Completed Tasks</h2>
+
+  <div class="select-range-container">
+    <label for="timeFilter">Select Time Range: </label>
+    <select
+      id="timeFilter"
+      [(ngModel)]="selectedMonths"
+      (change)="loadCompletedTasks()"
+    >
+      <option value="12">Last 1 Year</option>
+      <option value="6">Past 6 Months</option>
+      <option value="3">Past 3 Months</option>
+    </select>
+  </div>
+</div>
+
+<div *ngIf="apiStatus === 'IN_PROGRESS'">
+  <app-loading></app-loading>
+</div>
+
+<div
+  *ngIf="
+    apiStatus === 'SUCCESS' && paginatedData?.length > 0;
+    else errorTemplate
+  "
+  class="table-container"
+>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Task ID</th>
+        <th>Task Name</th>
+        <th>Start Date</th>
+        <th>Completed Date</th>
+        <th>No.of days</th>
+        <th>Total Hours</th>
+        <th>Billing Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let employee of paginatedData">
+        <tr class="employee-info">
+          <td>
+            <strong>{{ employee.userName }} ({{ employee.employeeId }})</strong>
+          </td>
+          <td>
+            <strong>{{ employee.totalTasksCompleted }} Tasks</strong>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>
+            <strong>{{ employee.totalHoursSpent }} Hrs</strong>
+          </td>
+          <td colspan="5"></td>
+        </tr>
+        <tr
+          class="task-details"
+          *ngFor="let task of employee.tasks; let i = index"
+          [class.odd-row]="i % 2 !== 0"
+        >
+          <td>{{ task.taskId }}</td>
+          <td>{{ task.taskName }}</td>
+          <td>{{ task.startDate | date : "MMM dd, yyyy" }}</td>
+          <td>{{ task.completedDate | date : "MMM dd, yyyy" }}</td>
+          <td>
+            {{ getDaysDifference(task.startDate, task.completedDate) }} days
+          </td>
+          <td>{{ task.totalHours }}</td>
+          <td>{{ task.billingType }}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+
+<!-- ERROR HANDLING -->
+<ng-template #errorTemplate>
+  <div class="error-main-container">
+    <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
+      <p class="error-message">
+        {{ errorMessage }} (Error Code: {{ errorStatus }})
+      </p>
+      <button (click)="onRetry()" class="retry-btn">Retry</button>
+    </div>
+
+    <div
+      *ngIf="apiStatus === 'SUCCESS' && paginateData.length === 0"
+      class="no-data"
+    >
+      <p>No Records found.</p>
+    </div>
+  </div>
+</ng-template>
+
+<div class="pagination-buttons-container">
+  <div class="pagination-buttons">
+    <button (click)="prevPage()" [disabled]="currentPage === 1" class="pagination-button">
+      Previous
+    </button>
+    <button
+      (click)="nextPage()"
+      [disabled]="
+        !groupedTasks || currentPage * pageSize >= groupedTasks.length
+      "
+      class="pagination-button"
+    >
+      Next
+    </button>
+  </div>
+</div>
+
 </div>

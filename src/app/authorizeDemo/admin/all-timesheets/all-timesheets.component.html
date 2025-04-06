@@ -37,69 +37,111 @@
   </table>
 </div> -->
 
+<div class="timesheet-main-container">
+  <div class="header-actions">
+    <div class="date-picker-container">
+      <mat-form-field>
+        <mat-label>Select Date Range</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input
+            matStartDate
+            placeholder="Start Date"
+            formControlName="start"
+          />
+          <input matEndDate placeholder="End Date" formControlName="end" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+      <!-- <button mat-raised-button color="primary" (click)="fetchTimesheets()">
+    Apply
+  </button> -->
+    </div>
+    <button
+      *ngIf="timesheetsData.length !== 0"
+      mat-raised-button
+      color="accent"
+      (click)="openExportPopup()"
+      style="margin-left: auto; margin-right: 10px"
+    >
+      Export
+    </button>
+  </div>
 
+  <!-- Loading State -->
+  <div *ngIf="apiStatus === 'IN_PROGRESS'" class="loading-container">
+    <div class="loading-clock">
+      <div class="clock-face"></div>
+      <div class="hour-hand"></div>
+      <div class="minute-hand"></div>
+      <div class="center-dot"></div>
+    </div>
+  </div>
 
+  <!-- Error State -->
+  <div class="error-main-container">
+    <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
+      <p class="error-message">
+        {{ errorMessage }} (Error Code: {{ errorStatus }})
+      </p>
+      <button (click)="onRetry()" class="retry-btn">Retry</button>
+    </div>
 
+    <!-- No Timesheets Empty State -->
+    <div
+      *ngIf="apiStatus === 'SUCCESS' && timesheetsData.length === 0"
+      class="no-timesheets empty-state"
+    >
+      <h3>No Timesheets Found</h3>
+      <p>You don't have any timesheets for this period.</p>
+    </div>
+  </div>
 
-
-<div class="date-picker-container">
-  <mat-form-field appearance="outline">
-    <mat-label>Select Date Range</mat-label>
-    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-      <input matStartDate placeholder="Start Date" formControlName="start">
-      <input matEndDate placeholder="End Date" formControlName="end">
-    </mat-date-range-input>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-date-range-picker #picker></mat-date-range-picker>
-  </mat-form-field>
-  <button mat-raised-button color="primary" (click)="fetchTimesheets()">Apply</button>
-</div>
-
-<button mat-raised-button color="accent" (click)="openExportPopup()">Export</button>
-
-
-
-<div class="timesheet-container">
-  <table class="task-table">
-    
-    <!-- Table Header (Only Once) -->
-    <thead>
-      <tr>
-        <th> Task ID </th>
-        <th> Task Name </th>
-        <th> Date </th>
-        <th> Time (Minutes) </th>
-        <th> Billing Type </th>
-        <th> Notes </th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <!-- Loop through each user -->
-      <ng-container *ngFor="let user of timesheetsData; let i = index">
-        
-        <!-- User Name Row (Spanning All Columns) -->
-        <tr class="user-row" (click)="toggleUser(i)">
-          <td colspan="6">
-            <strong>{{ user.userName }} ({{ user.empId }})</strong>
-            <span class="toggle-icon">{{ expandedUsers[i] ? '▼' : '►' }}</span>
-          </td>
+  <div
+    *ngIf="apiStatus === 'SUCCESS' && timesheetsData.length > 0"
+    class="timesheet-container"
+  >
+    <table class="task-table">
+      <!-- Table Header (Only Once) -->
+      <thead>
+        <tr>
+          <th>Task ID</th>
+          <th>Task Name</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Billing Type</th>
+          <th>Notes</th>
         </tr>
+      </thead>
 
-        <!-- User's Tasks (Initially Visible) -->
-        <tr *ngFor="let task of user.timesheets" [hidden]="!expandedUsers[i]">
-          <td>{{ task.taskId }}</td>
-          <td>{{ task.taskName }}</td>
-          <td>{{ task.date | date:'MMM dd, yyyy' }}</td>
-          <td>{{ task.totalMinutes }}</td>
-          <td>{{ task.billingType }}</td>
-          <td>{{ task.notes }}</td>
-        </tr>
+      <tbody>
+        <!-- Loop through each user -->
+        <ng-container *ngFor="let user of timesheetsData; let i = index">
+          <!-- User Name Row (Spanning All Columns) -->
+          <tr class="user-row" (click)="toggleUser(i)">
+            <td colspan="6">
+              <strong>{{ user.userName }} ({{ user.empId }})</strong>
+              <!-- <span class="total-time">{{ getTotalTime(user.timesheets) }}</span> -->
+              <span class="toggle-icon">{{
+                expandedUsers[i] ? "▼" : "►"
+              }}</span>
+            </td>
+          </tr>
 
-      </ng-container>
-    </tbody>
-
-  </table>
-
-
+          <!-- User's Tasks (Initially Visible) -->
+          <tr *ngFor="let task of user.timesheets" [hidden]="!expandedUsers[i]">
+            <td>{{ task.taskId }}</td>
+            <td>{{ task.taskName }}</td>
+            <td>{{ task.date | date : "MMM dd, yyyy" }}</td>
+            <td>{{ task.totalMinutes | timeFormat }}</td>
+            <td>{{ task.billingType }}</td>
+            <td>{{ task.notes }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
 </div>

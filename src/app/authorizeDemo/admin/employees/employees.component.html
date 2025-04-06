@@ -6,9 +6,10 @@
         <div class="card-header">
           <h2>Employees</h2>
         </div>
-        
+
         <div class="card-content">
-          <div *ngIf="isLoading" class="loading-container">
+          <!-- Loading State -->
+          <div *ngIf="apiStatus === 'IN_PROGRESS'" class="loading-container">
             <div class="loading-clock">
               <div class="clock-face"></div>
               <div class="hour-hand"></div>
@@ -16,8 +17,24 @@
               <div class="center-dot"></div>
             </div>
           </div>
-          
-          <div *ngIf="!isLoading">
+
+          <!-- Error State -->
+          <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
+            <p class="error-message">
+              {{ errorMessage }} (Error Code: {{ errorStatus }})
+            </p>
+            <button (click)="onRetry()" class="retry-btn">Retry</button>
+          </div>
+
+          <div
+            *ngIf="apiStatus === 'SUCCESS' && employees.length === 0"
+            class="no-data"
+          >
+            <p>No employees found.</p>
+          </div>
+
+          <!-- Success State -->
+          <div *ngIf="apiStatus === 'SUCCESS' && employees.length > 0">
             <table class="employees-table">
               <thead>
                 <tr>
@@ -32,16 +49,21 @@
               <tbody>
                 <tr *ngFor="let employee of employees">
                   <!-- <td class="employee-id">{{ employee.userId.substring(0, 8) }}...</td> -->
-                  <td>{{ employee.userName}}</td>
-                  <td>{{ employee.email}}</td>
+                  <td>{{ employee.userName }}</td>
+                  <td>{{ employee.email }}</td>
                   <td>{{ employee.empId }}</td>
                   <td>
                     <select [(ngModel)]="employee.roleId" class="role-select">
-                      <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+                      <option *ngFor="let role of roles" [value]="role.id">
+                        {{ role.name }}
+                      </option>
                     </select>
                   </td>
                   <td>
-                    <button (click)="updateUserRole(employee)" class="action-btn">
+                    <button
+                      (click)="updateUserRole(employee)"
+                      class="action-btn"
+                    >
                       <i class="far fa-save"></i>
                     </button>
                   </td>
@@ -51,22 +73,25 @@
                 </tr>
               </tbody>
             </table>
-            
+
             <div class="pagination">
-              <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+              <mat-paginator
+                [pageSizeOptions]="[10, 15, 20]"
+                showFirstLastButtons
+              ></mat-paginator>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- Add Employee Form -->
     <div class="add-employee-container">
       <div class="card">
         <div class="card-header">
           <h2><i class="fas fa-user-plus"></i> Add Employees</h2>
         </div>
-        
+
         <div class="card-content">
           <form [formGroup]="form" (ngSubmit)="onSubmitEmployees()">
             <div class="form-group">
@@ -77,7 +102,10 @@
                 placeholder="Enter employee name"
               />
               <div
-                *ngIf="form.controls['empName'].invalid && form.controls['empName'].touched"
+                *ngIf="
+                  form.controls['empName'].invalid &&
+                  form.controls['empName'].touched
+                "
                 class="error-feedback"
               >
                 Employee Name is required.
@@ -93,7 +121,9 @@
               />
               <div
                 class="error-feedback"
-                *ngIf="form.get('empMail')?.touched && form.get('empMail')?.errors"
+                *ngIf="
+                  form.get('empMail')?.touched && form.get('empMail')?.errors
+                "
               >
                 <ng-container [ngSwitch]="getFirstError('empMail')">
                   <div *ngSwitchCase="'required'">
@@ -117,7 +147,10 @@
                 placeholder="Enter employee id"
               />
               <div
-                *ngIf="form.controls['empId'].invalid && form.controls['empId'].touched"
+                *ngIf="
+                  form.controls['empId'].invalid &&
+                  form.controls['empId'].touched
+                "
                 class="error-feedback"
               >
                 Employee Id is required.
@@ -157,7 +190,3 @@
     </div>
   </div>
 </div>
-
-
-
-

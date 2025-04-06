@@ -1,6 +1,6 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDatepickerModule, MatDateRangePicker } from '@angular/material/datepicker';
 import {
   FormBuilder,
   FormControl,
@@ -8,7 +8,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ExportPopupComponent } from '../../../export-popup/export-popup.component';
 import { CommonModule } from '@angular/common';
@@ -23,6 +23,17 @@ import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCard, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
+import { ErrorHandlerService } from '../../../shared/services/error-handler.service';
+import { MatButton } from '@angular/material/button';
+import { MinutesToHoursPipe } from "../../../shared/pipes/minutes-to-hours.pipe";
+import { TimeFormatPipe } from "../../../shared/pipes/time-format.pipe";
+
+enum ApiStatus {
+  INITIAL = 'INITIAL',
+  IN_PROGRESS = 'IN_PROGRESS',
+  SUCCESS = 'SUCCESS',
+  FAILURE = 'FAILURE',
+}
 
 @Component({
   selector: 'app-all-timesheets',
@@ -34,13 +45,14 @@ import { MatNativeDateModule } from '@angular/material/core';
     CommonModule,
     MatTableModule,
     MatExpansionModule,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
     MatNativeDateModule,
     MatInputModule,
     MatFormFieldModule,
-  ],
+    MatButton,
+    MatDateRangePicker,
+    MinutesToHoursPipe,
+    TimeFormatPipe
+],
   templateUrl: './all-timesheets.component.html',
   styleUrl: './all-timesheets.component.scss',
 })
@@ -223,11 +235,16 @@ export class AllTimesheetsComponent {
 
   range: FormGroup;
 
+  apiStatus: ApiStatus = ApiStatus.INITIAL;
+  errorMessage: string = '';
+  errorStatus: number | null = null;
+
   constructor(
     private http: HttpClient,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private errorHandler: ErrorHandlerService
   ) {
     const today = new Date();
     const currentDay = today.getDay();
@@ -248,6 +265,9 @@ export class AllTimesheetsComponent {
 
   ngOnInit(): void {
     this.fetchTimesheets();
+      this.range.valueChanges.subscribe(() => {
+        this.fetchTimesheets();
+      });
   }
 
   expandedUsers: boolean[] = [];
@@ -269,7 +289,6 @@ export class AllTimesheetsComponent {
       .set('page', this.currentPage)  // Send current page
       .set('pageSize', this.pageSize); // Send page size;
 
-
     console.log(this.currentPage,this.pageSize)
 
     console.log(
@@ -277,15 +296,16 @@ export class AllTimesheetsComponent {
       this.formatDate(this.range.value.end)
     );
 
+    this.apiStatus = ApiStatus.IN_PROGRESS;
     this.http
       .get<any>(`${this.baseURL}/timesheet/filtered-timesheets`, { params })
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.apiStatus = ApiStatus.SUCCESS;
           this.timesheetsData = [...response.timesheets];
 
           // this.totalPages = Math.ceil(response.totalUsers / this.pageSize); // Correct total pages
-
           // this.currentPage = 1; // Reset to first page on new fetch
 
 
@@ -297,24 +317,24 @@ export class AllTimesheetsComponent {
           this.cdr.detectChanges();
         },
         error: (error) => {
+          this.apiStatus = ApiStatus.FAILURE;
+          this.handleError(error);
           console.error('Error fetching timesheets:', error);
+          this.cdr.detectChanges();
         },
       });
   }
+    private handleError(error: HttpErrorResponse) {
+      const errorInfo = this.errorHandler.getErrorMessage(error);
+      this.errorStatus = errorInfo.status;
+      this.errorMessage = errorInfo.message;
+    } 
 
 
-
-//   // Update visible timesheets based on pagination
-// updatePaginatedTimesheets() {
-//   const startIndex = (this.currentPage - 1) * this.pageSize;
-//   const endIndex = startIndex + this.pageSize;
-//   this.paginatedTimesheets = this.timesheetsData.slice(startIndex, endIndex);
-// }
-
-
+    onRetry(){
+      this.fetchTimesheets();
+    }
   
-  
-
   private formatDate(date: Date | null): string {
     if (!date) return '';
     const localDate = new Date(
@@ -331,6 +351,14 @@ export class AllTimesheetsComponent {
       data: filteredTimeSheets,
     });
   }
+
+  getTotalTime(timesheets: any[]): string {
+    const totalMinutes = timesheets.reduce((sum, t) => sum + t.totalMinutes, 0);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
+  
 
   private flattenTimesheets(): any[] {
     return this.timesheetsData.flatMap((user) =>

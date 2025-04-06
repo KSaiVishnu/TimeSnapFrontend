@@ -4,29 +4,33 @@
     <div class="filters-panel">
       <div class="filters-header">
         <h3>Filters</h3>
-        <button (click)="onClearFilters()" class="clear-btn">Clear Filters</button>
+        <button (click)="onClearFilters()" class="clear-btn">
+          Clear Filters
+        </button>
       </div>
-      
+
       <div class="filter-group">
         <label for="search-task">Search Task</label>
         <div class="search-input">
           <i class="fas fa-search"></i>
-          <input 
+          <input
             id="search-task"
-            type="search" 
-            [(ngModel)]="searchText" 
-            (input)="applyFilters()" 
+            type="search"
+            [(ngModel)]="searchText"
+            (input)="applyFilters()"
             placeholder="Enter task name"
-          >
+          />
         </div>
       </div>
-
-
 
       <div class="filter-group">
         <label class="form-label">Filter by Due Date</label>
         <div class="input-wrapper">
-          <select [(ngModel)]="selectedDate" (change)="applyFilters()" class="custom-select">
+          <select
+            [(ngModel)]="selectedDate"
+            (change)="applyFilters()"
+            class="custom-select"
+          >
             <option value="all">All</option>
             <option value="today">Today</option>
             <option value="week">This Week</option>
@@ -35,11 +39,14 @@
         </div>
       </div>
 
-
       <div class="filter-group">
         <label class="form-label">Filter by Billing Type</label>
         <div class="input-wrapper">
-          <select [(ngModel)]="selectedType" (change)="applyFilters()" class="custom-select">
+          <select
+            [(ngModel)]="selectedType"
+            (change)="applyFilters()"
+            class="custom-select"
+          >
             <option value="all">All</option>
             <option value="Billable">Billable</option>
             <option value="Non-Billable">Non-Billable</option>
@@ -47,7 +54,7 @@
         </div>
       </div>
 
-            <!-- <div class="filter-group">
+      <!-- <div class="filter-group">
         <label for="filter-date">Filter by Due Date</label>
         <mat-form-field appearance="outline" class="custom-select">
           <mat-select [(value)]="selectedDate" (valueChange)="applyFilters()">
@@ -59,9 +66,6 @@
         </mat-form-field>
       </div> -->
 
-
-
-
       <!-- <div class="filter-group">
         <label for="filter-type">Filter by Billing Type</label>
         <mat-form-field appearance="outline" class="custom-select">
@@ -72,10 +76,6 @@
           </mat-select>
         </mat-form-field>
       </div> -->
-
-
-
-
     </div>
 
     <!-- Tasks Board -->
@@ -87,7 +87,7 @@
         </button>
       </div>
 
-      <div *ngIf="loading" class="loading-container">
+      <div *ngIf="apiStatus === 'IN_PROGRESS'" class="loading-container">
         <div class="loading-clock">
           <div class="clock-face"></div>
           <div class="hour-hand"></div>
@@ -96,25 +96,70 @@
         </div>
       </div>
 
-      <div *ngIf="!loading" class="task-container" cdkDropListGroup>
+      <!-- Error State -->
+      <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
+        <p class="error-message">
+          {{ errorMessage }} (Error Code: {{ errorStatus }})
+        </p>
+        <button (click)="onRetry()" class="retry-btn">Retry</button>
+      </div>
+
+      <div
+      *ngIf="apiStatus === 'SUCCESS' && allTasks.length === 0"
+      class="no-data"
+    >
+      <p>No employees found.</p>
+    </div>
+
+      <div
+        *ngIf="apiStatus === 'SUCCESS' && allTasks.length > 0"
+        class="task-container"
+        cdkDropListGroup
+      >
         <!-- To Do Column -->
-        <div class="task-column todo-column" cdkDropList id="todoContainer" [cdkDropListData]="pendingTasks" (cdkDropListDropped)="drop($event)">
+        <div
+          class="task-column todo-column"
+          cdkDropList
+          id="todoContainer"
+          [cdkDropListData]="pendingTasks"
+          (cdkDropListDropped)="drop($event)"
+        >
           <h3 class="column-title todo-title">To Do</h3>
-          
-          <div *ngFor="let task of pendingTasks" class="task-card todo" cdkDrag [cdkDragData]="task" (mousedown)="dragging = false" (cdkDragStarted)="dragging = true" (click)="!dragging && goToTaskDetails(task)">
-            <h4>{{ task.taskName }}</h4>
+
+          <div
+            *ngFor="let task of pendingTasks"
+            class="task-card todo"
+            cdkDrag
+            [cdkDragData]="task"
+            (mousedown)="dragging = false"
+            (cdkDragStarted)="dragging = true"
+            (click)="!dragging && goToTaskDetails(task)"
+          >
+            <!-- <h4>{{ task.taskName }}</h4> -->
+            <h4>
+              {{
+                task.taskName.length > 45
+                  ? task.taskName.substring(0, 45) + "..."
+                  : task.taskName
+              }}
+            </h4>
             <p class="task-details">
               <i class="far fa-calendar-alt"></i> Due:
-              <span class="due-date">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+              <span class="due-date">{{
+                task.dueDate | date : "MMM d, yyyy"
+              }}</span>
             </p>
             <div class="task-footer">
               <span class="task-status todo">To Do</span>
-              <span *ngIf="task.billingType === 'Billable'" class="billing-badge">
+              <span
+                *ngIf="task.billingType === 'Billable'"
+                class="billing-badge"
+              >
                 <i class="fas fa-tag"></i> Billable
               </span>
             </div>
           </div>
-          
+
           <div *ngIf="pendingTasks.length === 0" class="empty-column">
             <i class="far fa-clipboard"></i>
             <p>No tasks to do</p>
@@ -122,23 +167,49 @@
         </div>
 
         <!-- In Progress Column -->
-        <div class="task-column progress-column" cdkDropList id="inProgressContainer" [cdkDropListData]="inProgressTasks" (cdkDropListDropped)="drop($event)">
+        <div
+          class="task-column progress-column"
+          cdkDropList
+          id="inProgressContainer"
+          [cdkDropListData]="inProgressTasks"
+          (cdkDropListDropped)="drop($event)"
+        >
           <h3 class="column-title progress-title">In Progress</h3>
-          
-          <div *ngFor="let task of inProgressTasks" class="task-card in-progress" cdkDrag [cdkDragData]="task" (mousedown)="dragging = false" (cdkDragStarted)="dragging = true" (click)="!dragging && goToTaskDetails(task)">
-            <h4>{{ task.taskName }}</h4>
+
+          <div
+            *ngFor="let task of inProgressTasks"
+            class="task-card in-progress"
+            cdkDrag
+            [cdkDragData]="task"
+            (mousedown)="dragging = false"
+            (cdkDragStarted)="dragging = true"
+            (click)="!dragging && goToTaskDetails(task)"
+          >
+            <!-- <h4>{{ task.taskName }}</h4> -->
+            <h4>
+              {{
+                task.taskName.length > 45
+                  ? task.taskName.substring(0, 45) + "..."
+                  : task.taskName
+              }}
+            </h4>
             <p class="task-details">
               <i class="far fa-calendar-alt"></i> Due:
-              <span class="due-date">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+              <span class="due-date">{{
+                task.dueDate | date : "MMM d, yyyy"
+              }}</span>
             </p>
             <div class="task-footer">
               <span class="task-status in-progress">In Progress</span>
-              <span *ngIf="task.billingType === 'Billable'" class="billing-badge">
+              <span
+                *ngIf="task.billingType === 'Billable'"
+                class="billing-badge"
+              >
                 <i class="fas fa-tag"></i> Billable
               </span>
             </div>
           </div>
-          
+
           <div *ngIf="inProgressTasks.length === 0" class="empty-column">
             <i class="fas fa-spinner"></i>
             <p>No tasks in progress</p>
@@ -146,23 +217,50 @@
         </div>
 
         <!-- Completed Column -->
-        <div class="task-column completed-column" cdkDropList id="completedContainer" [cdkDropListData]="completedTasks" (cdkDropListDropped)="drop($event)">
+        <div
+          class="task-column completed-column"
+          cdkDropList
+          id="completedContainer"
+          [cdkDropListData]="completedTasks"
+          (cdkDropListDropped)="drop($event)"
+        >
           <h3 class="column-title completed-title">Completed</h3>
-          
-          <div *ngFor="let task of completedTasks" class="task-card completed" cdkDrag [cdkDragData]="task" (mousedown)="dragging = false" (cdkDragStarted)="dragging = true" (click)="!dragging && goToTaskDetails(task)">
-            <h4>{{ task.taskName }}</h4>
+
+          <div
+            *ngFor="let task of completedTasks"
+            class="task-card completed"
+            cdkDrag
+            [cdkDragData]="task"
+            (mousedown)="dragging = false"
+            (cdkDragStarted)="dragging = true"
+            (click)="!dragging && goToTaskDetails(task)"
+          >
+            <!-- <h4>{{ task.taskName }}</h4> -->
+
+            <h4>
+              {{
+                task.taskName.length > 45
+                  ? task.taskName.substring(0, 45) + "..."
+                  : task.taskName
+              }}
+            </h4>
             <p class="task-details">
               <i class="far fa-calendar-check"></i> Completed:
-              <span class="due-date">{{ task.dueDate | date : "MMM d, yyyy" }}</span>
+              <span class="due-date">{{
+                task.completedDate | date : "MMM d, yyyy"
+              }}</span>
             </p>
             <div class="task-footer">
               <span class="task-status completed">Completed</span>
-              <span *ngIf="task.billingType === 'Billable'" class="billing-badge">
+              <span
+                *ngIf="task.billingType === 'Billable'"
+                class="billing-badge"
+              >
                 <i class="fas fa-tag"></i> Billable
               </span>
             </div>
           </div>
-          
+
           <div *ngIf="completedTasks.length === 0" class="empty-column">
             <i class="fas fa-check-circle"></i>
             <p>No completed tasks</p>

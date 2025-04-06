@@ -1,7 +1,8 @@
 /* non-billable.component.scss */
 .tab-container {
-    padding: 1.5rem;
-    background-color: white;
+  padding: 0.7rem 0rem;
+  background-color: white;
+  /* background-color: transparent; */
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   }
@@ -45,7 +46,7 @@
   }
   
   .tab-content {
-    padding: 1.5rem 0;
+    padding: 1.5rem 0 0 0;
   }
   
   @media (max-width: 768px) {

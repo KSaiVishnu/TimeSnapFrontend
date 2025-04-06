@@ -6,6 +6,7 @@ import {
   ChangeDetectorRef,
   Component,
   computed,
+  ElementRef,
   EventEmitter,
   inject,
   Input,
@@ -14,6 +15,7 @@ import {
   Output,
   signal,
   SimpleChanges,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -88,6 +90,10 @@ export class EditAssigneeNamesComponent implements OnInit {
   @Input() currentlyEditingTaskId!: number | null;
   @Output() editModeChange = new EventEmitter<number | null>();
 
+
+  @ViewChild('fruitInput') fruitInput!: ElementRef;
+
+
   baseURL = environment.apiBaseUrl;
 
   // allAssignees: { userName: string; employeeId: string }[] = []; // Store all users
@@ -120,6 +126,11 @@ export class EditAssigneeNamesComponent implements OnInit {
     if (changes['allAssignees'] && changes['allAssignees'].currentValue) {
       console.log("Updated employees in EditAssignee:", this.allAssignees);
       this.allFruits = this.allAssignees
+    }
+    if (changes['currentlyEditingTaskId'] && this.taskId === this.currentlyEditingTaskId) {
+      setTimeout(() => {
+        this.fruitInput?.nativeElement.focus();
+      }, 0); // Ensures input is available in DOM before focusing
     }
   }
 
@@ -226,6 +237,7 @@ getChipColor(index: number): { [key: string]: string } {
   onEdit() {
     this.isEditing = !this.isEditing;
     this.editModeChange.emit(this.taskId); // Notify parent that this row is in editing mode
+    // this.fruitInput.nativeElement.focus(); // Set focus on the input field
   }
 
   cross() {

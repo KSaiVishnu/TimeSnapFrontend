@@ -45,6 +45,11 @@
 
     <div class="row">
       <div class="col-12 col-md-7 mt-2">
+
+        <div *ngIf="isLoading">
+          <app-loading></app-loading>
+        </div>
+
         <div
           class="timesheet-container"
           *ngIf="!isLoading && timesheets.length > 0; else noTimesheets"
@@ -285,7 +290,7 @@
     </div>
 
     <div class="col-12 pt-5">
-      <app-line-chart [timesheets]="timesheets"></app-line-chart>
+      <app-line-chart [timesheets]="timesheets" [taskDetails]="taskDetails" ></app-line-chart>
     </div>
   </div>
 </div>

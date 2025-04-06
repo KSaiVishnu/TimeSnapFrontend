@@ -112,7 +112,7 @@ mat-form-field {
   
 
   .edit-container {
-    max-width: 380px;
+    max-width: 300px;
     overflow-x: auto; /* Use auto instead of scroll for better UX */
     white-space: nowrap;
   }
@@ -160,8 +160,9 @@ mat-form-field {
   border: 1px solid gray;
   color: rgb(68, 66, 66);
   padding: 6px 12px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
+  margin-right: 5px;
 }
 
 
@@ -303,3 +304,48 @@ mat-form-field {
     width: 100%;
   }
 }
+
+
+
+.assignee-edit-container {
+  position: relative;
+}
+
+.assignee-list-container {
+  max-height: 50px; /* Adjust as needed */
+  max-width: 300px; /* Adjust width as needed */
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 5px;
+  display: flex;
+}
+
+.invisible-btn {
+  // width: 100%;
+  width: 300px;
+  height: 20px; /* Small clickable area */
+  background: transparent;
+  border: none;
+  // border: 1px solid black;
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+
+
+.assignee-list-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.assignee-list-container{
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* Hide scrollbar for IE & Edge */
+}
+
+
+
+
+

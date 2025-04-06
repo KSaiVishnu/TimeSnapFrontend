@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 
@@ -15,9 +15,10 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { FirstKeyPipe } from "../../../shared/pipes/first-key.pipe";
-import { TaskReportComponent } from "../../../task-report/task-report.component";
-
+import { FirstKeyPipe } from '../../../shared/pipes/first-key.pipe';
+import { TaskReportComponent } from '../../../task-report/task-report.component';
+import { ErrorHandlerService } from '../../../shared/services/error-handler.service';
+import { ToastrService } from 'ngx-toastr';
 
 interface Employee {
   userId: string;
@@ -25,6 +26,13 @@ interface Employee {
   email: string;
   empId: string;
   roleId: string;
+}
+
+enum ApiStatus {
+  INITIAL = 'INITIAL',
+  IN_PROGRESS = 'IN_PROGRESS',
+  SUCCESS = 'SUCCESS',
+  FAILURE = 'FAILURE',
 }
 
 @Component({
@@ -37,15 +45,22 @@ interface Employee {
     MatProgressSpinnerModule,
     FirstKeyPipe,
     FormsModule,
-    TaskReportComponent
-],
+    TaskReportComponent,
+  ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.css',
 })
 export class EmployeesComponent implements OnInit, AfterViewInit {
   // allAssignees: { userName: string; employeeId: string }[] = []; // Store all users
 
-  displayedColumns: string[] = ['id', 'userName', 'email', 'employeeId', 'role', 'actions'];
+  displayedColumns: string[] = [
+    'id',
+    'userName',
+    'email',
+    'employeeId',
+    'role',
+    'actions',
+  ];
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -53,26 +68,36 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
 
   employees: any = [];
 
-  addedUsers:any = [];
+  addedUsers: any = [];
 
   form: FormGroup;
 
-  lastIdentity:any;
+  lastIdentity: any;
   count = 1;
-
-  isLoading = true;
-
 
   roles = [
     { id: '8ce4f9f7-026f-11f0-ac41-000d3a915061', name: 'Admin' },
     { id: '8ce4ff9f-026f-11f0-ac41-000d3a915061', name: 'Manager' },
-    { id: '8ce500dd-026f-11f0-ac41-000d3a915061', name: 'Employee' }
+    { id: '8ce500dd-026f-11f0-ac41-000d3a915061', name: 'Employee' },
   ];
 
-  constructor(private http: HttpClient, public formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
+  apiStatus: ApiStatus = ApiStatus.INITIAL;
+  errorMessage: string = '';
+  errorStatus: number | null = null;
+
+  constructor(
+    private http: HttpClient,
+    public formBuilder: FormBuilder,
+    private cdr: ChangeDetectorRef,
+    private errorHandler: ErrorHandlerService,
+    private toastr: ToastrService
+  ) {
     this.form = this.formBuilder.group({
       empName: ['', Validators.required],
-      empMail: ['', [Validators.required, Validators.email, this.emailDomainValidator]],
+      empMail: [
+        '',
+        [Validators.required, Validators.email, this.emailDomainValidator],
+      ],
       empId: ['', Validators.required],
     });
   }
@@ -84,11 +109,11 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
 
   emailDomainValidator(control: AbstractControl) {
     const email = control.value;
-    return email && (email.endsWith('@gmail.com') || email.endsWith('@framsikt.no'))
+    return email &&
+      (email.endsWith('@gmail.com') || email.endsWith('@framsikt.no'))
       ? null
       : { invalidDomain: true };
   }
-  
 
   ngOnInit(): void {
     this.fetchEmployees();
@@ -101,21 +126,31 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  fetchEmployees() {
-    this.isLoading = true;
-    this.http
-      .get<[]>(
-        `${this.baseURL}/user-employee`
-      )
-      .subscribe((data) => {
-        console.log(data);
-        this.isLoading = false;
-        this.employees = data;
-        this.cdr.detectChanges(); // Forces UI to update
-        // this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.paginator;
+  private handleError(error: HttpErrorResponse) {
+    const errorInfo = this.errorHandler.getErrorMessage(error);
+    this.errorStatus = errorInfo.status;
+    this.errorMessage = errorInfo.message;
+  }
 
-      });
+  fetchEmployees() {
+    this.apiStatus = ApiStatus.IN_PROGRESS;
+    this.http.get<any[]>(`${this.baseURL}/user-employee`).subscribe({
+      next: (data) => {
+        // data = [];
+        this.apiStatus = ApiStatus.SUCCESS;
+        this.employees = data;
+        this.cdr.detectChanges(); // Forces UI update
+      },
+      error: (error: HttpErrorResponse) => {
+        this.apiStatus = ApiStatus.FAILURE;
+        this.handleError(error);
+        this.cdr.detectChanges(); // Forces UI update
+      },
+    });
+  }
+
+  onRetry() {
+    this.fetchEmployees();
   }
 
   fetchLastIdentityId() {
@@ -123,12 +158,20 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
       .get<{ lastIdentity: number }>(
         `${this.baseURL}/user-employee/get-last-identity`
       )
-      .subscribe((response) => {
-        console.log('Last Identity ID:', response.lastIdentity);
-        this.lastIdentity = response.lastIdentity;
-        const newId = (response.lastIdentity + this.count).toString().padStart(3, '0');
-        const newEmpId = `E${newId}`;
-        this.form.patchValue({ empId: newEmpId });
+      .subscribe({
+        next: (response) => {
+          console.log('Last Identity ID:', response.lastIdentity);
+          this.lastIdentity = response.lastIdentity;
+          const newId = (response.lastIdentity + this.count)
+            .toString()
+            .padStart(3, '0');
+          const newEmpId = `E${newId}`;
+          this.form.patchValue({ empId: newEmpId });
+        },
+        error: (error: any) => {
+          // alert("Error While Fetching Last EmpId");
+          // this.toastr.error('Error ', 'Task Updation Successful');
+        },
       });
   }
 
@@ -154,23 +197,22 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     console.log(this.addedUsers);
 
     this.http
-      .post<{ message: string}>(
+      .post<{ message: string }>(
         `${this.baseURL}/user-employee/add-employee`,
         this.addedUsers
       )
       .subscribe((response) => {
         console.log(response.message);
       });
-      this.addedUsers = [];
+    this.addedUsers = [];
   }
 
-
-  onAddEmployee(){
+  onAddEmployee() {
     const formValue = this.form.value;
     let formData = {
       employeeId: formValue.empId,
       userName: formValue.empName,
-      email: formValue.empMail
+      email: formValue.empMail,
     };
     this.addedUsers = [...this.addedUsers, formData];
     console.log(this.addedUsers);
@@ -181,8 +223,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     this.form.patchValue({ empId: newEmpId });
   }
 
-
-  removeAssignee(index: number){
+  removeAssignee(index: number) {
     this.addedUsers.splice(index, 1);
     console.log(this.addedUsers);
   }
@@ -190,22 +231,22 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   updateUserRole(user: any) {
     const updatedData = {
       userId: user.userId,
-      newRoleId: user.roleId
+      newRoleId: user.roleId,
     };
 
-    console.log(updatedData)
-  
-    this.http.put(`${this.baseURL}/user-employee/update-user-role`, updatedData).subscribe({
-      next: (response) => {
-        console.log('User role updated successfully', response);
-      },
-      error: (error) => {
-        console.error('Error updating user role', error);
-      }
-    });
-    
-  }
+    console.log(updatedData);
 
+    this.http
+      .put(`${this.baseURL}/user-employee/update-user-role`, updatedData)
+      .subscribe({
+        next: (response) => {
+          console.log('User role updated successfully', response);
+        },
+        error: (error) => {
+          console.error('Error updating user role', error);
+        },
+      });
+  }
 }
 
 export interface UserEmployee {

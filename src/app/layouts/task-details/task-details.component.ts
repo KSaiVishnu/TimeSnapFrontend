@@ -175,6 +175,8 @@ export class TaskDetailsComponent implements OnInit {
       next: (response: any) => {
         this.taskDetails = response;
         console.log('Task Details:', this.taskDetails);
+        this.cdr.detectChanges(); // Force update to reflect changes
+
       },
       error: (error: any) => {
         if (error.status === 404) {

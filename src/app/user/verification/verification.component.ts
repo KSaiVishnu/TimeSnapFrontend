@@ -57,63 +57,97 @@ export class VerificationComponent {
     return this.otpDigits.join("")
   }
 
+  // onVerifyOtp() {
+  //   console.log(this.otpValue);
+  //   this.otpValue = this.getOtpValue();
+  //   console.log(this.otpValue);
+  //   console.log(typeof(this.otpValue));
+
+  //   this.authService
+  //     .verifyOtp(this.authService.getEmail(), this.otpValue)
+  //     .subscribe({
+  //       next: (res: any) => {
+  //         // this.router.navigateByUrl("/signin");
+  //         this.authService.createUser(this.authService.getForm()).subscribe({
+  //           next: (res: any) => {
+  //             if (res.succeeded) {
+  //               this.toastr.success(
+  //                 'New user created!',
+  //                 'Registration Successful'
+  //               );
+  //               this.router.navigateByUrl("/signin");
+  //             }
+  //           },
+  //           error: (err) => {
+  //             if (err.error.errors)
+  //               err.error.errors.forEach((x: any) => {
+  //                 switch (x.code) {
+  //                   case 'DuplicateUserName':
+  //                     break;
+  //                   case 'DuplicateEmail':
+  //                     this.toastr.error(
+  //                       'Email is already taken.',
+  //                       'Registration Failed'
+  //                     );
+  //                     break;
+  //                   case 'InvalidEmailDomain':
+  //                     this.toastr.error(
+  //                       'Only email addresses ending with .ac.in are allowed.',
+  //                       'Registration Failed'
+  //                     );
+  //                     break;
+  //                   default:
+  //                     this.toastr.error(
+  //                       'Contact the developer',
+  //                       'Registration Failed'
+  //                     );
+  //                     console.log(x);
+  //                     break;
+  //                 }
+  //               });
+  //             else console.log('error:', err);
+  //           },
+  //         });
+
+  //         console.log(res);
+  //       },
+  //       error: (err) => {
+  //         console.log(err);
+  //       },
+  //     });
+  // }
+
+
   onVerifyOtp() {
-    console.log(this.otpValue);
     this.otpValue = this.getOtpValue();
-    console.log(this.otpValue);
-    console.log(typeof(this.otpValue));
+    const formData = {
+      ...this.authService.getForm(),
+      otp: this.otpValue,
+    };
 
-    this.authService
-      .verifyOtp(this.authService.getEmail(), this.otpValue)
-      .subscribe({
-        next: (res: any) => {
-          // this.router.navigateByUrl("/signin");
-          this.authService.createUser(this.authService.getForm()).subscribe({
-            next: (res: any) => {
-              if (res.succeeded) {
-                this.toastr.success(
-                  'New user created!',
-                  'Registration Successful'
-                );
-                this.router.navigateByUrl("/signin");
-              }
-            },
-            error: (err) => {
-              if (err.error.errors)
-                err.error.errors.forEach((x: any) => {
-                  switch (x.code) {
-                    case 'DuplicateUserName':
-                      break;
-                    case 'DuplicateEmail':
-                      this.toastr.error(
-                        'Email is already taken.',
-                        'Registration Failed'
-                      );
-                      break;
-                    case 'InvalidEmailDomain':
-                      this.toastr.error(
-                        'Only email addresses ending with .ac.in are allowed.',
-                        'Registration Failed'
-                      );
-                      break;
-                    default:
-                      this.toastr.error(
-                        'Contact the developer',
-                        'Registration Failed'
-                      );
-                      console.log(x);
-                      break;
-                  }
-                });
-              else console.log('error:', err);
-            },
+    console.log(formData);
+  
+    this.authService.verifyAndCreateUser(formData).subscribe({
+      next: (res: any) => {
+        if (res.succeeded) {
+          this.toastr.success('New user created!', 'Registration Successful');
+          this.router.navigateByUrl('/signin');
+        }
+      },
+      error: (err) => {
+        console.log(err);
+        if (err.error.message) {
+          this.toastr.error(err.error.message, 'Registration Failed');
+        } else if (err.error.errors) {
+          err.error.errors.forEach((e: any) => {
+            this.toastr.error(e.description, 'Registration Failed');
           });
-
-          console.log(res);
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
+        } else {
+          this.toastr.error('Unexpected error occurred', 'Registration Failed');
+        }
+      }
+    });
   }
+  
+
 }

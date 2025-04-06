@@ -61,6 +61,12 @@ export class AuthService {
     return this.http.post(this.baseURL + '/signup', formData);
   }
 
+
+  verifyAndCreateUser(formData: any) {
+    return this.http.post(this.baseURL + '/verify-and-create', formData, { withCredentials: true });
+  }
+  
+
   signin(formData: any) {
     return this.http.post(this.baseURL + '/signin', formData, { withCredentials: true });
   }

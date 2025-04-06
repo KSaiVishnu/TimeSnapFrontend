@@ -6,7 +6,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { TaskUploadComponent } from '../../authorizeDemo/admin/import/task-upload/task-upload.component';
 import { AuthService } from '../../shared/services/auth.service';
 import { UserService } from '../../shared/services/user.service';
@@ -50,8 +50,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TaskService, UpdateTask } from '../../shared/services/task.service';
 import { AnyAaaaRecord } from 'dns';
+import { ErrorHandlerService } from '../../shared/services/error-handler.service';
 
 // export const ELEMENT_DATA: any = [];
+
+enum ApiStatus {
+  INITIAL = 'INITIAL',
+  IN_PROGRESS = 'IN_PROGRESS',
+  SUCCESS = 'SUCCESS',
+  FAILURE = 'FAILURE',
+}
 
 @Component({
   selector: 'app-tasks',
@@ -293,6 +301,7 @@ export class TasksComponent {
     private authService: AuthService,
     private userService: UserService,
     private tasksService: TaskService,
+    private errorHandler: ErrorHandlerService,
     private dialog: MatDialog,
     private router: Router
   ) {
@@ -531,14 +540,50 @@ export class TasksComponent {
 
   // STARTED HERE
 
+  // loadTasks() {
+  //   this.tasksService.getTasks(this.empId).subscribe((tasks: any[]) => {
+  //     this.loading = false;
+  //     this.allTasks = tasks;
+  //     console.log(this.allTasks);
+  //     this.applyFilters(); // Apply filters initially
+  //   });
+  // }
+
+  apiStatus: ApiStatus = ApiStatus.INITIAL;
+  errorMessage: string = '';
+  errorStatus: number | null = null;
+
+    private handleError(error: HttpErrorResponse) {
+      const errorInfo = this.errorHandler.getErrorMessage(error);
+      this.errorStatus = errorInfo.status;
+      this.errorMessage = errorInfo.message;
+    }
+
+
+
   loadTasks() {
-    this.tasksService.getTasks(this.empId).subscribe((tasks: any[]) => {
-      this.loading = false;
-      this.allTasks = tasks;
-      console.log(this.allTasks);
-      this.applyFilters(); // Apply filters initially
+    this.apiStatus = ApiStatus.IN_PROGRESS;
+  
+    this.tasksService.getTasks(this.empId).subscribe({
+      next: (tasks: any[]) => {
+        this.apiStatus = ApiStatus.SUCCESS;
+        this.allTasks = tasks;
+        console.log('Tasks loaded successfully:', this.allTasks);
+        this.applyFilters(); // Apply filters initially
+      },
+      error: (error) => {
+        this.apiStatus = ApiStatus.FAILURE;
+        console.error('Error loading tasks:', error);
+        this.handleError(error);
+        // alert('Failed to load tasks. Please try again later.');
+      }
     });
   }
+
+  onRetry(){
+    this.loadTasks();
+  }
+  
 
   applyFilters() {
     let filtered = [...this.allTasks];
@@ -677,6 +722,10 @@ export class TasksComponent {
       status: task.status,
       completedDate: task.status === 2 ? new Date().toISOString() : undefined, // Set completedDate only if status is 2
     };
+
+    if(task.status === 2){
+      task.completedDate = new Date().toISOString();
+    }
 
     console.log(updateTask)
     console.log(task.taskId, this.empId);

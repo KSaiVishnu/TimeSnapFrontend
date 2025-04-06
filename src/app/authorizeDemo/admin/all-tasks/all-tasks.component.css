@@ -117,6 +117,13 @@
 }
 
 
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #424242;
+}
+
 /* ::ng-deep .mat-mdc-form-field-infix {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -146,14 +153,15 @@
 
 /* all-tasks.component.scss */
 .tasks-container {
-  padding: 1rem;
+  /* padding: 1rem; */
+  /* background-color: white; */
 }
 
 .header-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin: 0px 1.5rem 1.5rem 1.5rem;
 }
 
 .section-title {
@@ -196,6 +204,7 @@
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  padding: 0px 16px;
 }
 
 .responsive-table {
@@ -214,7 +223,7 @@
   }
   
   .mat-mdc-cell {
-    padding: 0.75rem 1rem;
+    padding: 0.6rem 1rem 0.1rem 1rem;
     color: #2d3748;
   }
   
@@ -329,23 +338,33 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 1rem;
+  /* padding: 0rem 1rem; */
   text-align: center;
+  max-width: 100vw;
+  /* height: 100vh; */
+  background-color: white;
+  overflow-x: hidden;
   
   .empty-image {
     width: 200px;
-    margin-bottom: 1.5rem;
+    /* margin-bottom: 1.5rem; */
   }
   
   h3 {
     font-size: 1.25rem;
     color: #2d3748;
-    margin-bottom: 0.5rem;
+    /* margin-bottom: 0.5rem; */
   }
   
   p {
     color: #718096;
     margin-bottom: 1.5rem;
+  }
+  .add-task-btn{
+    margin-bottom: 20px;
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 }
 
@@ -359,6 +378,7 @@
   .add-task-btn {
     width: 100%;
     justify-content: center;
+    /* display: none; */
   }
 }
 
@@ -396,6 +416,178 @@
 }
 
 .task-assignee-container{
-  max-width: 450px; /* Adjust width as needed */
-
+  max-width: 350px; /* Adjust width as needed */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.error-main-container{
+  display: flex;
+  justify-content: center;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff8f8;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  padding: 24px;
+  /* margin: 16px; */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-message::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d32f2f'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.retry-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.retry-btn::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.retry-btn:hover {
+  background-color: #d32f2f;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f8ff;
+  border: 1px solid #e3e8f0;
+  border-radius: 8px;
+  padding: 32px 24px;
+  /* margin: 16px 0; */
+  min-height: 200px;
+  min-width: 400px;
+}
+
+.no-data p {
+  color: #5c6b8a;
+  font-size: 16px;
+  /* margin-top: 16px; */
+  text-align: center;
+}
+
+.no-data::before {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 80px;
+  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235c6b8a' opacity='0.6'%3E%3Cpath d='M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zm0-4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-6 10h12v-2c0-2-4-3.1-6-3.1S6 16 6 18v2z'/%3E%3C/svg%3E"); */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235c6b8a' opacity='0.6'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z'/%3E%3C/svg%3E");
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .error-container, .no-data {
+    padding: 16px;
+  }
+  
+  .no-data::before {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+
+
+
+/* Adding No Tasks Empty State to your existing styles */
+.no-tasks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f8ff;
+  border: 1px solid #e3e8f0;
+  border-radius: 8px;
+  padding: 32px 24px;
+  margin: 16px 0;
+  min-height: 200px;
+  text-align: center;
+}
+
+.no-tasks p {
+  color: #5c6b8a;
+  font-size: 16px;
+  margin-top: 16px;
+  max-width: 280px;
+}
+
+.no-tasks h3 {
+  color: #3a4a66;
+  font-size: 18px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.no-tasks::before {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235c6b8a' opacity='0.6'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 8px;
+}
+
+/* If you want a different icon variation, you can use this checklist style instead */
+.no-tasks.checklist::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235c6b8a' opacity='0.6'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 15h10v2H7zm0-4h10v2H7zm0-4h10v2H7z'/%3E%3C/svg%3E");
+}
+
