@@ -28,6 +28,20 @@ export class AuthService {
     role: '',
   };
 
+  private resetEmail: string = '';
+
+  setResetEmail(email: string) {
+    this.resetEmail = email;
+  }
+
+  getResetEmail(): string {
+    return this.resetEmail;
+  }
+
+  clearResetEmail() {
+    this.resetEmail = '';
+  }
+
   setForm(formData: any) {
     // email: string, fullName:string,password:string,role:string,confirmPassword:string
     this.form = formData;
@@ -44,7 +58,11 @@ export class AuthService {
 
   sendOtp(email: string): Observable<any> {
     console.log(email);
-    return this.http.post(`${this.baseURL}/send-otp`, { email: email }, {withCredentials: true});
+    return this.http.post(
+      `${this.baseURL}/send-otp`,
+      { email: email },
+      { withCredentials: true }
+    );
   }
 
   verifyOtp(email: string, otp: string) {
@@ -61,14 +79,49 @@ export class AuthService {
     return this.http.post(this.baseURL + '/signup', formData);
   }
 
+  preRegister(email: string): Observable<any> {
+    return this.http.post(
+      this.baseURL + '/pre-register',
+      { email },
+      { withCredentials: true }
+    );
+  }
 
   verifyAndCreateUser(formData: any) {
-    return this.http.post(this.baseURL + '/verify-and-create', formData, { withCredentials: true });
+    return this.http.post(this.baseURL + '/verify-and-create', formData, {
+      withCredentials: true,
+    });
   }
-  
+
+  // auth.service.ts
+  sendResetOtp(email: string) {
+    return this.http.post(
+      this.baseURL + '/send-reset-otp',
+      { email },
+      { withCredentials: true }
+    );
+  }
+
+  verifyResetOtp(email: string, otp: string) {
+    const data = { email: email, otp: otp };
+    console.log(data);
+    return this.http.post(this.baseURL + '/verify-reset-otp', data, {
+      withCredentials: true,
+    });
+  }
+
+  setNewPassword(email: string, newPassword: string) {
+    return this.http.post(
+      this.baseURL + '/set-new-password',
+      { email, newPassword },
+      { withCredentials: true }
+    );
+  }
 
   signin(formData: any) {
-    return this.http.post(this.baseURL + '/signin', formData, { withCredentials: true });
+    return this.http.post(this.baseURL + '/signin', formData, {
+      withCredentials: true,
+    });
   }
 
   // googleSignin(formData:any){
@@ -109,15 +162,13 @@ export class AuthService {
 
   deleteToken(): Promise<void> {
     return new Promise((resolve) => {
-      console.log("Check 2");
+      console.log('Check 2');
       this.cookieService.delete(TOKEN_KEY);
       resolve(); // Ensures the function behaves like an async function
     });
   }
-  
 
-
-  findUserByEmail(email:string){
+  findUserByEmail(email: string) {
     console.log(email);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post(

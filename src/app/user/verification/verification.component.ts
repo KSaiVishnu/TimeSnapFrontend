@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-verification',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './verification.component.html',
   styleUrl: './verification.component.scss',
 })
@@ -127,28 +127,74 @@ export class VerificationComponent {
     };
 
     console.log(formData);
+
+    this.isVerifying = true;
   
     this.authService.verifyAndCreateUser(formData).subscribe({
       next: (res: any) => {
-        if (res.succeeded) {
-          this.toastr.success('New user created!', 'Registration Successful');
-          this.router.navigateByUrl('/signin');
-        }
+        // if (res.succeeded) {
+        //   this.toastr.success('New user created!', 'Registration Successful');
+        //   this.router.navigateByUrl('/signin');
+        // }
+        this.authService.saveToken(res.token);
+        this.router.navigateByUrl('/dashboard');
       },
       error: (err) => {
         console.log(err);
-        if (err.error.message) {
-          this.toastr.error(err.error.message, 'Registration Failed');
-        } else if (err.error.errors) {
-          err.error.errors.forEach((e: any) => {
-            this.toastr.error(e.description, 'Registration Failed');
-          });
+        // if (err.error.message) {
+        //   this.toastr.error(err.error.message, 'Registration Failed');
+        // } else if (err.error.errors) {
+        //   err.error.errors.forEach((e: any) => {
+        //     this.toastr.error(e.description, 'Registration Failed');
+        //   });
+        // } else {
+        //   this.toastr.error('Unexpected error occurred', 'Registration Failed');
+        // }
+
+
+
+        if (err.status === 400) {
+          // Handle specific message from backend
+          if (err.error?.message) {
+            this.toastr.error(err.error.message, 'Verification Failed');
+          } else if (err.error?.errors) {
+            err.error.errors.forEach((e: any) => {
+              this.toastr.error(e.description || e, 'Registration Failed');
+            });
+          } else {
+            this.toastr.error('Bad request. Please check your input.', 'Error');
+          }
+        } else if (err.status === 500) {
+          this.toastr.error('Server error. Please try again later.', 'Error');
         } else {
-          this.toastr.error('Unexpected error occurred', 'Registration Failed');
+          this.toastr.error('Unexpected error occurred.', 'Error');
         }
+
+        this.isVerifying = false;
+
+        // if (err.status === 400) {
+        //   alert(err.error.message || "Invalid OTP.");
+        // } else {
+        //   alert("Something went wrong. Please try again later.");
+        // }
+
       }
     });
   }
   
+
+
+  resendOtp(){
+    const formData = this.authService.getForm();
+    console.log(formData);
+    this.authService.sendOtp(formData.email).subscribe({
+      next: (res: any) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
 }

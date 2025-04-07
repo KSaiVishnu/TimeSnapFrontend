@@ -18,7 +18,7 @@ import { environment } from '../../environments/environment';
 export class DeleteTimesheetPopupComponent {
   constructor(
     private http: HttpClient,
-    private dialogRef: MatDialogRef<ExportPopupComponent>,
+    private dialogRef: MatDialogRef<DeleteTimesheetPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: any }
   ) {}
 

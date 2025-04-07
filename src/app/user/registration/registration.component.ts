@@ -102,14 +102,54 @@ export class RegistrationComponent implements OnInit {
     if (this.form.valid) {
       let FormValue = this.form.value;
       this.service.setForm(FormValue);
-      this.router.navigateByUrl('/verify');
-      this.service.sendOtp(FormValue.email).subscribe({
-        next: (res: any) => {
-          console.log(res);
+      // this.router.navigateByUrl('/verify');
+      // this.service.sendOtp(FormValue.email).subscribe({
+      //   next: (res: any) => {
+      //     console.log(res);
+      //   },
+      //   error: (err) => {
+      //     console.log(err);
+      //   },
+      // });
+
+      this.service.preRegister(this.form.value.email).subscribe({
+        next: () => {
+          this.router.navigate(['/verify']);
         },
+        // error: (err) => {
+        //   if (err.status === 400) {
+        //     alert(err.error);
+        //   } else if (err.status === 500) {
+        //     alert("Server error. Please try again later.");
+        //   } else {
+        //     alert("Unexpected error occurred.");
+        //   }
+        // }
         error: (err) => {
-          console.log(err);
-        },
+          if (err.status === 400) {
+            const errorMsg = err.error;
+        
+            if (errorMsg === "You are not authorized to register.") {
+              // alert("Your email is not authorized to register.");
+              this.toastr.error('Your email is not authorized to register.', 'Registration Failed')
+            } else if (errorMsg === "User already registered.") {
+              // alert("This email is already registered. Please sign in instead.");
+              this.toastr.error('Email is already taken.', 'Registration Failed');
+
+            } else {
+              alert(errorMsg);
+            }
+          } else if (err.status === 500) {
+            // alert("Server error. Please try again later.");
+            this.toastr.error('Server error. Please try again later.', 'Registration Failed');
+            
+          } else {
+            // alert("Unexpected error occurred.");
+            this.toastr.error('Unexpected error occurred.', 'Registration Failed');
+          }
+          this.isSubmitted = false;
+        }
+        
       });
 
       // this.service.createUser(this.form.value)

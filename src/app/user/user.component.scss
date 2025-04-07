@@ -232,7 +232,8 @@
   overflow: hidden;
   box-shadow: 0 15px 40px rgba(111, 66, 193, 0.08), 
               0 8px 20px rgba(111, 66, 193, 0.05);
-  min-height: 550px;
+  // min-height: 550px;
+  min-height: 100vh;
 }
 
 .auth-sidebar {

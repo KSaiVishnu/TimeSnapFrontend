@@ -1,7 +1,7 @@
 declare var google: any;
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -48,7 +48,8 @@ export class LoginComponent implements OnInit {
     public formBuilder: FormBuilder,
     private service: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef    
   ) {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -344,6 +345,9 @@ export class LoginComponent implements OnInit {
           if (err.status == 400)
             this.toastr.error('Incorrect email or password.', 'Login failed');
           else console.log('error during login:\n', err);
+          // this.form.reset();
+          this.isSubmitted = false;
+          this.cdr.detectChanges();
         },
       });
     }

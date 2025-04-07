@@ -73,7 +73,7 @@
     </div>
     
     <div class="resend-code">
-      Didn't receive the code? <a href="#" class="text-primary">Resend</a>
+      Didn't receive the code? <a style="cursor: pointer;" (click)="resendOtp()" class="text-primary">Resend</a>
     </div>
   </div>
   
@@ -85,8 +85,8 @@
   </div>
   
   <div class="back-link">
-    <a routerLink="/signin" class="text-secondary">
-      <i class="material-icons">arrow_back</i> Back to Sign In
+    <a routerLink="/signup" class="text-secondary">
+      <i class="material-icons">arrow_back</i> Back to Sign Up
     </a>
   </div>
 </div>

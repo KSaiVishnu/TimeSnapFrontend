@@ -276,9 +276,21 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   openDeleteTaskPopup(task: any) {
     console.log(task);
     // let allAssignees = this.allAssignees;
-    this.dialog.open(DeleteTaskPopupComponent, {
+    const dialogRef = this.dialog.open(DeleteTaskPopupComponent, {
       width: '50%',
       data: { task },
+    });
+
+    dialogRef.afterClosed().subscribe((deletedTaskId: number) => {
+      console.log(deletedTaskId)
+      console.log(this.tasks);
+      if (deletedTaskId) {
+        this.tasks = this.tasks.filter(t => t.taskId !== deletedTaskId);
+      }
+
+      this.dataSource = new MatTableDataSource(this.tasks);
+      this.dataSource.paginator = this.paginator;
+      console.log(this.tasks);
     });
   }
 }

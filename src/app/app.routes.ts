@@ -20,6 +20,9 @@ import { AccountComponent } from './account/account.component';
 import { WorklogLeavesComponent } from './authorizeDemo/admin/import/worklog-leaves/worklog-leaves.component';
 import { ReportsComponent } from './authorizeDemo/admin/reports/reports.component';
 import { ImportComponent } from './authorizeDemo/admin/import/import.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetVerifyOtpComponent } from './reset-verify-otp/reset-verify-otp.component';
+import { SetNewPasswordComponent } from './set-new-password/set-new-password.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/signin', pathMatch: 'full' },
@@ -28,7 +31,10 @@ export const routes: Routes = [
       children: [
         { path: 'signup', component: RegistrationComponent },
         { path: 'signin', component: LoginComponent },
-        { path: 'verify', component:VerificationComponent}
+        { path: 'verify', component:VerificationComponent},
+        { path: 'forgot-password', component:ForgotPasswordComponent},
+        { path: 'reset-verify-otp', component:ResetVerifyOtpComponent},
+        { path: 'set-new-password', component:SetNewPasswordComponent},
       ]
     },
     {
