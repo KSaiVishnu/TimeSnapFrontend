@@ -22,7 +22,7 @@ import { ReportsComponent } from './authorizeDemo/admin/reports/reports.componen
 import { ImportComponent } from './authorizeDemo/admin/import/import.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetVerifyOtpComponent } from './reset-verify-otp/reset-verify-otp.component';
-import { SetNewPasswordComponent } from './set-new-password/set-new-password.component';
+import { SetNewPasswordComponent } from './user/set-new-password/set-new-password.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/signin', pathMatch: 'full' },

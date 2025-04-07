@@ -1,0 +1,339 @@
+<!-- <mat-stepper style="padding: 30px;" orientation="vertical" [linear]="true" #stepper>
+
+    <mat-step [stepControl]="emailForm">
+      <form [formGroup]="emailForm">
+        <ng-template matStepLabel>Enter Email</ng-template>
+        <mat-form-field appearance="outline">
+          <input matInput placeholder="Email" formControlName="email" required>
+        </mat-form-field>
+        <button mat-button (click)="sendOtp(stepper)" [disabled]="emailForm.invalid">Send OTP</button>
+      </form>
+    </mat-step>
+  
+    <mat-step [stepControl]="otpForm">
+      <form [formGroup]="otpForm">
+        <ng-template matStepLabel>Verify OTP</ng-template>
+        <mat-form-field appearance="outline">
+          <input type="number" matInput placeholder="OTP" formControlName="otp" required>
+        </mat-form-field>
+        <button mat-button (click)="verifyOtp(stepper)" [disabled]="otpForm.invalid">Verify OTP</button>
+      </form>
+    </mat-step>
+  
+    <mat-step [stepControl]="passwordForm">
+        <form [formGroup]="passwordForm" (ngSubmit)="setPassword()">
+          <ng-template matStepLabel>Set Password</ng-template>
+      
+          <mat-form-field appearance="outline">
+            <input matInput
+                   [type]="hidePassword ? 'password' : 'text'"
+                   formControlName="password"
+                   placeholder="New Password"
+                   required>
+            <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+      
+          <mat-form-field appearance="outline">
+            <input matInput
+                   [type]="hideConfirmPassword ? 'password' : 'text'"
+                   formControlName="confirmPassword"
+                   placeholder="Confirm Password"
+                   required>
+            <button mat-icon-button matSuffix type="button" (click)="hideConfirmPassword = !hideConfirmPassword">
+              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+      
+          <div *ngIf="passwordForm.errors?.['mismatch'] && passwordForm.touched" class="error" style="color:red;">
+            Passwords do not match.
+          </div>
+      
+          <button mat-button type="submit" [disabled]="passwordForm.invalid">Set Password</button>
+        </form>
+      </mat-step>
+      
+  
+  </mat-stepper>
+   -->
+
+<div class="stepper-container">
+  <div class="stepper-card">
+    <div class="stepper-header">
+      <h2>Reset Password</h2>
+      <p>Follow the steps to reset your password</p>
+    </div>
+
+    <!-- <div *ngIf="isLoading" class="loading-overlay">
+        <app-loading></app-loading>
+      </div> -->
+
+    <mat-stepper
+      style="padding: 20px"
+      orientation="vertical"
+      [linear]="true"
+      #stepper
+    >
+      <!-- Step 1: Email -->
+      <mat-step [stepControl]="emailForm">
+        <form [formGroup]="emailForm">
+          <ng-template matStepLabel>Enter Email</ng-template>
+          <div class="step-content">
+            <p class="step-description">
+              Enter your email address to receive a verification code
+            </p>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <div class="input-container">
+                <i class="material-icons">email</i>
+                <input
+                  id="email"
+                  type="email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  formControlName="email"
+                />
+              </div>
+              <div
+                class="error-message"
+                *ngIf="
+                  emailForm.controls['email'].invalid &&
+                  emailForm.controls['email'].touched
+                "
+              >
+                <span *ngIf="emailForm.controls['email'].hasError('required')"
+                  >Email is required</span
+                >
+                <span *ngIf="emailForm.controls['email'].hasError('email')"
+                  >Please enter a valid email</span
+                >
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button
+                type="button"
+                class="btn btn-primary btn-block"
+                (click)="sendOtp(stepper)"
+                [disabled]="emailForm.invalid || isLoading"
+              >
+                <!-- Send Verification Code -->
+                <span *ngIf="!isLoading">Send Verification Code</span>
+                <span *ngIf="isLoading" class="spinner"></span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 2: OTP -->
+      <mat-step [stepControl]="otpForm">
+        <form [formGroup]="otpForm">
+          <ng-template matStepLabel>Verify Code</ng-template>
+          <div class="step-content">
+            <p class="step-description">
+              Enter the 6-digit verification code sent to your email
+            </p>
+
+            <div class="form-group">
+              <label>Verification Code</label>
+              <div class="otp-inputs">
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  (keyup)="onOtpDigitInput($event, 0)"
+                  [(ngModel)]="otpDigits[0]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  (keyup)="onOtpDigitInput($event, 1)"
+                  [(ngModel)]="otpDigits[1]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  (keyup)="onOtpDigitInput($event, 2)"
+                  [(ngModel)]="otpDigits[2]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  (keyup)="onOtpDigitInput($event, 3)"
+                  [(ngModel)]="otpDigits[3]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  (keyup)="onOtpDigitInput($event, 4)"
+                  [(ngModel)]="otpDigits[4]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  (keyup)="onOtpDigitInput($event, 5)"
+                  [(ngModel)]="otpDigits[5]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div
+                class="error-message"
+                *ngIf="!isOtpComplete() && otpForm.touched"
+              >
+                Please enter the complete 6-digit code
+              </div>
+            </div>
+
+            <div class="resend-code">
+              Didn't receive the code?
+              <a style="cursor: pointer;" (click)="resendOtp($event)" class="text-primary">Resend</a>
+            </div>
+
+            <div class="step-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                matStepperPrevious
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="verifyOtp(stepper)"
+                [disabled]="!isOtpComplete() || isLoading"
+              >
+                
+                <span *ngIf="!isLoading">Verify Code</span>
+                <span *ngIf="isLoading" class="spinner"></span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 3: Password -->
+      <mat-step [stepControl]="passwordForm">
+        <form [formGroup]="passwordForm" (ngSubmit)="setPassword()">
+          <ng-template matStepLabel>Set New Password</ng-template>
+          <div class="step-content">
+            <p class="step-description">
+              Create a new password for your account
+            </p>
+
+            <!-- New Password -->
+            <div class="form-group">
+              <label for="password">New Password</label>
+              <div class="input-container">
+                <i class="material-icons">lock</i>
+                <input
+                  id="password"
+                  [type]="hidePassword ? 'password' : 'text'"
+                  class="form-control"
+                  placeholder="Enter new password"
+                  formControlName="password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="hidePassword = !hidePassword"
+                >
+                  <i class="material-icons">{{
+                    hidePassword ? "visibility_off" : "visibility"
+                  }}</i>
+                </button>
+              </div>
+              <div
+                class="error-message"
+                *ngIf="
+                  passwordForm.controls['password'].invalid &&
+                  passwordForm.controls['password'].touched
+                "
+              >
+                <span
+                  *ngIf="passwordForm.controls['password'].hasError('required')"
+                  >Password is required</span
+                >
+                <span
+                  *ngIf="
+                    passwordForm.controls['password'].hasError('minlength')
+                  "
+                >
+                  Password must be at least 6 characters
+                </span>
+                <span
+                  *ngIf="passwordForm.controls['password'].hasError('pattern')"
+                >
+                  Password must include at least one special character
+                </span>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <div class="input-container">
+                <i class="material-icons">lock</i>
+                <input
+                  id="confirmPassword"
+                  [type]="hideConfirmPassword ? 'password' : 'text'"
+                  class="form-control"
+                  placeholder="Confirm your password"
+                  formControlName="confirmPassword"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="hideConfirmPassword = !hideConfirmPassword"
+                >
+                  <i class="material-icons">{{
+                    hideConfirmPassword ? "visibility_off" : "visibility"
+                  }}</i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Password mismatch error -->
+            <div
+              *ngIf="passwordForm.errors?.['mismatch'] && passwordForm.touched"
+              class="password-error"
+            >
+              Passwords do not match
+            </div>
+
+            <div class="step-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                matStepperPrevious
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="passwordForm.invalid || isLoading"
+              >            
+                <span *ngIf="!isLoading">Reset Password</span>                
+                <span *ngIf="isLoading" class="spinner"></span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </div>
+</div>

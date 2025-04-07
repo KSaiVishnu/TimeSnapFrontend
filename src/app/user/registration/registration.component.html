@@ -204,11 +204,18 @@
         <i class="material-icons">lock</i>
         <input 
           id="password" 
-          type="password" 
+        [type]="hide() ? 'password' : 'text'" 
           class="form-control" 
           placeholder="Create a password" 
           formControlName="password"
         >
+      <button 
+      type="button" 
+      class="password-toggle" 
+      (click)="hide.set(!hide())"
+    >
+      <i class="material-icons">{{ hide() ? 'visibility_off' : 'visibility' }}</i>
+    </button>
         
       </div>
       <div class="error-message" *ngIf="hasDisplayableError('password')">

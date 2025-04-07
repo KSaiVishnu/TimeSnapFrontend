@@ -219,6 +219,27 @@
       font-size: 0.85rem;
     }
   }
+
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #adb5bd;
+    cursor: pointer;
+    
+    &:hover {
+      color: #6f42c1;
+    }
+    
+    i {
+      position: static;
+      transform: none;
+      font-size: 18px;
+    }
+  }
 }
 
 .error-message {

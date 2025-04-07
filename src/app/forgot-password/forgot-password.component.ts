@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { StepperComponent } from "../stepper/stepper.component";
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, StepperComponent],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'
 })
