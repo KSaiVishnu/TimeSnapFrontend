@@ -1,7 +1,46 @@
-:host {
-    display: flex;
-  }
+.snackbar-container {
+  font-family: 'Roboto', sans-serif;
+}
 
-  .example-pizza-party {
-    color: hotpink;
-  }
+.snackbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+}
+
+.snackbar-message {
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+}
+
+.snackbar-actions {
+  margin-left: 24px;
+}
+
+.snackbar-button {
+  color: #a891ff !important;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.snackbar-button:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Override Material styles for the snackbar */
+::ng-deep .mat-mdc-snack-bar-container {
+  background: linear-gradient(135deg, #6a4bcc 0%, #4e3b9e 100%) !important;
+  box-shadow: 0 6px 16px rgba(74, 58, 153, 0.3) !important;
+  border-radius: 8px !important;
+  min-width: 300px !important;
+}
+
+::ng-deep .mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  border-radius: 8px !important;
+  padding: 14px 16px !important;
+}

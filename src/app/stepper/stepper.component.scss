@@ -1,345 +1,347 @@
 .stepper-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 1.5rem;
-    background-color: #f8f9fc;
-    background-image: 
-      radial-gradient(circle at 10% 20%, rgba(111, 66, 193, 0.03) 0%, rgba(111, 66, 193, 0) 20%),
-      radial-gradient(circle at 90% 80%, rgba(111, 66, 193, 0.03) 0%, rgba(111, 66, 193, 0) 20%);
-    font-family: 'Poppins', sans-serif;
-    border-radius: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+  background-color: #f8f9fc;
+  background-image: radial-gradient(
+      circle at 10% 20%,
+      rgba(111, 66, 193, 0.03) 0%,
+      rgba(111, 66, 193, 0) 20%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(111, 66, 193, 0.03) 0%,
+      rgba(111, 66, 193, 0) 20%
+    );
+  font-family: "Poppins", sans-serif;
+  border-radius: 36px;
+}
+
+.stepper-card {
+  width: 100%;
+  max-width: 550px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(111, 66, 193, 0.08),
+    0 8px 20px rgba(111, 66, 193, 0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+.stepper-header {
+  padding: 1.75rem 1.75rem 0;
+  text-align: center;
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #6f42c1;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
   }
-  
-  .stepper-card {
-    width: 100%;
-    max-width: 550px;
-    background-color: white;
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(111, 66, 193, 0.08), 
-                0 8px 20px rgba(111, 66, 193, 0.05);
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .stepper-header {
-    padding: 1.75rem 1.75rem 0;
-    text-align: center;
-    
-    h2 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #6f42c1;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
-    }
-    
-    p {
-      color: #6c757d;
-      font-size: 0.9rem;
-      margin-bottom: 0;
-    }
-  }
-  
-  .loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .step-content {
-    padding: 0.5rem 0 1rem;
-  }
-  
-  .step-description {
+
+  p {
     color: #6c757d;
-    font-size: 0.85rem;
-    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    margin-bottom: 0;
   }
-  
-  // Form styling to match other components
-  .form-group {
-    margin-bottom: 1.25rem;
-    
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: #343a40;
-      font-size: 0.9rem;
-    }
-  }
-  
-  .input-container {
-    position: relative;
-    
-    i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #adb5bd;
-      font-size: 18px;
-    }
-    
-    .form-control {
-      padding: 10px 12px 10px 40px;
-      height: 46px;
-      width: 100%;
-      font-size: 0.9rem;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-      background-color: #f8fafc;
-      transition: all 0.3s ease;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-      
-      &:focus {
-        border-color: #6f42c1;
-        background-color: #fff;
-        box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.08);
-        outline: none;
-      }
-      
-      &::placeholder {
-        color: #adb5bd;
-        font-size: 0.85rem;
-      }
-    }
-    
-    .password-toggle {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #adb5bd;
-      cursor: pointer;
-      
-      &:hover {
-        color: #6f42c1;
-      }
-      
-      i {
-        position: static;
-        transform: none;
-        font-size: 18px;
-      }
-    }
-  }
-  
-  // OTP input styling
-  .otp-inputs {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 0.75rem;
-  }
-  
-  .otp-digit {
-    width: 45px;
-    height: 50px;
-    font-size: 1.25rem;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.step-content {
+  padding: 0.5rem 0 1rem;
+}
+
+.step-description {
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+// Form styling to match other components
+.form-group {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
     font-weight: 500;
-    text-align: center;
+    color: #343a40;
+    font-size: 0.9rem;
+  }
+}
+
+.input-container {
+  position: relative;
+
+  i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+    font-size: 18px;
+  }
+
+  .form-control {
+    padding: 10px 12px 10px 40px;
+    height: 46px;
+    width: 100%;
+    font-size: 0.9rem;
     border-radius: 8px;
     border: 1px solid #e2e8f0;
     background-color: #f8fafc;
     transition: all 0.3s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-    
+
     &:focus {
       border-color: #6f42c1;
       background-color: #fff;
       box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.08);
       outline: none;
     }
-    
-    &.filled {
-      border-color: #6f42c1;
-      background-color: rgba(111, 66, 193, 0.05);
+
+    &::placeholder {
+      color: #adb5bd;
+      font-size: 0.85rem;
     }
   }
-  
-  .resend-code {
-    font-size: 0.85rem;
-    color: #6c757d;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    
-    a {
-      color: #6f42c1;
-      text-decoration: none;
-      font-weight: 500;
-      
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-  
-  .error-message {
-    color: #e53e3e;
-    font-size: 0.75rem;
-    margin-top: 0.35rem;
-    font-weight: 400;
-  }
-  
-  .password-error {
-    color: #e53e3e;
-    font-size: 0.75rem;
-    margin-top: -0.75rem;
-    margin-bottom: 1rem;
-  }
-  
-  // Override Material stepper styles
-  ::ng-deep {
-    .mat-step-header .mat-step-icon-selected,
-    .mat-step-header .mat-step-icon-state-done,
-    .mat-step-header .mat-step-icon-state-edit {
-      background-color: #6f42c1 !important;
-    }
-    
-    .mat-stepper-vertical-line::before {
-      border-left-color: rgba(111, 66, 193, 0.2) !important;
-    }
-    
-    .mat-step-label {
-      font-size: 0.9rem !important;
-      font-weight: 500 !important;
-    }
-    
-    .mat-step-label.mat-step-label-selected {
-      color: #6f42c1 !important;
-      font-weight: 600 !important;
-    }
-    
-    .mat-vertical-content-container {
-      margin-left: 24px !important;
-    }
-    
-    .mat-vertical-content {
-      padding: 0 16px 16px 24px !important;
-    }
-  }
-  
-  // Button styling
-  .btn {
-    height: 46px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-radius: 8px;
-    padding: 0 1.25rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
+
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
     border: none;
+    color: #adb5bd;
     cursor: pointer;
-    
-    &:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+
+    &:hover {
+      color: #6f42c1;
+    }
+
+    i {
+      position: static;
+      transform: none;
+      font-size: 18px;
     }
   }
-  
-  .btn-primary {
-    background: linear-gradient(135deg, #6f42c1, #5e60ce);
-    color: white;
-    box-shadow: 0 3px 8px rgba(111, 66, 193, 0.15);
-    
-    &:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
-    }
-    
-    &:active:not(:disabled) {
-      transform: translateY(0);
-    }
-    
-    &:disabled {
-      background: linear-gradient(135deg, #a893d0, #9ea0d8);
-    }
+}
+
+// OTP input styling
+.otp-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.otp-digit {
+  width: 45px;
+  height: 50px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+  &:focus {
+    border-color: #6f42c1;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.08);
+    outline: none;
   }
-  
-  .btn-secondary {
-    background-color: transparent;
-    border: 1px solid #6f42c1;
+
+  &.filled {
+    border-color: #6f42c1;
+    background-color: rgba(111, 66, 193, 0.05);
+  }
+}
+
+.resend-code {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+  text-align: center;
+
+  a {
     color: #6f42c1;
-    
-    &:hover:not(:disabled) {
-      background-color: rgba(111, 66, 193, 0.05);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
-  
-  .btn-block {
-    width: 100%;
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 0.75rem;
+  margin-top: 0.35rem;
+  font-weight: 400;
+}
+
+.password-error {
+  color: #e53e3e;
+  font-size: 0.75rem;
+  margin-top: -0.75rem;
+  margin-bottom: 1rem;
+}
+
+// Override Material stepper styles
+::ng-deep {
+  .mat-step-header .mat-step-icon-selected,
+  .mat-step-header .mat-step-icon-state-done,
+  .mat-step-header .mat-step-icon-state-edit {
+    background-color: #6f42c1 !important;
   }
-  
+
+  .mat-stepper-vertical-line::before {
+    border-left-color: rgba(111, 66, 193, 0.2) !important;
+  }
+
+  .mat-step-label {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+  }
+
+  .mat-step-label.mat-step-label-selected {
+    color: #6f42c1 !important;
+    font-weight: 600 !important;
+  }
+
+  .mat-vertical-content-container {
+    margin-left: 24px !important;
+  }
+
+  .mat-vertical-content {
+    padding: 0 16px 16px 24px !important;
+  }
+}
+
+// Button styling
+.btn {
+  height: 46px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 0 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #6f42c1, #5e60ce);
+  color: white;
+  box-shadow: 0 3px 8px rgba(111, 66, 193, 0.15);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: linear-gradient(135deg, #a893d0, #9ea0d8);
+  }
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid #6f42c1;
+  color: #6f42c1;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(111, 66, 193, 0.05);
+  }
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+
+  .btn {
+    min-width: 120px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .stepper-card {
+    border-radius: 12px;
+  }
+
+  .stepper-header {
+    padding: 1.5rem 1.25rem 0;
+
+    h2 {
+      font-size: 1.6rem;
+    }
+  }
+
+  .otp-inputs {
+    gap: 6px;
+  }
+
+  .otp-digit {
+    width: 40px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
+
   .step-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.5rem;
-    
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+
     .btn {
-      min-width: 120px;
+      width: 100%;
     }
   }
-  
-  // Responsive adjustments
-  @media (max-width: 576px) {
-    .stepper-card {
-      border-radius: 12px;
-    }
-    
-    .stepper-header {
-      padding: 1.5rem 1.25rem 0;
-      
-      h2 {
-        font-size: 1.6rem;
-      }
-    }
-    
-    .otp-inputs {
-      gap: 6px;
-    }
-    
-    .otp-digit {
-      width: 40px;
-      height: 45px;
-      font-size: 1.1rem;
-    }
-    
-    .step-actions {
-      flex-direction: column-reverse;
-      gap: 0.75rem;
-      
-      .btn {
-        width: 100%;
-      }
-    }
-    
-    ::ng-deep {
-      .mat-vertical-content {
-        padding: 0 12px 16px 20px !important;
-      }
+
+  ::ng-deep {
+    .mat-vertical-content {
+      padding: 0 12px 16px 20px !important;
     }
   }
-  
-  
+}
 
-
-
-
-  
 .btn-block {
   width: 100%;
   height: 46px;
@@ -354,33 +356,60 @@
   color: white;
   transition: all 0.3s ease;
   box-shadow: 0 3px 8px rgba(111, 66, 193, 0.15);
-  
+
   &:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
   }
-  
+
   &:active:not(:disabled) {
     transform: translateY(0);
   }
-  
+
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
 }
 
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.back-link {
+  margin-top: 2rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.95rem;
+
+    i {
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+    }
+
+    &:hover {
+      color: #6f42c1;
+    }
+  }
+}
 
 
-  .spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 0.8s linear infinite;
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+}

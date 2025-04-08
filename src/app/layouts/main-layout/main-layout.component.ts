@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { NavigationStart, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { HideIfClaimsNotMetDirective } from '../../shared/directives/hide-if-claims-not-met.directive';
 import { claimReq } from '../../shared/utils/claimReq-utils';
 import { DummyComponent } from "../../dummy/dummy.component";
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../shared/services/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main-layout',
@@ -34,7 +35,30 @@ export class MainLayoutComponent implements OnInit {
     }
   }
 
+  routerSubscription!: Subscription;
 
+  @HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent) {
+  const target = event.target as HTMLElement;
+  const clickedInside = target.closest('.profile-container');
+  
+  if (!clickedInside) {
+    this.showProfileMenu = false;
+  }
+}
+
+  // Close on scroll
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    if (this.showProfileMenu) {
+      this.showProfileMenu = false;
+    }
+  }
+
+  ngOnDestroy() {
+    this.routerSubscription.unsubscribe();
+  }
+  
 
   toggleProfileMenu() {
     this.showProfileMenu = !this.showProfileMenu;
@@ -59,6 +83,12 @@ export class MainLayoutComponent implements OnInit {
       },
       error: (err: any) =>
         console.log('error while retrieving user profile:\n', err),
+    });
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.showProfileMenu = false;
+        document.body.classList.remove('no-scroll'); // if you're managing scroll
+      }
     });
   }
 

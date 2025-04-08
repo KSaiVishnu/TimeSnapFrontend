@@ -145,7 +145,10 @@
     </mat-form-field>
   </form>
 
-  <div *ngIf="taskId !== currentlyEditingTaskId" class="d-flex flex-column assignee-edit-container">
+  <div
+    *ngIf="taskId !== currentlyEditingTaskId"
+    class="d-flex flex-column assignee-edit-container"
+  >
     <!-- <div class="edit-container">
       <div class="chip-scroll-container">
         <ul class="custom-chip-grid">
@@ -164,8 +167,8 @@
       </li>
       }
     </ul>
-      <!-- Invisible button -->
-  <button class="invisible-btn" (click)="onEdit()"></button>
+    <!-- Invisible button -->
+    <button class="invisible-btn" (click)="onEdit()"></button>
   </div>
 
   <div class="d-flex flex-column">

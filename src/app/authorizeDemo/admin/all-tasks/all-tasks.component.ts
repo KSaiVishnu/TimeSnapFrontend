@@ -1,5 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import {
   Component,
   AfterViewInit,
@@ -42,7 +46,7 @@ enum ApiStatus {
     MatIconModule,
     EditAssigneeNamesComponent,
     MatProgressSpinnerModule,
-    LoadingComponent
+    LoadingComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './all-tasks.component.html',
@@ -65,7 +69,7 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     private http: HttpClient,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private errorHandler: ErrorHandlerService,
+    private errorHandler: ErrorHandlerService
   ) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -84,6 +88,19 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
 
   setEditingTask(taskId: number | null) {
     this.currentlyEditingTaskId = taskId;
+  }
+
+  updateAssigneeNames(task: any, updatedAssignees: string[]) {
+    console.log(task.assignees);
+    console.log(updatedAssignees);
+    let result = updatedAssignees.map((each: any) => {
+      return {
+        fullName: each.assignee || each.fullName,
+        empId: each.empId,
+      };
+    });
+    task.assignees = result;
+    console.log(task.assignees)
   }
 
   ngAfterViewInit() {
@@ -186,7 +203,6 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     this.errorMessage = errorInfo.message;
   }
 
-  
   onRetry() {
     this.fetchTasks();
   }
@@ -247,7 +263,7 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
 
     const dialogRef = this.dialog.open(AddTaskPopupComponent, {
       width: '50%',
-      data: { allAssignees, billingType},
+      data: { allAssignees, billingType },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -282,10 +298,10 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     });
 
     dialogRef.afterClosed().subscribe((deletedTaskId: number) => {
-      console.log(deletedTaskId)
+      console.log(deletedTaskId);
       console.log(this.tasks);
       if (deletedTaskId) {
-        this.tasks = this.tasks.filter(t => t.taskId !== deletedTaskId);
+        this.tasks = this.tasks.filter((t) => t.taskId !== deletedTaskId);
       }
 
       this.dataSource = new MatTableDataSource(this.tasks);

@@ -39,7 +39,19 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close()" style="border: 1px solid blue;">Cancel</button>
-  <button mat-button color="primary" (click)="update()">Update</button>
+  <button mat-button (click)="close()" style="border: 1px solid blue;" [disabled]="isUpdating">Cancel</button>
+  <!-- <button mat-button color="primary" (click)="update()">Update</button> -->
+
+  <button style="border: 1px solid blue" mat-button color="primary" (click)="update()" [disabled]="isUpdating">
+    <ng-container *ngIf="!isUpdating">Update</ng-container>
+    <ng-container *ngIf="isUpdating">
+      <mat-progress-spinner
+        diameter="20"
+        mode="indeterminate"
+        color="accent"
+        style="display: inline-block; vertical-align: middle;"
+      ></mat-progress-spinner>
+    </ng-container>
+  </button>
 </mat-dialog-actions>
 

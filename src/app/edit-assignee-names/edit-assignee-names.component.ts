@@ -33,6 +33,7 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-assignee-names',
@@ -79,9 +80,11 @@ export class EditAssigneeNamesComponent implements OnInit {
 
   readonly announcer = inject(LiveAnnouncer);
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private toastr: ToastrService,) {}
 
   @Input() assignee: any;
+  originalAssignees: string[] = [];
+
   @Input() taskId: any;
   // @Input() allAssignees: any;
   @Input() allAssignees: any[] = []; // Receive employees from AllTasks
@@ -89,6 +92,8 @@ export class EditAssigneeNamesComponent implements OnInit {
 
   @Input() currentlyEditingTaskId!: number | null;
   @Output() editModeChange = new EventEmitter<number | null>();
+
+  @Output() assigneesUpdated = new EventEmitter<string[]>();
 
 
   @ViewChild('fruitInput') fruitInput!: ElementRef;
@@ -102,6 +107,8 @@ export class EditAssigneeNamesComponent implements OnInit {
   ngOnInit() {
     console.log(this.assignee);
     console.log(this.taskId);
+    this.originalAssignees = [...this.assignee]; // deep copy to restore later
+
     // for (let item of this.assignee) {
     //   this.fruits.set([...this.fruits(), item]);
     // }
@@ -263,15 +270,31 @@ getChipColor(index: number): { [key: string]: string } {
       .subscribe({
         next: (response) => {
           console.log('Task updated successfully');
+          this.assigneesUpdated.emit(assignees); // Emit the updated assignees to the parent
+          this.openSnackBar();
         },
         error: (err) => {
           console.log('Error updating task:', err);
+          this.assigneesUpdated.emit(this.originalAssignees);
+
+                  // ❗ Restore original assignees in UI
+        this.fruits.set([...this.originalAssignees]);
+
+        // ❗ Recompute `allFruits` again to reflect what's selectable
+        // this.allFruits = this.allFruits.filter(
+        //   (user: any) =>
+        //     !this.originalAssignees.some(
+        //       (a: any) => a.empId === user.empId
+        //     )
+        // );
+
+          this.toastr.error(err.error, 'Task Updation Failed');
         },
       });
 
     this.isEditing = !this.isEditing;
     this.editModeChange.emit(null); // Notify parent that editing mode is off
-    this.openSnackBar();
+    // this.openSnackBar();
   }
 
   // snackbar

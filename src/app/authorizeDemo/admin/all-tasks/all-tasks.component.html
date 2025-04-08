@@ -171,15 +171,17 @@
         <ng-container matColumnDef="assigneeNames">
           <th mat-header-cell *matHeaderCellDef>Assignees</th>
           <td mat-cell *matCellDef="let element">
-            <div class="task-assignee-container">
+            <div class="task-assignee-container" *ngIf="element.assignees.length > 0">
               <app-edit-assignee-names
                 [assignee]="element.assignees"
                 [taskId]="element.taskId"
                 [allAssignees]="allAssignees"
                 [currentlyEditingTaskId]="currentlyEditingTaskId"
                 (editModeChange)="setEditingTask($event)"
+                (assigneesUpdated)="updateAssigneeNames(element, $event)"
               ></app-edit-assignee-names>
             </div>
+            <div style="color: red;" *ngIf="element.assignees.length <= 0"> --- No Assignees --- </div>
           </td>
         </ng-container>
 

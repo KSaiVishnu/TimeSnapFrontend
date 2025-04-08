@@ -199,8 +199,20 @@
 
             <div class="resend-code">
               Didn't receive the code?
-              <a style="cursor: pointer;" (click)="resendOtp($event)" class="text-primary">Resend</a>
+              <a 
+                (click)="resendOtp($event)"
+                [ngStyle]="{
+                  'pointer-events': (!otpSent || resending) ? 'none' : 'auto',
+                  'opacity': (!otpSent || resending) ? '0.5' : '1',
+                  'cursor': (!otpSent || resending) ? 'default' : 'pointer'
+                }"
+                class="text-primary">
+                {{ resending ? 'Resending...' : 'Resend' }}
+              </a>
             </div>
+            
+            
+
 
             <div class="step-actions">
               <button
@@ -216,7 +228,6 @@
                 (click)="verifyOtp(stepper)"
                 [disabled]="!isOtpComplete() || isLoading"
               >
-                
                 <span *ngIf="!isLoading">Verify Code</span>
                 <span *ngIf="isLoading" class="spinner"></span>
               </button>
@@ -263,7 +274,7 @@
                   passwordForm.controls['password'].touched
                 "
               >
-                <span
+                <!-- <span
                   *ngIf="passwordForm.controls['password'].hasError('required')"
                   >Password is required</span
                 >
@@ -278,7 +289,25 @@
                   *ngIf="passwordForm.controls['password'].hasError('pattern')"
                 >
                   Password must include at least one special character
-                </span>
+                </span> -->
+              
+              
+
+                <ng-container [ngSwitch]="passwordForm.controls['password'].errors | firstKey">
+                  <div *ngSwitchCase="'required'">
+                    Please enter your password.
+                    <!-- Password is required -->
+                  </div>
+                  <div *ngSwitchCase="'minlength'">
+                    At least 6 characters required.
+                  <!-- Password must be at least 6 characters -->
+                  </div>
+                  <div *ngSwitchCase="'pattern'">
+                    One or more special character(s) required.
+                    <!-- Password must include at least one special character -->
+                  </div>
+                </ng-container>
+              
               </div>
             </div>
 
@@ -326,8 +355,8 @@
                 type="submit"
                 class="btn btn-primary"
                 [disabled]="passwordForm.invalid || isLoading"
-              >            
-                <span *ngIf="!isLoading">Reset Password</span>                
+              >
+                <span *ngIf="!isLoading">Reset Password</span>
                 <span *ngIf="isLoading" class="spinner"></span>
               </button>
             </div>
@@ -335,5 +364,11 @@
         </form>
       </mat-step>
     </mat-stepper>
+  </div>
+
+  <div class="back-link">
+    <a routerLink="/signin" class="text-secondary">
+      <i class="material-icons">arrow_back</i> Back to Sign In
+    </a>
   </div>
 </div>

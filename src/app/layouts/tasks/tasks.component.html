@@ -1,4 +1,85 @@
-<div class="tasks-container">
+<!-- Show skeleton loader when loading -->
+<div *ngIf="apiStatus === 'IN_PROGRESS' || apiStatus === 'INITIAL'" class="tasks-container">
+  <div class="tasks-layout">
+    <!-- Filters Panel Skeleton -->
+    <div class="filters-panel skeleton-filters-panel">
+      <div class="filters-header">
+        <div class="skeleton-title"></div>
+        <div class="skeleton-button"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="skeleton-label"></div>
+        <div class="skeleton-input"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="skeleton-label"></div>
+        <div class="skeleton-select"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="skeleton-label"></div>
+        <div class="skeleton-select"></div>
+      </div>
+    </div>
+
+    <!-- Tasks Board Skeleton -->
+    <div class="tasks-board skeleton-tasks-board">
+      <div class="tasks-header">
+        <div class="skeleton-title"></div>
+        <div class="skeleton-button"></div>
+      </div>
+
+      <div class="task-container skeleton-task-container">
+        <!-- To Do Column Skeleton -->
+        <div class="task-column todo-column skeleton-column">
+          <div class="skeleton-column-title"></div>
+          
+          <div class="skeleton-task-card" *ngFor="let i of [1, 2, 3]">
+            <div class="skeleton-task-title"></div>
+            <div class="skeleton-task-details"></div>
+            <div class="skeleton-task-footer">
+              <div class="skeleton-task-status"></div>
+              <div class="skeleton-task-badge"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- In Progress Column Skeleton -->
+        <div class="task-column progress-column skeleton-column">
+          <div class="skeleton-column-title"></div>
+          
+          <div class="skeleton-task-card" *ngFor="let i of [1, 2]">
+            <div class="skeleton-task-title"></div>
+            <div class="skeleton-task-details"></div>
+            <div class="skeleton-task-footer">
+              <div class="skeleton-task-status"></div>
+              <div class="skeleton-task-badge"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed Column Skeleton -->
+        <div class="task-column completed-column skeleton-column">
+          <div class="skeleton-column-title"></div>
+          
+          <div class="skeleton-task-card" *ngFor="let i of [1, 2, 3, 4]">
+            <div class="skeleton-task-title"></div>
+            <div class="skeleton-task-details"></div>
+            <div class="skeleton-task-footer">
+              <div class="skeleton-task-status"></div>
+              <div class="skeleton-task-badge"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Show actual content when loaded -->
+<div *ngIf="apiStatus === 'SUCCESS'" class="tasks-container">
   <div class="tasks-layout">
     <!-- Filters Panel -->
     <div class="filters-panel">
@@ -87,24 +168,7 @@
         </button>
       </div>
 
-      <div *ngIf="apiStatus === 'IN_PROGRESS'" class="loading-container">
-        <!-- <div class="loading-clock">
-          <div class="clock-face"></div>
-          <div class="hour-hand"></div>
-          <div class="minute-hand"></div>
-          <div class="center-dot"></div>
-        </div>
-        <p class="loading-text">Loading...</p> -->
-        <app-loading></app-loading>
-      </div>
 
-      <!-- Error State -->
-      <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
-        <p class="error-message">
-          {{ errorMessage }} (Error Code: {{ errorStatus }})
-        </p>
-        <button (click)="onRetry()" class="retry-btn">Retry</button>
-      </div>
 
       <div
       *ngIf="apiStatus === 'SUCCESS' && allTasks.length === 0"
@@ -272,3 +336,11 @@
     </div>
   </div>
 </div>
+
+      <!-- Error State -->
+      <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
+        <p class="error-message">
+          {{ errorMessage }} (Error Code: {{ errorStatus }})
+        </p>
+        <button (click)="onRetry()" class="retry-btn">Retry</button>
+      </div>

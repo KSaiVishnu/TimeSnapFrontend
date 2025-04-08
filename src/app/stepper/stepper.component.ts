@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../shared/services/auth.service';
 import { MatOption, MatOptionModule } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
 import type { MatStepper } from '@angular/material/stepper';
 import { type OnInit, ViewChild } from '@angular/core';
 import { LoadingComponent } from '../loading/loading.component';
+import { FirstKeyPipe } from "../shared/pipes/first-key.pipe";
 
 @Component({
   selector: 'app-stepper',
@@ -34,7 +35,9 @@ import { LoadingComponent } from '../loading/loading.component';
     MatIcon,
     CommonModule,
     LoadingComponent,
-  ],
+    RouterLink,
+    FirstKeyPipe
+],
   templateUrl: './stepper.component.html',
   styleUrl: './stepper.component.scss',
 })
@@ -132,6 +135,9 @@ export class StepperComponent implements OnInit {
   hidePassword = true;
   hideConfirmPassword = true;
   isLoading = false;
+
+  otpSent = false;
+  otpVerified = false;
 
   @ViewChild('stepper') stepper!: MatStepper;
 
@@ -282,7 +288,7 @@ export class StepperComponent implements OnInit {
     console.log(this.isLoading);
     this.authService.sendResetOtp(email).subscribe({
       next: () => {
-        // this.otpSent = true;
+        this.otpSent = true;
         this.isLoading = false;
 
         this.toastr.success('OTP sent');
@@ -290,7 +296,7 @@ export class StepperComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        // this.otpSent = false;
+        this.otpSent = false;
         this.isLoading = false;
 
         if (err.error?.message) {
@@ -341,6 +347,7 @@ export class StepperComponent implements OnInit {
     });
   }
 
+  resending: boolean = false;
   resendOtp(event: Event) {
     event.preventDefault(); // prevent page reload
 
@@ -350,15 +357,21 @@ export class StepperComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    // this.isLoading = true;
+    this.resending = true;
+
 
     this.authService.sendResetOtp(email).subscribe({
       next: () => {
         this.toastr.success('OTP resent successfully');
-        this.isLoading = false;
+        // this.isLoading = false;
+        this.resending = false;
+
       },
       error: (err) => {
-        this.isLoading = false;
+        // this.isLoading = false;
+        this.resending = false;
+
         if (err.error?.message) {
           this.toastr.error(err.error.message, 'Resend Failed');
         } else {

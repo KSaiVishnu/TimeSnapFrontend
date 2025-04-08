@@ -1,6 +1,18 @@
-<span class="example-pizza-party" matSnackBarLabel>
+<!-- <span class="example-pizza-party" matSnackBarLabel>
    {{data.message}}
   </span>
   <span matSnackBarActions>
     <button mat-button matSnackBarAction (click)="snackBarRef.dismissWithAction()">ok</button>
-  </span>
+  </span> -->
+
+
+  <div class="snackbar-container">
+    <div class="snackbar-content">
+      <span class="snackbar-message" matSnackBarLabel>
+        {{data.message}}
+      </span>
+      <span class="snackbar-actions" matSnackBarActions>
+        <button class="snackbar-button" mat-button matSnackBarAction (click)="snackBarRef.dismissWithAction()">OK</button>
+      </span>
+    </div>
+  </div>
