@@ -291,17 +291,17 @@ export class LineChartComponent implements OnChanges {
         height: 350,
         type: 'line',
         animations: { enabled: false },
-        events: {
-          beforeMount: function () {
-            document.addEventListener(
-              'touchstart',
-              (e) => {
-                if (e.cancelable) e.preventDefault();
-              },
-              { passive: false }
-            );
-          },
-        },
+        // events: {
+        //   beforeMount: function () {
+        //     document.addEventListener(
+        //       'touchstart',
+        //       (e) => {
+        //         if (e.cancelable) e.preventDefault();
+        //       },
+        //       { passive: false }
+        //     );
+        //   },
+        // },
       },
       stroke: {
         width: 7,
