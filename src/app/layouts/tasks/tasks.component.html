@@ -1,5 +1,8 @@
 <!-- Show skeleton loader when loading -->
-<div *ngIf="apiStatus === 'IN_PROGRESS' || apiStatus === 'INITIAL'" class="tasks-container">
+<div
+  *ngIf="apiStatus === 'IN_PROGRESS' || apiStatus === 'INITIAL'"
+  class="tasks-container"
+>
   <div class="tasks-layout">
     <!-- Filters Panel Skeleton -->
     <div class="filters-panel skeleton-filters-panel">
@@ -35,7 +38,7 @@
         <!-- To Do Column Skeleton -->
         <div class="task-column todo-column skeleton-column">
           <div class="skeleton-column-title"></div>
-          
+
           <div class="skeleton-task-card" *ngFor="let i of [1, 2, 3]">
             <div class="skeleton-task-title"></div>
             <div class="skeleton-task-details"></div>
@@ -49,7 +52,7 @@
         <!-- In Progress Column Skeleton -->
         <div class="task-column progress-column skeleton-column">
           <div class="skeleton-column-title"></div>
-          
+
           <div class="skeleton-task-card" *ngFor="let i of [1, 2]">
             <div class="skeleton-task-title"></div>
             <div class="skeleton-task-details"></div>
@@ -63,7 +66,7 @@
         <!-- Completed Column Skeleton -->
         <div class="task-column completed-column skeleton-column">
           <div class="skeleton-column-title"></div>
-          
+
           <div class="skeleton-task-card" *ngFor="let i of [1, 2, 3, 4]">
             <div class="skeleton-task-title"></div>
             <div class="skeleton-task-details"></div>
@@ -168,14 +171,12 @@
         </button>
       </div>
 
-
-
       <div
-      *ngIf="apiStatus === 'SUCCESS' && allTasks.length === 0"
-      class="no-data"
-    >
-      <p>No tasks found.</p>
-    </div>
+        *ngIf="apiStatus === 'SUCCESS' && allTasks.length === 0"
+        class="no-data"
+      >
+        <p>No tasks found.</p>
+      </div>
 
       <div
         *ngIf="apiStatus === 'SUCCESS' && allTasks.length > 0"
@@ -337,10 +338,10 @@
   </div>
 </div>
 
-      <!-- Error State -->
-      <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
-        <p class="error-message">
-          {{ errorMessage }} (Error Code: {{ errorStatus }})
-        </p>
-        <button (click)="onRetry()" class="retry-btn">Retry</button>
-      </div>
+<!-- Error State -->
+<div *ngIf="apiStatus === 'FAILURE'" class="error-container">
+  <p class="error-message">
+    {{ errorMessage }} (Error Code: {{ errorStatus }})
+  </p>
+  <button (click)="onRetry()" class="retry-btn">Retry</button>
+</div>

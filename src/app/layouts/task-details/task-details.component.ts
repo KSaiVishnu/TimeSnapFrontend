@@ -436,6 +436,7 @@ export class TaskDetailsComponent implements OnInit {
         const index = this.timesheets.findIndex((l) => l.id === log.id);
         if (index !== -1) {
           this.timesheets[index] = { ...updatedLog };
+          this.timesheets = [...this.timesheets];
         }
       this.editingLogId = null;
       
