@@ -110,14 +110,14 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   emailDomainValidator(control: AbstractControl) {
     const email = control.value;
     return email &&
-      (email.endsWith('@gmail.com') || email.endsWith('@framsikt.no'))
+      (email.endsWith('@framsikt.no'))
       ? null
       : { invalidDomain: true };
   }
 
   ngOnInit(): void {
     this.fetchEmployees();
-    this.fetchLastIdentityId();
+    // this.fetchLastIdentityId();
   }
 
   ngAfterViewInit() {
@@ -200,10 +200,20 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
       .post<{ message: string }>(
         `${this.baseURL}/user-employee/add-employee`,
         this.addedUsers
-      )
-      .subscribe((response) => {
-        console.log(response.message);
+      ).subscribe({
+        next: (response: any) => {
+          // Success response
+          console.log(response.message);
+          this.toastr.success(response.message, 'Success');
+        },
+        error: (err) => {
+          console.log(err);
+          this.toastr.error("Error Uploading Employees", 'Error');
+        }
       });
+      // .subscribe((response) => {
+      //   console.log(response.message);
+      // });
     this.addedUsers = [];
   }
 
@@ -218,9 +228,9 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     console.log(this.addedUsers);
     this.form.reset();
     this.count += 1;
-    const newId = (this.lastIdentity + this.count).toString().padStart(3, '0');
-    const newEmpId = `E${newId}`;
-    this.form.patchValue({ empId: newEmpId });
+    // const newId = (this.lastIdentity + this.count).toString().padStart(3, '0');
+    // const newEmpId = `E${newId}`;
+    // this.form.patchValue({ empId: newEmpId });
   }
 
   removeAssignee(index: number) {

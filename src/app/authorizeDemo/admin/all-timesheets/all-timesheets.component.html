@@ -134,7 +134,14 @@
           <!-- User's Tasks (Initially Visible) -->
           <tr *ngFor="let task of user.timesheets" [hidden]="!expandedUsers[i]">
             <td>{{ task.taskId }}</td>
-            <td>{{ task.taskName }}</td>
+            <!-- <td>{{ task.taskName.substring(0, 60) }}...</td> -->
+             <td>
+            {{
+              task.taskName.length > 60
+                ? task.taskName.substring(0, 60) + "..."
+                : task.taskName
+            }}
+            </td>
             <td>{{ task.date | date : "MMM dd, yyyy" }}</td>
             <td>{{ task.totalMinutes | timeFormat }}</td>
             <td>{{ task.billingType }}</td>

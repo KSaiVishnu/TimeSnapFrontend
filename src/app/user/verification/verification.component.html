@@ -73,7 +73,18 @@
     </div>
     
     <div class="resend-code">
-      Didn't receive the code? <a style="cursor: pointer;" (click)="resendOtp()" class="text-primary">Resend</a>
+      Didn't receive the code?
+       <!-- <a style="cursor: pointer;" (click)="resendOtp()" class="text-primary">Resend</a> -->
+       <a 
+       (click)="resendOtp()"
+       [ngStyle]="{
+         'pointer-events': (resending) ? 'none' : 'auto',
+         'opacity': (resending) ? '0.5' : '1',
+         'cursor': (resending) ? 'default' : 'pointer'
+       }"
+       class="text-primary">
+       {{ resending ? 'Resending...' : 'Resend' }}
+     </a>
     </div>
   </div>
   

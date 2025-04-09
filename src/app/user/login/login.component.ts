@@ -3,9 +3,11 @@ declare var google: any;
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -64,16 +66,48 @@ export class LoginComponent implements OnInit {
       .subscribe(() => this.updateErrorMessage());
   }
 
+  // updateErrorMessage() {
+  //   const emailControl = this.form.controls['email'];
+
+  //   if (emailControl.hasError('required')) {
+  //     this.errorMessage.set('You must enter a value');
+  //   } else if (emailControl.hasError('email')) {
+  //     this.errorMessage.set('Not a valid email');
+  //   } else {
+  //     this.errorMessage.set('');
+  //   }
+  // }
+
   updateErrorMessage() {
     const emailControl = this.form.controls['email'];
-
-    if (emailControl.hasError('required')) {
-      this.errorMessage.set('You must enter a value');
-    } else if (emailControl.hasError('email')) {
-      this.errorMessage.set('Not a valid email');
-    } else {
-      this.errorMessage.set('');
+    this.errorMessage.set(''); // reset
+  
+    switch (true) {
+      case emailControl.hasError('required'):
+        this.errorMessage.set('You must enter a value');
+        break;
+  
+      case emailControl.hasError('email'):
+        this.errorMessage.set('Not a valid email');
+        break;
+  
+      case emailControl.hasError('gmailDomain'):
+        this.errorMessage.set('Email must ends with framsikt.no');
+        break;
+  
+      default:
+        this.errorMessage.set('');
+        break;
     }
+  }
+  
+
+  gmailDomainValidator(control: AbstractControl): ValidationErrors | null {
+    const email = control.value;
+    if (email && !email.toLowerCase().endsWith('@framsikt.no')) {
+      return { gmailDomain: true };
+    }
+    return null;
   }
 
   ngOnInit(): void {
@@ -291,26 +325,46 @@ export class LoginComponent implements OnInit {
         console.log('Login error:', err);
 
         // Handle specific errors
+        // if (err.status === 400) {
+        //   if (err.error.includes('Invalid Google token')) {
+        //     this.toastr.error(
+        //       'Invalid Google token. Please try again.',
+        //       'Login Failed'
+        //     );
+        //   } else if (err.error.includes('Employee not found')) {
+        //     this.toastr.error(
+        //       'Your email is not registered as an employee.',
+        //       'Access Denied'
+        //     );
+        //   } else if (err.error.includes('User registration failed')) {
+        //     this.toastr.error(
+        //       'User creation failed. Contact support.',
+        //       'Registration Error'
+        //     );
+        //   } else {
+        //     this.toastr.error(err.error, 'Login Failed');
+        //   }
+        // } 
         if (err.status === 400) {
-          if (err.error.includes('Invalid Google token')) {
-            this.toastr.error(
-              'Invalid Google token. Please try again.',
-              'Login Failed'
-            );
-          } else if (err.error.includes('Employee not found')) {
-            this.toastr.error(
-              'Your email is not registered as an employee.',
-              'Access Denied'
-            );
-          } else if (err.error.includes('User registration failed')) {
-            this.toastr.error(
-              'User creation failed. Contact support.',
-              'Registration Error'
-            );
-          } else {
-            this.toastr.error(err.error, 'Login Failed');
+          switch (err.error.code) {
+            case 'InvalidGoogleToken':
+              this.toastr.error('Invalid Google token. Please try again.', 'Login Failed');
+              break;
+            case 'EmployeeNotFound':
+              this.toastr.error('Your email is not registered as an employee.', 'Access Denied');
+              break;
+            case 'UserRegistrationFailed':
+              this.toastr.error('User creation failed. Contact support.', 'Registration Error');
+              break;
+            case 'InvalidEmailDomain':
+              this.toastr.error('Email must ends with @framsikt.no', 'Login Failed');
+              break;
+            default:
+              this.toastr.error(err.error.message || 'Something went wrong.', 'Login Failed');
           }
-        } else if (err.status === 500) {
+        }
+        
+        else if (err.status === 500) {
           this.toastr.error(
             'Server error. Please try again later.',
             'Login Failed'

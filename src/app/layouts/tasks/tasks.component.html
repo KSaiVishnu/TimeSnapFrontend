@@ -94,7 +94,21 @@
       </div>
 
       <div class="filter-group">
-        <label for="search-task">Search Task</label>
+        <label for="search-task">Search By TaskId</label>
+        <div class="search-input">
+          <i class="fas fa-search"></i>
+          <input
+            id="search-task"
+            type="search"
+            [(ngModel)]="searchTaskId"
+            (input)="applyFilters()"
+            placeholder="Enter task id"
+          />
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="search-task">Search By TaskName</label>
         <div class="search-input">
           <i class="fas fa-search"></i>
           <input
@@ -209,7 +223,9 @@
                   ? task.taskName.substring(0, 45) + "..."
                   : task.taskName
               }}
+                <span class="task-details">({{ task.taskId }})</span>
             </h4>
+            <!-- <p class="task-details">{{task.taskId}}</p> -->
             <p class="task-details">
               <i class="far fa-calendar-alt"></i> Due:
               <span class="due-date">{{
@@ -253,12 +269,20 @@
             (click)="!dragging && goToTaskDetails(task)"
           >
             <!-- <h4>{{ task.taskName }}</h4> -->
+            <!-- <h4>
+              {{
+                task.taskName.length > 45
+                  ? task.taskName.substring(0, 45) + "..."
+                  : task.taskName
+              }}
+            </h4> -->
             <h4>
               {{
                 task.taskName.length > 45
                   ? task.taskName.substring(0, 45) + "..."
                   : task.taskName
               }}
+                <span class="task-details">({{ task.taskId }})</span>
             </h4>
             <p class="task-details">
               <i class="far fa-calendar-alt"></i> Due:
@@ -304,12 +328,20 @@
           >
             <!-- <h4>{{ task.taskName }}</h4> -->
 
+            <!-- <h4>
+              {{
+                task.taskName.length > 45
+                  ? task.taskName.substring(0, 45) + "..."
+                  : task.taskName
+              }}
+            </h4> -->
             <h4>
               {{
                 task.taskName.length > 45
                   ? task.taskName.substring(0, 45) + "..."
                   : task.taskName
               }}
+                <span class="task-details">({{ task.taskId }})</span>
             </h4>
             <p class="task-details">
               <i class="far fa-calendar-check"></i> Completed:

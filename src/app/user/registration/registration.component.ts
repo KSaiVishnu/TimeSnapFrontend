@@ -77,7 +77,7 @@ export class RegistrationComponent implements OnInit {
 
   emailDomainValidator(control: AbstractControl) {
     const email = control.value;
-    return email && (email.endsWith('@gmail.com') || email.endsWith('@framsikt.no'))
+    return email && (email.endsWith('@framsikt.no'))
       ? null
       : { invalidDomain: true };
   }
@@ -127,17 +127,20 @@ export class RegistrationComponent implements OnInit {
         // }
         error: (err) => {
           if (err.status === 400) {
-            const errorMsg = err.error;
-        
-            if (errorMsg === "You are not authorized to register.") {
-              // alert("Your email is not authorized to register.");
-              this.toastr.error('Your email is not authorized to register.', 'Registration Failed')
-            } else if (errorMsg === "User already registered.") {
-              // alert("This email is already registered. Please sign in instead.");
-              this.toastr.error('Email is already taken.', 'Registration Failed');
+            const errorCode = err.error?.code;
 
-            } else {
-              alert(errorMsg);
+            switch (errorCode) {
+              case "UnauthorizedEmail":
+                this.toastr.error('Your email is not authorized to register.', 'Registration Failed');
+                break;
+              case "UserAlreadyRegistered":
+                this.toastr.error('Email is already taken.', 'Registration Failed');
+                break;
+              case "InvalidEmailDomain":
+                this.toastr.error('Email should end with @framsikt.no', 'Registration Failed');
+                break;
+              default:
+                alert(err.error?.message || "Something went wrong.");
             }
           } else if (err.status === 500) {
             // alert("Server error. Please try again later.");

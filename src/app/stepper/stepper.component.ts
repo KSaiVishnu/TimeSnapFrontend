@@ -5,6 +5,8 @@ import {
   FormsModule,
   ReactiveFormsModule,
   FormGroup,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,7 +21,7 @@ import { CommonModule } from '@angular/common';
 import type { MatStepper } from '@angular/material/stepper';
 import { type OnInit, ViewChild } from '@angular/core';
 import { LoadingComponent } from '../loading/loading.component';
-import { FirstKeyPipe } from "../shared/pipes/first-key.pipe";
+import { FirstKeyPipe } from '../shared/pipes/first-key.pipe';
 
 @Component({
   selector: 'app-stepper',
@@ -36,8 +38,8 @@ import { FirstKeyPipe } from "../shared/pipes/first-key.pipe";
     CommonModule,
     LoadingComponent,
     RouterLink,
-    FirstKeyPipe
-],
+    FirstKeyPipe,
+  ],
   templateUrl: './stepper.component.html',
   styleUrl: './stepper.component.scss',
 })
@@ -148,9 +150,20 @@ export class StepperComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+  gmailDomainValidator(control: AbstractControl): ValidationErrors | null {
+    const email = control.value;
+    if (email && !email.toLowerCase().endsWith('@framsikt.no')) {
+      return { gmailDomain: true };
+    }
+    return null;
+  }
+
   ngOnInit(): void {
     this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: [
+        '',
+        [Validators.required, Validators.email, this.gmailDomainValidator],
+      ],
     });
 
     this.otpForm = this.fb.group({
@@ -341,9 +354,8 @@ export class StepperComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.toastr.error('Failed to reset password'),
-        this.isLoading = false;
-      }
+        this.toastr.error('Failed to reset password'), (this.isLoading = false);
+      },
     });
   }
 
@@ -360,13 +372,11 @@ export class StepperComponent implements OnInit {
     // this.isLoading = true;
     this.resending = true;
 
-
     this.authService.sendResetOtp(email).subscribe({
       next: () => {
         this.toastr.success('OTP resent successfully');
         // this.isLoading = false;
         this.resending = false;
-
       },
       error: (err) => {
         // this.isLoading = false;

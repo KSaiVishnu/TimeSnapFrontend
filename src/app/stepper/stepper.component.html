@@ -103,12 +103,26 @@
                   emailForm.controls['email'].touched
                 "
               >
-                <span *ngIf="emailForm.controls['email'].hasError('required')"
+                <!-- <span *ngIf="emailForm.controls['email'].hasError('required')"
                   >Email is required</span
                 >
                 <span *ngIf="emailForm.controls['email'].hasError('email')"
                   >Please enter a valid email</span
                 >
+                <span *ngIf="emailForm.controls['email'].hasError('gmailDomain')"
+                >Mail Should ends with framsikt.no</span
+              > -->
+              <ng-container [ngSwitch]="emailForm.controls['email'].errors | firstKey">
+                <div *ngSwitchCase="'required'">
+                  Please enter your email address.
+                </div>
+                <div *ngSwitchCase="'email'">
+                  Please enter a valid email address.
+                </div>
+                <div *ngSwitchCase="'gmailDomain'">
+                  Mail should ends with framsikt.no
+                </div>
+              </ng-container>
               </div>
             </div>
 

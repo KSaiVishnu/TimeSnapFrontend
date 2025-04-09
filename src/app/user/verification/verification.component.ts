@@ -184,15 +184,21 @@ export class VerificationComponent {
   
 
 
+  resending = false;
   resendOtp(){
     const formData = this.authService.getForm();
     console.log(formData);
+    this.resending = true;
     this.authService.sendOtp(formData.email).subscribe({
       next: (res: any) => {
         console.log(res);
+        this.toastr.success("Otp resent successfully");
+        this.resending = false;
       },
       error: (err) => {
         console.log(err);
+        this.toastr.error("Error While Sending Otp");
+        this.resending = false;
       },
     });
   }

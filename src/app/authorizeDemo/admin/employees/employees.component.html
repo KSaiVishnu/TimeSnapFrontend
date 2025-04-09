@@ -133,7 +133,7 @@
                     Please enter a valid email address.
                   </div>
                   <div *ngSwitchCase="'invalidDomain'">
-                    Mail should ends with gmail.com (or) framsikt.no
+                    Mail should ends with framsikt.no
                   </div>
                 </ng-container>
               </div>
@@ -163,6 +163,7 @@
                 class="employee-chip"
               >
                 {{ user.userName }} - {{ user.employeeId }} - {{ user.email }}
+                <span style="border-radius: 50%; border: 1px solid red; cursor: pointer; padding: 5px; color: red;" (click)="removeAssignee(i)">X</span>
               </div>
             </div>
 
