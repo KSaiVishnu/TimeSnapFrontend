@@ -1,193 +1,416 @@
-<div class="employees-container">
-  <div class="employees-layout">
-    <!-- Employees Table -->
-    <div class="employees-table-container">
-      <div class="card">
-        <div class="card-header">
-          <h2>Employees</h2>
+<div class="employee-dashboard">
+  <mat-tab-group mat-stretch-tabs="false" class="modern-tabs">
+    <!-- Tab 1: Employees -->
+    <mat-tab label="Employees">
+      <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="dashboard-header">
+          <h1>Employee Management</h1>
         </div>
 
-        <div class="card-content">
-          <!-- Loading State -->
-          <div *ngIf="apiStatus === 'IN_PROGRESS'" class="loading-container">
-            <div class="loading-clock">
-              <div class="clock-face"></div>
-              <div class="hour-hand"></div>
-              <div class="minute-hand"></div>
-              <div class="center-dot"></div>
-            </div>
-          </div>
+        <div class="dashboard-content">
+          <!-- Add Employee Form -->
+          <div class="add-employee-section">
+            <div class="card">
+              <div class="card-header">
+                <h2><i class="fas fa-user-plus"></i> Add Employees</h2>
+              </div>
 
-          <!-- Error State -->
-          <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
-            <p class="error-message">
-              {{ errorMessage }} (Error Code: {{ errorStatus }})
-            </p>
-            <button (click)="onRetry()" class="retry-btn">Retry</button>
-          </div>
+              <!-- <div class="card-content">
+                <form [formGroup]="form" (ngSubmit)="onSubmitEmployees()">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="emp-name">Employee Name</label>
+                      <input
+                        formControlName="empName"
+                        id="emp-name"
+                        class="form-control"
+                        placeholder="Enter employee name"
+                      />
+                      <div
+                        *ngIf="
+                          form.controls['empName'].invalid &&
+                          form.controls['empName'].touched
+                        "
+                        class="error-feedback"
+                      >
+                        Employee Name is required.
+                      </div>
+                    </div>
 
-          <div
-            *ngIf="apiStatus === 'SUCCESS' && employees.length === 0"
-            class="no-data"
-          >
-            <p>No employees found.</p>
-          </div>
+                    <div class="form-group">
+                      <label for="emp-mail">Employee Email</label>
+                      <input
+                        formControlName="empMail"
+                        id="emp-mail"
+                        class="form-control"
+                        placeholder="Enter employee mail"
+                      />
+                      <div
+                        class="error-feedback"
+                        *ngIf="
+                          form.get('empMail')?.touched &&
+                          form.get('empMail')?.errors
+                        "
+                      >
+                        <ng-container [ngSwitch]="getFirstError('empMail')">
+                          <div *ngSwitchCase="'required'">
+                            Please enter your email address.
+                          </div>
+                          <div *ngSwitchCase="'email'">
+                            Please enter a valid email address.
+                          </div>
+                          <div *ngSwitchCase="'invalidDomain'">
+                            Mail should ends with framsikt.no
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
 
-          <!-- Success State -->
-          <div *ngIf="apiStatus === 'SUCCESS' && employees.length > 0">
-            <table class="employees-table">
-              <thead>
-                <tr>
-                  <!-- <th>ID</th> -->
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Emp ID</th>
-                  <th>Role</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let employee of employees">
-                  <!-- <td class="employee-id">{{ employee.userId.substring(0, 8) }}...</td> -->
-                  <td>{{ employee.userName }}</td>
-                  <td>{{ employee.email }}</td>
-                  <td>{{ employee.empId }}</td>
-                  <td>
-                    <select [(ngModel)]="employee.roleId" class="role-select">
-                      <option *ngFor="let role of roles" [value]="role.id">
-                        {{ role.name }}
-                      </option>
-                    </select>
-                  </td>
-                  <td>
+                    <div class="form-group">
+                      <label for="emp-id">Employee ID</label>
+                      <input
+                        formControlName="empId"
+                        id="emp-id"
+                        class="form-control"
+                        placeholder="Enter employee id"
+                      />
+                      <div
+                        *ngIf="
+                          form.controls['empId'].invalid &&
+                          form.controls['empId'].touched
+                        "
+                        class="error-feedback"
+                      >
+                        Employee Id is required.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
                     <button
-                      (click)="updateUserRole(employee)"
-                      class="action-btn"
+                      [disabled]="form.invalid"
+                      (click)="onAddEmployee()"
+                      type="button"
+                      class="btn btn-add"
                     >
-                      <i class="far fa-save"></i>
+                      <i class="fas fa-plus"></i> Add to List
                     </button>
-                  </td>
-                </tr>
-                <tr *ngIf="employees.length === 0">
-                  <td colspan="6" class="no-data">No employees found</td>
-                </tr>
-              </tbody>
-            </table>
 
-            <div class="pagination">
-              <mat-paginator
-                [pageSizeOptions]="[10, 15, 20]"
-                showFirstLastButtons
-              ></mat-paginator>
+                    <button
+                      [disabled]="addedUsers.length == 0"
+                      type="submit"
+                      class="btn btn-submit"
+                    >
+                      <i class="fas fa-save"></i> Submit All
+                    </button>
+                  </div>
+                </form>
+
+                <div class="added-employees">
+                  <h3 *ngIf="addedUsers.length > 0">Employees to be added:</h3>
+                  <div class="employee-chips">
+                    <div
+                      *ngFor="let user of addedUsers; let i = index"
+                      class="employee-chip"
+                    >
+                      <div class="chip-content">
+                        <span class="chip-name">{{ user.userName }}</span>
+                        <span class="chip-details">{{ user.employeeId }} | {{ user.email }}</span>
+                      </div>
+                      <button class="remove-btn" (click)="removeAssignee(i)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            
+            
+              <div class="card-content">
+                <form [formGroup]="form" (ngSubmit)="onSubmitEmployees()">
+                  <!-- Changed to column layout -->
+                  <div class="form-column">
+                    <div class="form-group">
+                      <label for="emp-name">Employee Name</label>
+                      <input
+                        formControlName="empName"
+                        id="emp-name"
+                        class="form-control"
+                        placeholder="Enter employee name"
+                      />
+                      <div
+                        *ngIf="
+                          form.controls['empName'].invalid &&
+                          form.controls['empName'].touched
+                        "
+                        class="error-feedback"
+                      >
+                        Employee Name is required.
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="emp-mail">Employee Email</label>
+                      <input
+                        formControlName="empMail"
+                        id="emp-mail"
+                        class="form-control"
+                        placeholder="Enter employee mail"
+                      />
+                      <div
+                        class="error-feedback"
+                        *ngIf="
+                          form.get('empMail')?.touched &&
+                          form.get('empMail')?.errors
+                        "
+                      >
+                        <ng-container [ngSwitch]="getFirstError('empMail')">
+                          <div *ngSwitchCase="'required'">
+                            Please enter your email address.
+                          </div>
+                          <div *ngSwitchCase="'email'">
+                            Please enter a valid email address.
+                          </div>
+                          <div *ngSwitchCase="'invalidDomain'">
+                            Mail should ends with framsikt.no
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="emp-id">Employee ID</label>
+                      <input
+                        formControlName="empId"
+                        id="emp-id"
+                        class="form-control"
+                        placeholder="Enter employee id"
+                      />
+                      <div
+                        *ngIf="
+                          form.controls['empId'].invalid &&
+                          form.controls['empId'].touched
+                        "
+                        class="error-feedback"
+                      >
+                        Employee Id is required.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button
+                      [disabled]="form.invalid"
+                      (click)="onAddEmployee()"
+                      type="button"
+                      class="btn btn-add"
+                    >
+                      <i class="fas fa-plus"></i> Add to List
+                    </button>
+
+                    <button
+                      [disabled]="addedUsers.length == 0"
+                      type="submit"
+                      class="btn btn-submit"
+                    >
+                      <i class="fas fa-save"></i> Submit All
+                    </button>
+                  </div>
+                </form>
+
+                <div class="added-employees">
+                  <h3 *ngIf="addedUsers.length > 0">Employees to be added:</h3>
+                  <div class="employee-chips">
+                    <div
+                      *ngFor="let user of addedUsers; let i = index"
+                      class="employee-chip"
+                    >
+                      <div class="chip-content">
+                        <span class="chip-name">{{ user.userName }}</span>
+                        <span class="chip-details">{{ user.employeeId }} | {{ user.email }}</span>
+                      </div>
+                      <button class="remove-btn" (click)="removeAssignee(i)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+
+          <!-- Employees Table -->
+          <div class="employees-table-section">
+            <div class="card">
+              <div class="card-header">
+                <h2><i class="fas fa-users"></i> Employees</h2>
+                <div class="header-actions">
+                  <!-- <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search employees..." class="search-input">
+                  </div> -->
+                </div>
+              </div>
+
+              <div class="card-content">
+                <!-- Loading State -->
+                <div
+                  *ngIf="apiStatus === 'IN_PROGRESS'"
+                  class="loading-container"
+                >
+                  <div class="loading-clock">
+                    <div class="clock-face"></div>
+                    <div class="hour-hand"></div>
+                    <div class="minute-hand"></div>
+                    <div class="center-dot"></div>
+                  </div>
+                </div>
+
+                <!-- Error State -->
+                <div *ngIf="apiStatus === 'FAILURE'" class="error-container">
+                  <p class="error-message">
+                    {{ errorMessage }} (Error Code: {{ errorStatus }})
+                  </p>
+                  <button (click)="onRetry()" class="retry-btn">Retry</button>
+                </div>
+
+                <div
+                  *ngIf="apiStatus === 'SUCCESS' && employees.length === 0"
+                  class="no-data"
+                >
+                  <i class="fas fa-user-slash"></i>
+                  <p>No employees found.</p>
+                </div>
+
+                <!-- Success State -->
+                <div *ngIf="apiStatus === 'SUCCESS' && employees.length > 0" class="table-responsive">
+                  <table class="employees-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Emp ID</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let employee of employees">
+                        <td class="employee-name">{{ employee.userName }}</td>
+                        <td class="employee-email">{{ employee.email }}</td>
+                        <td class="employee-id">{{ employee.empId }}</td>
+                        <td class="employee-role">
+                          <select
+                            [(ngModel)]="employee.roleId"
+                            class="role-select"
+                          >
+                            <option
+                              *ngFor="let role of roles"
+                              [value]="role.id"
+                            >
+                              {{ role.name }}
+                            </option>
+                          </select>
+                        </td>
+                        <td class="employee-actions">
+                          <button
+                            (click)="updateUserRole(employee)"
+                            class="action-btn"
+                            title="Save changes"
+                          >
+                            <i class="far fa-save"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="pagination">
+                    <mat-paginator
+                      [pageSizeOptions]="[10, 15, 20]"
+                      showFirstLastButtons
+                    ></mat-paginator>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </mat-tab>
 
-    <!-- Add Employee Form -->
-    <div class="add-employee-container">
-      <div class="card">
-        <div class="card-header">
-          <h2><i class="fas fa-user-plus"></i> Add Employees</h2>
+    <!-- Tab 2: Invited Employees -->
+    <mat-tab label="Invited Employees">
+      <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="dashboard-header">
+          <h1>Invited Employees</h1>
         </div>
 
-        <div class="card-content">
-          <form [formGroup]="form" (ngSubmit)="onSubmitEmployees()">
-            <div class="form-group">
-              <input
-                formControlName="empName"
-                id="emp-name"
-                class="form-control"
-                placeholder="Enter employee name"
-              />
-              <div
-                *ngIf="
-                  form.controls['empName'].invalid &&
-                  form.controls['empName'].touched
-                "
-                class="error-feedback"
-              >
-                Employee Name is required.
+        <div class="dashboard-content single-card">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fas fa-envelope"></i> Invited Employees</h2>
+              <div class="header-actions">
+                <button class="refresh-btn" (click)="fetchUserEmployees()">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
               </div>
             </div>
 
-            <div class="form-group">
-              <input
-                formControlName="empMail"
-                id="emp-mail"
-                class="form-control"
-                placeholder="Enter employee mail"
-              />
-              <div
-                class="error-feedback"
-                *ngIf="
-                  form.get('empMail')?.touched && form.get('empMail')?.errors
-                "
-              >
-                <ng-container [ngSwitch]="getFirstError('empMail')">
-                  <div *ngSwitchCase="'required'">
-                    Please enter your email address.
-                  </div>
-                  <div *ngSwitchCase="'email'">
-                    Please enter a valid email address.
-                  </div>
-                  <div *ngSwitchCase="'invalidDomain'">
-                    Mail should ends with framsikt.no
-                  </div>
-                </ng-container>
+            <div class="card-content">
+              <div *ngIf="invitedStatus === 'IN_PROGRESS'" class="loading-container">
+                <div class="loading-clock">
+                  <div class="clock-face"></div>
+                  <div class="hour-hand"></div>
+                  <div class="minute-hand"></div>
+                  <div class="center-dot"></div>
+                </div>
+              </div>
+
+              <!-- Error State -->
+              <div *ngIf="invitedStatus === 'FAILURE'" class="error-container">
+                <p class="error-message">
+                  {{ invitedErrorMessage }} (Error Code: {{ invitedErrorStatus }})
+                </p>
+                <button (click)="fetchUserEmployees()" class="retry-btn">Retry</button>
+              </div>
+
+              <!-- No Data -->
+              <div *ngIf="invitedStatus === 'SUCCESS' && userEmployees.length === 0" class="no-data">
+                <i class="fas fa-envelope-open"></i>
+                <p>No invited employees found.</p>
+              </div>
+
+              <!-- Data Table -->
+              <div *ngIf="invitedStatus === 'SUCCESS' && userEmployees.length > 0" class="table-responsive">
+                <table class="employees-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Employee ID</th>
+                      <th>User Name</th>
+                      <th>Email</th>
+                      <!-- <th>Status</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of userEmployees">
+                      <td>{{ user.id }}</td>
+                      <td>{{ user.employeeId }}</td>
+                      <td>{{ user.userName }}</td>
+                      <td>{{ user.email }}</td>
+                      <!-- <td><span class="status-badge">Invited</span></td> -->
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-
-            <div class="form-group">
-              <input
-                formControlName="empId"
-                id="emp-id"
-                class="form-control"
-                placeholder="Enter employee id"
-              />
-              <div
-                *ngIf="
-                  form.controls['empId'].invalid &&
-                  form.controls['empId'].touched
-                "
-                class="error-feedback"
-              >
-                Employee Id is required.
-              </div>
-            </div>
-
-            <div class="added-employees">
-              <div
-                *ngFor="let user of addedUsers; let i = index"
-                class="employee-chip"
-              >
-                {{ user.userName }} - {{ user.employeeId }} - {{ user.email }}
-                <span style="border-radius: 50%; border: 1px solid red; cursor: pointer; padding: 5px; color: red;" (click)="removeAssignee(i)">X</span>
-              </div>
-            </div>
-
-            <div class="form-actions">
-              <button
-                [disabled]="form.invalid"
-                (click)="onAddEmployee()"
-                type="button"
-                class="btn btn-add"
-              >
-                Add
-              </button>
-
-              <button
-                [disabled]="addedUsers.length == 0"
-                type="submit"
-                class="btn btn-submit"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>

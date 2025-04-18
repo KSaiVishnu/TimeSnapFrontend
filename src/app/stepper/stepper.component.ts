@@ -242,6 +242,14 @@ export class StepperComponent implements OnInit {
     return this.otpDigits.every((digit) => digit !== '');
   }
 
+  allowOnlyDigits(event: KeyboardEvent) {
+    const charCode = event.key.charCodeAt(0);
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+  
+
   // sendOtp(stepper: MatStepper): void {
   //   if (this.emailForm.invalid) {
   //     return;

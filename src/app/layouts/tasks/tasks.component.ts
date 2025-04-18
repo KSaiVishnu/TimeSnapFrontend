@@ -108,6 +108,70 @@ export class TasksComponent {
 
   dragging = false;
 
+  //   showDatePicker = false;
+  // showTimePicker = false;
+
+  // selectedDateForTask: string = '';
+  // selectedTimeForTask: string = '';
+
+  // onDateSelected() {
+  //   console.log('Date selected:', this.selectedDateForTask);
+  // }
+
+  // onTimeSelected() {
+  //   console.log('Time selected:', this.selectedTimeForTask);
+  // }
+
+  // saveTaskLog(task: any) {
+  //   const log = {
+  //     taskId: task.id,
+  //     date: this.selectedDateForTask,
+  //     time: this.selectedTimeForTask
+  //   };
+
+  //   console.log('Saving task log:', log);
+  //   // Call your API or service here to save the log
+
+  //   // Reset UI
+  //   this.showDatePicker = false;
+  //   this.showTimePicker = false;
+  //   this.selectedDateForTask = '';
+  //   this.selectedTimeForTask = '';
+  // }
+
+  showTimePicker = false;
+  selectedDateForTask: string = '';
+  selectedTimeForTask: string = '';
+  timeOptions: string[] = ['1hr', '2hr', '3hr', '4hr', '5hr'];
+
+  openDatePicker(input: HTMLInputElement) {
+    input.click(); // triggers native date picker
+  }
+
+  onDateSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.selectedDateForTask = input.value;
+    console.log('Date selected:', this.selectedDateForTask);
+  }
+
+  onTimeSelected() {
+    console.log('Time selected:', this.selectedTimeForTask);
+  }
+
+  saveTaskLog(task: any) {
+    const log = {
+      taskId: task.id,
+      date: this.selectedDateForTask,
+      time: this.selectedTimeForTask,
+    };
+    console.log('Saving task log:', log);
+
+    // Reset
+    this.selectedDateForTask = '';
+    this.selectedTimeForTask = '';
+    this.showTimePicker = false;
+  }
+
   // Fetch all assignees from the UserEmployee table (API call)
   fetchAssignees() {
     this.http
@@ -346,10 +410,18 @@ export class TasksComponent {
       data: { allAssignees, billingType, isEmployee: true, userDetails },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'success') {
-        // this.fetchTasks(); // Refresh the task list
-        this.loadTasks();
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result?.status === 'success') {
+        console.log(result.task);
+        const newTask = {
+          ...result.task[0],
+          status: 0,
+          completedDate: null,
+        };
+        console.log(newTask);
+        this.allTasks = [...this.allTasks, newTask];
+        console.log(this.allTasks);
+        this.applyFilters();
       }
     });
   }
@@ -426,9 +498,6 @@ export class TasksComponent {
     this.filteredCompletedTasks = this.completedTasks.filter((task: any) =>
       task.taskId.toLowerCase().includes(searchByTaskId)
     );
-
-
-
   }
 
   categorizeTasks() {
@@ -612,7 +681,7 @@ export class TasksComponent {
     }
 
     const searchByTaskId = this.searchTaskId.toLowerCase();
-    if(searchByTaskId){
+    if (searchByTaskId) {
       filtered = filtered.filter((task) =>
         task.taskId.toLowerCase().includes(searchByTaskId)
       );
@@ -620,27 +689,60 @@ export class TasksComponent {
 
     // Filter by due date
 
+    // if (this.selectedDate === 'today') {
+    //   filtered = filtered.filter(
+    //     (task) =>
+    //       new Date(task.dueDate).toDateString() === new Date().toDateString()
+    //   );
+    // } else if (this.selectedDate === 'week') {
+    //   const today = new Date();
+    //   const weekEnd = new Date(today);
+    //   weekEnd.setDate(today.getDate() + 7);
+    //   console.log(weekEnd);
+    //   filtered = filtered.filter(
+    //     (task) =>
+    //       new Date(task.dueDate) >= today && new Date(task.dueDate) <= weekEnd
+    //   );
+    // } else if (this.selectedDate === 'month') {
+    //   const today = new Date();
+    //   const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    //   filtered = filtered.filter(
+    //     (task) =>
+    //       new Date(task.dueDate) >= today && new Date(task.dueDate) <= monthEnd
+    //   );
+    // }
+
     if (this.selectedDate === 'today') {
-      filtered = filtered.filter(
-        (task) =>
-          new Date(task.dueDate).toDateString() === new Date().toDateString()
-      );
+      filtered = filtered.filter((task) => {
+        const taskDueDate = new Date(task.dueDate).toDateString();
+        const todayDate = new Date().toDateString();
+        return taskDueDate === todayDate;
+      });
     } else if (this.selectedDate === 'week') {
       const today = new Date();
       const weekEnd = new Date(today);
       weekEnd.setDate(today.getDate() + 7);
-      console.log(weekEnd);
-      filtered = filtered.filter(
-        (task) =>
-          new Date(task.dueDate) >= today && new Date(task.dueDate) <= weekEnd
-      );
+
+      // Normalize the time to ensure only the date is compared
+      const todayDate = new Date(today.setHours(0, 0, 0, 0)).getTime();
+      const weekEndDate = new Date(weekEnd.setHours(0, 0, 0, 0)).getTime();
+
+      filtered = filtered.filter((task) => {
+        const taskDueDate = new Date(task.dueDate).setHours(0, 0, 0, 0); // Strip the time part
+        return taskDueDate >= todayDate && taskDueDate <= weekEndDate;
+      });
     } else if (this.selectedDate === 'month') {
       const today = new Date();
       const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      filtered = filtered.filter(
-        (task) =>
-          new Date(task.dueDate) >= today && new Date(task.dueDate) <= monthEnd
-      );
+
+      // Normalize the time to ensure only the date is compared
+      const todayDate = new Date(today.setHours(0, 0, 0, 0)).getTime();
+      const monthEndDate = new Date(monthEnd.setHours(0, 0, 0, 0)).getTime();
+
+      filtered = filtered.filter((task) => {
+        const taskDueDate = new Date(task.dueDate).setHours(0, 0, 0, 0); // Strip the time part
+        return taskDueDate >= todayDate && taskDueDate <= monthEndDate;
+      });
     }
 
     if (this.selectedType === 'Billable') {
@@ -711,6 +813,33 @@ export class TasksComponent {
   //   this.tasks.push(updatedTask1);
   //   this.categorizeTasks();
   // }
+
+  onCompleteTask(task: any) {
+    const updateTask: UpdateTask = {
+      status: 2,
+      completedDate: new Date().toISOString(), // Set completedDate only if status is 2
+    };
+
+    task.status = 2;
+    task.completedDate = new Date().toISOString();
+
+    console.log(task);
+    console.log(this.allTasks);
+    console.log(updateTask);
+    console.log(task.taskId, this.empId);
+
+    this.tasksService
+      .updateTaskStatus(task.taskId, this.empId, updateTask)
+      .subscribe({
+        next: (response) => {
+          console.log('Task updated successfully:', response);
+          this.applyFilters();
+        },
+        error: (error) => {
+          console.error('Error updating task:', error);
+        },
+      });
+  }
 
   onSaveTask(task: any) {
     console.log(task);

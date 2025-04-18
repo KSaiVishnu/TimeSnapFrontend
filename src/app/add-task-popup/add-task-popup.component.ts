@@ -125,7 +125,6 @@ export class AddTaskPopupComponent {
   //   this.showSuggestions = false;
   // }
 
-
   isResetting = false;
 
   handleBlur() {
@@ -133,9 +132,8 @@ export class AddTaskPopupComponent {
       this.checkTaskId(); // Only execute when not resetting
     }
     this.isResetting = false; // Reset flag after blur execution
-
   }
-  
+
   preventBlurExecution() {
     this.isResetting = true; // Set flag before blur event fires
   }
@@ -169,7 +167,8 @@ export class AddTaskPopupComponent {
     console.log(details);
     console.log(this.form.value.taskName);
 
-    if (this.data.isEmployee &&
+    if (
+      this.data.isEmployee &&
       !details.assignee.some(
         (a: any) => a.empId === this.data.userDetails.empId
       )
@@ -178,7 +177,6 @@ export class AddTaskPopupComponent {
         assignee: this.data.userDetails.name,
         empId: this.data.userDetails.empId,
       });
-
     }
 
     let taskDetails = details.assignee.map((each: any) => {
@@ -199,28 +197,27 @@ export class AddTaskPopupComponent {
     if (this.toUpdateTask) {
       console.log(details);
       console.log(taskDetails);
-      this.http
-        .put(`${this.baseURL}/tasks/update-task`, details)
-        .subscribe({
-          next: (res: any) => {
-            this.toastr.success('Task Updated!', 'Task Updation Successful');
-            // alert('Task updated successfully!');
-            this.dialogRef.close('success'); // Pass "success" when closing
-            console.log(res);
-            this.onReset();
-          },
-          error: (err: any) => console.log('error while updating task:\n', err),
-        });
-
+      this.http.put(`${this.baseURL}/tasks/update-task`, details).subscribe({
+        next: (res: any) => {
+          this.toastr.success('Task Updated!', 'Task Updation Successful');
+          // alert('Task updated successfully!');
+          // this.dialogRef.close('success', taskDetails); // Pass "success" when closing
+          this.dialogRef.close({ status: 'success', task: taskDetails });
+          console.log(res);
+          this.onReset();
+        },
+        error: (err: any) => console.log('error while updating task:\n', err),
+      });
     } else {
-      console.log("ADD task")
+      console.log('ADD task');
       this.onReset();
 
       this.http.post(`${this.baseURL}/tasks/add-task`, details).subscribe({
         next: (res: any) => {
           // this.onReset();
           this.toastr.success('New Task created!', 'Task Creation Successful');
-          this.dialogRef.close('success'); // Pass "success" when closing
+          // this.dialogRef.close('success'); // Pass "success" when closing
+          this.dialogRef.close({ status: 'success', task: taskDetails });
           console.log(res);
         },
         error: (err: any) => console.log('error while adding task:\n', err),
@@ -318,7 +315,7 @@ export class AddTaskPopupComponent {
       return;
     }
 
-    console.log(this.data.allAssignees)
+    console.log(this.data.allAssignees);
 
     this.filteredAssignees = this.data.allAssignees.filter(
       (user: any) =>

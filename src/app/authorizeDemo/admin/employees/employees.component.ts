@@ -19,6 +19,8 @@ import { FirstKeyPipe } from '../../../shared/pipes/first-key.pipe';
 import { TaskReportComponent } from '../../../task-report/task-report.component';
 import { ErrorHandlerService } from '../../../shared/services/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
+import { MatTab, MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { UserService } from '../../../shared/services/user.service';
 
 interface Employee {
   userId: string;
@@ -27,6 +29,15 @@ interface Employee {
   empId: string;
   roleId: string;
 }
+
+export interface UserEmployee {
+  id: number;
+  employeeId: string;
+  userName: string;
+  email: string;
+}
+
+
 
 enum ApiStatus {
   INITIAL = 'INITIAL',
@@ -46,9 +57,12 @@ enum ApiStatus {
     FirstKeyPipe,
     FormsModule,
     TaskReportComponent,
+    MatTabsModule,
+    MatTab,
+    MatTabGroup
   ],
   templateUrl: './employees.component.html',
-  styleUrl: './employees.component.css',
+  styleUrl: './employees.component.scss',
 })
 export class EmployeesComponent implements OnInit, AfterViewInit {
   // allAssignees: { userName: string; employeeId: string }[] = []; // Store all users
@@ -65,15 +79,14 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   baseURL = environment.apiBaseUrl;
-
   employees: any = [];
-
   addedUsers: any = [];
-
   form: FormGroup;
-
   lastIdentity: any;
   count = 1;
+
+  userEmployees: UserEmployee[] = [];
+
 
   roles = [
     { id: '8ce4f9f7-026f-11f0-ac41-000d3a915061', name: 'Admin' },
@@ -85,12 +98,17 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   errorMessage: string = '';
   errorStatus: number | null = null;
 
+  invitedStatus: ApiStatus = ApiStatus.INITIAL;
+  invitedErrorMessage: string = '';
+  invitedErrorStatus: number | null = null;
+
   constructor(
     private http: HttpClient,
     public formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef,
     private errorHandler: ErrorHandlerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private userService: UserService
   ) {
     this.form = this.formBuilder.group({
       empName: ['', Validators.required],
@@ -118,6 +136,8 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.fetchEmployees();
     // this.fetchLastIdentityId();
+    this.fetchUserEmployees();
+
   }
 
   ngAfterViewInit() {
@@ -148,6 +168,28 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
       },
     });
   }
+
+  fetchUserEmployees(){
+    this.invitedStatus = ApiStatus.IN_PROGRESS;
+    this.userService.getUserEmployees().subscribe({
+      next: (data) => {
+        this.userEmployees = data;
+        this.invitedStatus = ApiStatus.SUCCESS;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to fetch user employees:', err);
+        this.invitedStatus = ApiStatus.FAILURE;
+        const errorInfo = this.errorHandler.getErrorMessage(err);
+        this.invitedErrorStatus = errorInfo.status;
+        this.invitedErrorMessage = errorInfo.message;
+        this.cdr.detectChanges();
+        // Optional: Show a toast or message to the user
+      }
+    });    
+  }
+
+  
 
   onRetry() {
     this.fetchEmployees();
@@ -257,9 +299,4 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         },
       });
   }
-}
-
-export interface UserEmployee {
-  userName: string;
-  employeeId: string;
 }

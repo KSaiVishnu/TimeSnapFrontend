@@ -409,7 +409,7 @@ export class TaskDetailsComponent implements OnInit {
     const hours = Number(this.editValues.totalHours);
     const minutes = Number(this.editValues.totalMin);
 
-    const updatedLog = {
+    let updatedLog = {
       ...log,
       date: new Date(this.editValues.date),
       totalHours: hours,
@@ -435,6 +435,13 @@ export class TaskDetailsComponent implements OnInit {
         // Find and update the log in your local array
         const index = this.timesheets.findIndex((l) => l.id === log.id);
         if (index !== -1) {
+          let newDate = updatedLog.date;
+          newDate.setHours(0, 0, 0, 0);
+          const formattedDate = newDate.toLocaleDateString('en-CA') + "T00:00:00"; // 'en-CA' gives YYYY-MM-DD format
+          updatedLog = {
+            ...updatedLog,
+            date: formattedDate
+          }
           this.timesheets[index] = { ...updatedLog };
           this.timesheets = [...this.timesheets];
         }
@@ -465,7 +472,6 @@ export class TaskDetailsComponent implements OnInit {
 
   CloseLog(){
     this.editingLogId = null;
-
   }
 
 

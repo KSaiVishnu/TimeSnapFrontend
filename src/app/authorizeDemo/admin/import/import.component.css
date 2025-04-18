@@ -2,6 +2,7 @@
   background-color: white;
   border-radius: 12px;
   padding: 20px;
+  min-height: calc(100vh - 85px);
 }
 
 .import-main-container{

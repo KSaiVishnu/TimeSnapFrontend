@@ -5,11 +5,14 @@
 }
 
 .tasks-layout {
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   /* max-width: 1400px; */
   margin: 0 auto;
+  min-height: calc(100vh - 85px);
+
 }
 
 /* Filters Panel */
@@ -119,6 +122,8 @@
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  /* height: 100vh; */
+  min-height: calc(100vh - 85px);
 }
 
 .tasks-header {
@@ -222,6 +227,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -238,9 +244,12 @@
   background-color: #f8f9ff;
   border-radius: 8px;
   padding: 1.25rem;
-  min-height: 300px;
+  /* min-height: 300px; */
+  /* height: 100%; */
+  min-height: calc(100vh - 300px);
   transition: background 0.3s ease-in-out;
 }
+
 .task-column:hover {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
@@ -273,24 +282,29 @@
 .task-card {
   background-color: white;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0px;
   margin-bottom: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  cursor: grab;
+  /* cursor: grab; */
+  /* cursor: pointer; */
+  cursor: move;
+
   /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
   transition: all 0.2s ease;
   border-left: 4px solid;
 }
+
 .task-card:active {
-  cursor: grabbing;
+  cursor: move;
   transform: scale(1.05);
 }
 
 
 .example-drag-cursor {
   margin-right: 16px;
-  cursor: move;
+  /* cursor: move; */
 }
+
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
@@ -299,9 +313,11 @@
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
   background-color: white;
 }
+
 .cdk-drag-placeholder {
   opacity: 0;
 }
+
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -334,17 +350,34 @@
 .task-card h4 {
   font-size: 0.9rem;
   font-weight: 600;
-  margin: 0 0 0.75rem 0;
+  padding: 1rem 1rem 0.7rem 1rem;
+  margin-bottom: 0px;
   color: #333;
+  cursor: pointer;
+}
+
+.task-card h4:hover {
+  color: blue;
+
+  .task-id {
+    color: blue;
+  }
 }
 
 .task-details {
-  display: flex;
-  align-items: center;
+  /* display: flex; */
+  align-items: right;
+  /* text-align: right; */
   gap: 0.5rem;
   font-size: 0.85rem;
   color: #666;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.25rem;
+  padding: 0px 0px 0px 1rem;
+}
+
+.task-id {
+  color: #565252;
+  font-size: 0.85rem;
 }
 
 .due-date {
@@ -355,7 +388,31 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0px 1rem 0.75rem 1rem;
+  margin-top: 10px;
 }
+
+.footer-icons {
+  cursor: pointer;
+}
+
+.footer-icons i {
+  margin-right: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  /* Makes it circular */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  /* Adjust width/height as needed */
+  height: 24px;
+  font-size: 14px;
+  /* Optional: adjust icon size */
+}
+
+
 
 .task-status {
   font-size: 0.75rem;
@@ -388,6 +445,7 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  /* margin-top: 10px; */
 }
 
 /* Empty Column */
@@ -421,7 +479,7 @@
   .tasks-layout {
     flex-direction: row;
   }
-  
+
   .filters-panel {
     width: 280px;
     flex-shrink: 0;
@@ -429,9 +487,22 @@
     position: sticky;
     top: 100px;
   }
-  
+
   .tasks-board {
     flex-grow: 1;
+    overflow-y: auto;
+    height: calc(100vh - 85px);
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+  }
+
+
+  .tasks-board::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
   }
 }
 
@@ -469,11 +540,13 @@
 .form-input:focus {
   outline: none;
   border-color: #4a6cfa;
-  box-shadow: 0 0 0 3px rgba(74, 108, 250, 0.2); /* Converted SCSS color function */
+  box-shadow: 0 0 0 3px rgba(74, 108, 250, 0.2);
+  /* Converted SCSS color function */
 }
 
 .form-input:hover:not(:focus) {
-  border-color: #b0b8c4; /* Approximate darkened color for #e2e8f0 */
+  border-color: #b0b8c4;
+  /* Approximate darkened color for #e2e8f0 */
 }
 
 
@@ -579,10 +652,12 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .error-container, .no-data {
+
+  .error-container,
+  .no-data {
     padding: 16px;
   }
-  
+
   .no-data::before {
     width: 60px;
     height: 60px;
@@ -598,9 +673,11 @@
   0% {
     opacity: 0.6;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.6;
   }
@@ -633,7 +710,8 @@
   margin-bottom: 8px;
 }
 
-.skeleton-input, .skeleton-select {
+.skeleton-input,
+.skeleton-select {
   height: 40px;
   width: 100%;
   background-color: #f0f0f0;
@@ -729,7 +807,7 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  
+
   .skeleton-column {
     min-height: 300px;
   }
@@ -739,12 +817,12 @@
   .tasks-layout {
     flex-direction: column;
   }
-  
+
   .skeleton-filters-panel {
     width: 100%;
     margin-bottom: 20px;
   }
-  
+
   .skeleton-tasks-board {
     width: 100%;
   }

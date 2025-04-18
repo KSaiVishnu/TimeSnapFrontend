@@ -214,16 +214,16 @@
             [cdkDragData]="task"
             (mousedown)="dragging = false"
             (cdkDragStarted)="dragging = true"
-            (click)="!dragging && goToTaskDetails(task)"
           >
             <!-- <h4>{{ task.taskName }}</h4> -->
-            <h4>
+
+            <h4 (click)="!dragging && goToTaskDetails(task)">
               {{
-                task.taskName.length > 45
+                task.taskName.length >= 45
                   ? task.taskName.substring(0, 45) + "..."
                   : task.taskName
               }}
-                <span class="task-details">({{ task.taskId }})</span>
+              <span class="task-id">({{ task.taskId }})</span>
             </h4>
             <!-- <p class="task-details">{{task.taskId}}</p> -->
             <p class="task-details">
@@ -232,8 +232,9 @@
                 task.dueDate | date : "MMM d, yyyy"
               }}</span>
             </p>
+
             <div class="task-footer">
-              <span class="task-status todo">To Do</span>
+              <span class="task-status todo">To do</span>
               <span
                 *ngIf="task.billingType === 'Billable'"
                 class="billing-badge"
@@ -266,7 +267,6 @@
             [cdkDragData]="task"
             (mousedown)="dragging = false"
             (cdkDragStarted)="dragging = true"
-            (click)="!dragging && goToTaskDetails(task)"
           >
             <!-- <h4>{{ task.taskName }}</h4> -->
             <!-- <h4>
@@ -276,13 +276,13 @@
                   : task.taskName
               }}
             </h4> -->
-            <h4>
+            <h4 (click)="!dragging && goToTaskDetails(task)">
               {{
                 task.taskName.length > 45
                   ? task.taskName.substring(0, 45) + "..."
                   : task.taskName
               }}
-                <span class="task-details">({{ task.taskId }})</span>
+              <span class="task-details">({{ task.taskId }})</span>
             </h4>
             <p class="task-details">
               <i class="far fa-calendar-alt"></i> Due:
@@ -324,7 +324,7 @@
             [cdkDragData]="task"
             (mousedown)="dragging = false"
             (cdkDragStarted)="dragging = true"
-            (click)="!dragging && goToTaskDetails(task)"
+            
           >
             <!-- <h4>{{ task.taskName }}</h4> -->
 
@@ -335,13 +335,13 @@
                   : task.taskName
               }}
             </h4> -->
-            <h4>
+            <h4 (click)="!dragging && goToTaskDetails(task)">
               {{
                 task.taskName.length > 45
                   ? task.taskName.substring(0, 45) + "..."
                   : task.taskName
               }}
-                <span class="task-details">({{ task.taskId }})</span>
+              <span class="task-details">({{ task.taskId }})</span>
             </h4>
             <p class="task-details">
               <i class="far fa-calendar-check"></i> Completed:
@@ -350,7 +350,7 @@
               }}</span>
             </p>
             <div class="task-footer">
-              <span class="task-status completed">Completed</span>
+              <!-- <span class="task-status completed">Completed</span> -->
               <span
                 *ngIf="task.billingType === 'Billable'"
                 class="billing-badge"

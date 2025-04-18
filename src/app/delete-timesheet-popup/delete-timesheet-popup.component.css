@@ -72,7 +72,7 @@
   
   .confirm-button {
     background: linear-gradient(135deg, #6a4bcc 0%, #4e3b9e 100%);
-    color: white;
+    color: white !important;
     border: none;
     border-radius: 6px;
     padding: 8px 20px;

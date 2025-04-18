@@ -161,6 +161,7 @@
                   (keyup)="onOtpDigitInput($event, 0)"
                   [(ngModel)]="otpDigits[0]"
                   [ngModelOptions]="{ standalone: true }"
+                  (keypress)="allowOnlyDigits($event)"
                 />
                 <input
                   type="text"
@@ -169,6 +170,7 @@
                   (keyup)="onOtpDigitInput($event, 1)"
                   [(ngModel)]="otpDigits[1]"
                   [ngModelOptions]="{ standalone: true }"
+                  (keypress)="allowOnlyDigits($event)"
                 />
                 <input
                   type="text"
@@ -177,6 +179,7 @@
                   (keyup)="onOtpDigitInput($event, 2)"
                   [(ngModel)]="otpDigits[2]"
                   [ngModelOptions]="{ standalone: true }"
+                  (keypress)="allowOnlyDigits($event)"
                 />
                 <input
                   type="text"
@@ -185,6 +188,7 @@
                   (keyup)="onOtpDigitInput($event, 3)"
                   [(ngModel)]="otpDigits[3]"
                   [ngModelOptions]="{ standalone: true }"
+                  (keypress)="allowOnlyDigits($event)"
                 />
                 <input
                   type="text"
@@ -193,6 +197,7 @@
                   (keyup)="onOtpDigitInput($event, 4)"
                   [(ngModel)]="otpDigits[4]"
                   [ngModelOptions]="{ standalone: true }"
+                  (keypress)="allowOnlyDigits($event)"
                 />
                 <input
                   type="text"
@@ -201,6 +206,7 @@
                   (keyup)="onOtpDigitInput($event, 5)"
                   [(ngModel)]="otpDigits[5]"
                   [ngModelOptions]="{ standalone: true }"
+                  (keypress)="allowOnlyDigits($event)"
                 />
               </div>
               <div

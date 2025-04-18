@@ -204,8 +204,6 @@
   </div>
 </ng-container>
 
-
-
 <!-- For Employees -->
 
 <ng-container *ngIf="data.isEmployee">
@@ -265,9 +263,9 @@
               id="task-name"
               class="form-control"
               placeholder="Enter task name"
-              [style.cursor]="!toUpdateTask ? 'text' : 'not-allowed'" 
+              [style.cursor]="!toUpdateTask ? 'text' : 'not-allowed'"
               [attr.disabled]="toUpdateTask ? true : null"
-              style="background-color: white;"
+              style="background-color: white"
             />
           </div>
           <div
@@ -283,7 +281,7 @@
       </div>
 
       <div class="mt-3">
-        <label *ngIf="assigneeList.length>0" for="assignee-name"
+        <label *ngIf="assigneeList.length > 0" for="assignee-name"
           >Assignee Names
         </label>
 
@@ -306,9 +304,9 @@
               id="start-date"
               type="date"
               class="form-control"
-              [style.cursor]="!toUpdateTask ? 'pointer' : 'not-allowed'" 
+              [style.cursor]="!toUpdateTask ? 'pointer' : 'not-allowed'"
               [attr.disabled]="toUpdateTask ? true : null"
-              style="background-color: white;"
+              style="background-color: white"
             />
           </div>
           <div
@@ -330,9 +328,9 @@
               id="due-date"
               type="date"
               class="form-control"
-              [style.cursor]="!toUpdateTask ? 'pointer' : 'not-allowed'" 
+              [style.cursor]="!toUpdateTask ? 'pointer' : 'not-allowed'"
               [attr.disabled]="toUpdateTask ? true : null"
-              style="background-color: white;"
+              style="background-color: white"
             />
           </div>
           <div
@@ -357,9 +355,9 @@
           formControlName="billingType"
           id="billing-type"
           class="form-select"
-          [style.cursor]="!toUpdateTask ? 'pointer' : 'not-allowed'" 
+          [style.cursor]="!toUpdateTask ? 'pointer' : 'not-allowed'"
           [attr.disabled]="toUpdateTask ? true : null"
-          style="background-color: white;"
+          style="background-color: white"
         >
           <option value="Non-Billable">Non-Billable</option>
           <option value="Billable">Billable</option>
@@ -374,10 +372,7 @@
         >
           Reset
         </button>
-        <button
-          [disabled]="form.invalid"
-          class="btn btn-success col-5 ml-3"
-        >
+        <button [disabled]="form.invalid" class="btn btn-success col-5 ml-3">
           Submit
         </button>
       </div>

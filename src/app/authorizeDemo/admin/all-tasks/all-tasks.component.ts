@@ -267,9 +267,12 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'success') {
+      if (result?.status === 'success') {
         this.fetchTasks(); // Refresh the task list
       }
+      // if (result === 'success') {
+      //   this.fetchTasks(); // Refresh the task list
+      // }
     });
   }
 
