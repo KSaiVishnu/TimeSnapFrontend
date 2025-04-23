@@ -6,6 +6,6 @@ export const environment = {
     // apiBaseUrl: 'https://timesnapbackend-mysql-3.onrender.com/api',
     apiBaseUrl:"https://framsiktindiatools.azurewebsites.net/api",
     production: true,
-    googleClientId: '257848338595-hs3vnsefa2mpgq2esjk6clpdq8pu062v.apps.googleusercontent.com' // <-- This will be replaced by the actual value during deployment
+    googleClientId: '' // <-- This will be replaced by the actual value during deployment
   };
   

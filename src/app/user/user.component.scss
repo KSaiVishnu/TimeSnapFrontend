@@ -379,7 +379,7 @@
   justify-content: center;
   
   @media (max-width: 576px) {
-    padding: 1.5rem 1.25rem;
+    // padding: 1.5rem 1.25rem;
   }
 }
 
@@ -396,9 +396,18 @@
   .auth-content {
     padding: 2rem;
   }
+
+  .auth-form-container {
+    width: 100%;
+  }
 }
 
 
+@media (max-width: 576px) {
+  .auth-content {
+    padding: 0rem;
+  }
+}
 
 
 
