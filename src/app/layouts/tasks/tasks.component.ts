@@ -459,7 +459,7 @@ export class TasksComponent {
       this.categorizeTasks();
     });
 
-    this.fetchAssignees();
+    // this.fetchAssignees();
   }
 
   pendingTasks: any = [];

@@ -8,6 +8,7 @@ import { ExportPopupComponent } from '../export-popup/export-popup.component';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-delete-task-popup',
@@ -17,6 +18,7 @@ import { environment } from '../../environments/environment';
 })
 export class DeleteTaskPopupComponent {
   constructor(
+    private toastr: ToastrService,
     private http: HttpClient,
     private dialogRef: MatDialogRef<DeleteTaskPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { task: any }
@@ -51,10 +53,12 @@ export class DeleteTaskPopupComponent {
     const taskId = this.data.task.taskId;
     this.http.delete(`${this.baseURL}/tasks/delete-task/${taskId}`).subscribe({
       next: (res: any) => {
+        this.toastr.success('Task Deleted Successfully', 'Task Deletion');
         console.log(res);
         this.close(); // Now this works correctly
       },
       error: (err) => {
+        this.toastr.error('Error While Updating Task', 'Updation Error');
         console.log(err);
         this.close();
       }

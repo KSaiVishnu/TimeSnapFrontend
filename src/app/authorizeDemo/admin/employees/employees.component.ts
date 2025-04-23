@@ -293,9 +293,11 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           console.log('User role updated successfully', response);
+          this.toastr.success('Role Updated Successfully', 'Role Updated');
         },
         error: (error) => {
           console.error('Error updating user role', error);
+          this.toastr.error('Error While Updating Role', 'Updation Error');
         },
       });
   }

@@ -133,13 +133,16 @@ export class EditTaskPopupComponent {
       .put(`${this.baseURL}/tasks/update-task`, details)
       .subscribe({
         next: (res: any) => {
-          this.toastr.success('Task Updated!', 'Task Updation Successful');
+          this.toastr.success('Task Updation Successful', 'Task Updated!');
           // alert('Task updated successfully!');
           this.dialogRef.close('success'); // Pass "success" when closing
 
           console.log(res);
         },
-        error: (err: any) => console.log('error while adding task:\n', err),
+        error: (err: any) =>{
+         this.toastr.error('Error While Updating Task', 'Updation Error');
+         console.log('error while adding task:\n', err);
+        }
       });
 
 
