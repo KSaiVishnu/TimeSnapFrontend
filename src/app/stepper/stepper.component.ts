@@ -242,12 +242,32 @@ export class StepperComponent implements OnInit {
     return this.otpDigits.every((digit) => digit !== '');
   }
 
-  allowOnlyDigits(event: KeyboardEvent) {
-    const charCode = event.key.charCodeAt(0);
-    if (charCode < 48 || charCode > 57) {
-      event.preventDefault();
+  // allowOnlyDigits(event: KeyboardEvent) {
+  //   const charCode = event.key.charCodeAt(0);
+  //   if (charCode < 48 || charCode > 57) {
+  //     event.preventDefault();
+  //   }
+  // }
+
+  allowOnlyDigits(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const index = Number(input.getAttribute('data-index'));
+    const value = input.value.replace(/[^0-9]/g, '');
+  
+    // Only keep the first digit
+    input.value = value.charAt(0);
+    this.otpDigits[index] = input.value;
+  
+    // Auto move to next if digit entered
+    if (input.value && index < 5) {
+      const inputs = document.getElementsByClassName('otp-digit');
+      (inputs[index + 1] as HTMLInputElement).focus();
     }
+  
+    this.updateOtpFormControl();
   }
+  
+  
   
 
   // sendOtp(stepper: MatStepper): void {

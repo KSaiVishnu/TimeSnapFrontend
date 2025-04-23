@@ -153,7 +153,7 @@
 
             <div class="form-group">
               <label>Verification Code</label>
-              <div class="otp-inputs">
+              <!-- <div class="otp-inputs">
                 <input
                   type="text"
                   class="otp-digit"
@@ -208,7 +208,71 @@
                   [ngModelOptions]="{ standalone: true }"
                   (keypress)="allowOnlyDigits($event)"
                 />
+              </div> -->
+              
+              <div class="otp-inputs">
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  [attr.data-index]="0"
+                  (input)="allowOnlyDigits($event)"
+                  (keyup)="onOtpDigitInput($event, 0)"
+                  [(ngModel)]="otpDigits[0]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  [attr.data-index]="1"
+                  (input)="allowOnlyDigits($event)"
+                  (keyup)="onOtpDigitInput($event, 1)"
+                  [(ngModel)]="otpDigits[1]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  [attr.data-index]="2"
+                  (input)="allowOnlyDigits($event)"
+                  (keyup)="onOtpDigitInput($event, 2)"
+                  [(ngModel)]="otpDigits[2]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  [attr.data-index]="3"
+                  (input)="allowOnlyDigits($event)"
+                  (keyup)="onOtpDigitInput($event, 3)"
+                  [(ngModel)]="otpDigits[3]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  [attr.data-index]="4"
+                  (input)="allowOnlyDigits($event)"
+                  (keyup)="onOtpDigitInput($event, 4)"
+                  [(ngModel)]="otpDigits[4]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+                <input
+                  type="text"
+                  class="otp-digit"
+                  maxlength="1"
+                  [attr.data-index]="5"
+                  (input)="allowOnlyDigits($event)"
+                  (keyup)="onOtpDigitInput($event, 5)"
+                  [(ngModel)]="otpDigits[5]"
+                  [ngModelOptions]="{ standalone: true }"
+                />
               </div>
+              
               <div
                 class="error-message"
                 *ngIf="!isOtpComplete() && otpForm.touched"
