@@ -168,16 +168,16 @@ body {
       }
     }
     
-    &:last-child {
-      background-color: transparent;
-      border: 1px solid $indigo-200;
-      color: $indigo-700;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    // &:last-child {
+    //   background-color: transparent;
+    //   border: 1px solid $indigo-200;
+    //   color: $indigo-700;
+    //   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       
-      &:hover {
-        background-color: $indigo-50;
-      }
-    }
+    //   &:hover {
+    //     background-color: $indigo-50;
+    //   }
+    // }
   }
   
   // Stats section
