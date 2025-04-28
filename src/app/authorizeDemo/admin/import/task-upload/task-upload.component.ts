@@ -99,7 +99,8 @@ export class TaskUploadComponent {
         assignees.forEach((assignee: any, index: any) => {
           this.parsedData.push({
             task: task.TASK,
-            taskID: task["TASK ID"],
+            // taskID: task["TASK ID"],
+            taskID: typeof task["TASK ID"] === 'number' ? task["TASK ID"].toString() : task["TASK ID"],
             assignee: assignee.trim(),
             empId: empIds[index].trim(),
             startDate: new Date((task["START DATE"] - 25569) * 86400000),
