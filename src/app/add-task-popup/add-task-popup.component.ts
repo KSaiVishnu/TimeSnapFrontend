@@ -205,8 +205,16 @@ export class AddTaskPopupComponent {
           this.dialogRef.close({ status: 'success', task: taskDetails });
           console.log(res);
           this.onReset();
-        },
-        error: (err: any) => console.log('error while updating task:\n', err),
+        // },
+        // error: (err: any) => {
+        //   console.log('error while updating task:\n', err),
+        // }
+      },
+      error: (error) => {
+        this.isResetting = false;
+        console.error(error);
+        alert('error while updating task');
+      }
       });
     } else {
       console.log('ADD task');
@@ -220,7 +228,10 @@ export class AddTaskPopupComponent {
           this.dialogRef.close({ status: 'success', task: taskDetails });
           console.log(res);
         },
-        error: (err: any) => console.log('error while adding task:\n', err),
+        error: (err: any) =>{
+        alert('error while adding task');
+          console.log('error while adding task:\n', err)
+        }
       });
     }
   }

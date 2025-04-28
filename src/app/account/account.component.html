@@ -1,6 +1,491 @@
-<div class="d-flex flex-column align-items-center">
-    <!-- <img src="assets/images/inprogress.png" /> -->
-     <img style="height: 400px;" src="https://img.freepik.com/premium-photo/cartoon-worker-with-shovel-construction-concept_764664-2777.jpg?uid=R192748755&ga=GA1.1.290244527.1711381461&semt=ais_hybrid&w=740" />
-    <h3>Account Section is under Maintenance</h3>
+<div class="account-container">
+  <div class="time-pattern-bg"></div>
+  
+  <!-- <div class="account-header">
+    <h1>My Account</h1>
+    <div class="time-stats">
+      <div class="stat">
+        <i class="material-icons">schedule</i>
+        <div>
+          <span class="stat-value">{{ userStats.totalHours }}</span>
+          <span class="stat-label">Total Hours</span>
+        </div>
+      </div>
+      <div class="stat">
+        <i class="material-icons">calendar_today</i>
+        <div>
+          <span class="stat-value">{{ userStats.daysActive }}</span>
+          <span class="stat-label">Days Active</span>
+        </div>
+      </div>
+      <div class="stat">
+        <i class="material-icons">trending_up</i>
+        <div>
+          <span class="stat-value">{{ userStats.projectsCompleted }}</span>
+          <span class="stat-label">Projects</span>
+        </div>
+      </div>
+    </div>
+  </div> -->
 
+  <div class="account-content">
+    <!-- Profile Section -->
+    <section class="profile-section card">
+      <h2>Profile Information</h2>
+      <div class="profile-content">
+        <div class="avatar-container">
+          <div class="avatar-wrapper" [class.avatar-uploading]="isUploading">
+            <img [src]="user.avatarUrl || 'assets/images/default-avatar.png'" alt="Profile Avatar" class="avatar-img" />
+            <div class="avatar-overlay" (click)="triggerFileInput()">
+              <i class="material-icons">photo_camera</i>
+            </div>
+          </div>
+          <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/*" />
+          <div *ngIf="isUploading" class="upload-progress">
+            <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+          </div>
+        </div>
+        
+        <div class="profile-details">
+          <div class="profile-field">
+            <label>Name</label>
+            <div class="editable-field">
+              <span *ngIf="!isEditingName" class="field-value">{{ user.name }}</span>
+              <form *ngIf="isEditingName" [formGroup]="nameForm" (ngSubmit)="updateName()" class="inline-form">
+                <input formControlName="name" class="form-control" placeholder="Your name" />
+                <div class="form-actions">
+                  <button type="button" class="btn-cancel" (click)="cancelNameEdit()">
+                    <i class="material-icons">close</i>
+                  </button>
+                  <button type="submit" class="btn-save" [disabled]="nameForm.invalid">
+                    <i class="material-icons">check</i>
+                  </button>
+                </div>
+                <p *ngIf="errorMsg" style="color: red;">{{ errorMsg }}</p>
+                <p *ngIf="successMsg" style="color: green;">{{ successMsg }}</p>
+              </form>
+              <button *ngIf="!isEditingName" class="btn-edit" (click)="startNameEdit()">
+                <i class="material-icons">edit</i>
+              </button>
+            </div>
+          </div>        
+
+          <div class="profile-field">
+            <label>Email</label>
+            <div class="field-value">{{ user.email }}</div>
+          </div>
+
+          <div class="profile-field">
+            <label>Employee Id</label>
+            <div class="field-value">{{ user.empId }}</div>
+          </div>
+
+          
+          <!-- <div class="profile-field">
+            <label>Member Since</label>
+            <div class="field-value">{{ user.memberSince | date:'mediumDate' }}</div>
+          </div>
+          
+          <div class="profile-field">
+            <label>Time Zone</label>
+            <div class="editable-field">
+              <span *ngIf="!isEditingTimezone" class="field-value">{{ user.timezone }}</span>
+              <form *ngIf="isEditingTimezone" [formGroup]="timezoneForm" (ngSubmit)="updateTimezone()" class="inline-form">
+                <select formControlName="timezone" class="form-control">
+                  <option *ngFor="let tz of timezones" [value]="tz.value">{{ tz.label }}</option>
+                </select>
+                <div class="form-actions">
+                  <button type="button" class="btn-cancel" (click)="cancelTimezoneEdit()">
+                    <i class="material-icons">close</i>
+                  </button>
+                  <button type="submit" class="btn-save" [disabled]="timezoneForm.invalid">
+                    <i class="material-icons">check</i>
+                  </button>
+                </div>
+              </form>
+              <button *ngIf="!isEditingTimezone" class="btn-edit" (click)="startTimezoneEdit()">
+                <i class="material-icons">edit</i>
+              </button>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="security-section card">
+      <h2>Security</h2>
+      
+      <!-- Change Password -->
+      <div class="password-form">
+        <h3>Change Password</h3>
+        <!-- <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="form-group">
+            <label for="currentPassword">Current Password</label>
+            <div class="password-input">
+              <i class="material-icons">lock</i>
+              <input 
+                id="currentPassword" 
+                [type]="hideCurrentPassword ? 'password' : 'text'" 
+                formControlName="currentPassword" 
+                placeholder="Enter current password" 
+                class="form-control"
+              />
+              <button type="button" class="password-toggle" (click)="hideCurrentPassword = !hideCurrentPassword">
+                <i class="material-icons">{{ hideCurrentPassword ? 'visibility_off' : 'visibility' }}</i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+              Please enter your current password
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">New Password</label>
+            <div class="password-input">
+              <i class="material-icons">lock_open</i>
+              <input 
+                id="password" 
+                [type]="hidePassword ? 'password' : 'text'" 
+                formControlName="password" 
+                placeholder="Enter new password" 
+                class="form-control"
+              />
+              <button type="button" class="password-toggle" (click)="hidePassword = !hidePassword">
+                <i class="material-icons">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="passwordForm.get('password')?.invalid && passwordForm.get('password')?.touched">
+              <ng-container [ngSwitch]="getFirstError(passwordForm.get('password'))">
+                <div *ngSwitchCase="'required'">Please enter a new password</div>
+                <div *ngSwitchCase="'minlength'">Password must be at least 8 characters</div>
+                <div *ngSwitchCase="'pattern'">Password must include at least one letter, number, and special character</div>
+              </ng-container>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="password-input">
+              <i class="material-icons">lock_open</i>
+              <input 
+                id="confirmPassword" 
+                [type]="hideConfirmPassword ? 'password' : 'text'" 
+                formControlName="confirmPassword" 
+                placeholder="Confirm new password" 
+                class="form-control"
+              />
+              <button type="button" class="password-toggle" (click)="hideConfirmPassword = !hideConfirmPassword">
+                <i class="material-icons">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched">
+              Please confirm your new password
+            </div>
+          </div>
+          
+          <div class="error-message" *ngIf="passwordForm.errors?.['mismatch'] && passwordForm.get('confirmPassword')?.touched">
+            Passwords do not match
+          </div>
+          
+          <button type="submit" class="btn-primary" [disabled]="passwordForm.invalid || isPasswordChanging">
+            <span *ngIf="!isPasswordChanging">Change Password</span>
+            <span *ngIf="isPasswordChanging" class="spinner"></span>
+          </button>
+        </form> -->
+      
+
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="form-group">
+            <label for="currentPassword">Current Password</label>
+            <div class="password-input">
+              <i class="material-icons">lock</i>
+              <input 
+                id="currentPassword" 
+                [type]="hideCurrentPassword ? 'password' : 'text'" 
+                formControlName="currentPassword" 
+                placeholder="Enter current password" 
+                class="form-control"
+                (blur)="validateCurrentPassword()" 
+                (keyup.enter)="validateCurrentPassword()"
+              />
+              <button type="button" class="password-toggle" (click)="hideCurrentPassword = !hideCurrentPassword">
+                <i class="material-icons">{{ hideCurrentPassword ? 'visibility_off' : 'visibility' }}</i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="currentPasswordInvalid">
+              Current password is incorrect.
+            </div>
+          </div>
+        
+          <ng-container *ngIf="currentPasswordValid">
+            <div class="form-group">
+              <label for="password">New Password</label>
+              <div class="password-input">
+                <i class="material-icons">lock_open</i>
+                <input 
+                  id="password" 
+                  [type]="hidePassword ? 'password' : 'text'" 
+                  formControlName="password" 
+                  placeholder="Enter new password" 
+                  class="form-control"
+                />
+                <button type="button" class="password-toggle" (click)="hidePassword = !hidePassword">
+                  <i class="material-icons">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
+                </button>
+              </div>
+              <div class="error-message" *ngIf="passwordForm.get('password')?.invalid && passwordForm.get('password')?.touched">
+                <ng-container [ngSwitch]="getFirstError(passwordForm.get('password'))">
+                  <div *ngSwitchCase="'required'">Please enter a new password</div>
+                  <div *ngSwitchCase="'minlength'">Password must be at least 8 characters</div>
+                  <div *ngSwitchCase="'pattern'">Password must include at least one letter, number, and special character</div>
+                </ng-container>
+              </div>
+            </div>
+        
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <div class="password-input">
+                <i class="material-icons">lock_open</i>
+                <input 
+                  id="confirmPassword" 
+                  [type]="hideConfirmPassword ? 'password' : 'text'" 
+                  formControlName="confirmPassword" 
+                  placeholder="Confirm new password" 
+                  class="form-control"
+                />
+                <button type="button" class="password-toggle" (click)="hideConfirmPassword = !hideConfirmPassword">
+                  <i class="material-icons">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</i>
+                </button>
+              </div>
+              <div class="error-message" *ngIf="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched">
+                Please confirm your new password
+              </div>
+            </div>
+        
+            <div class="error-message" *ngIf="passwordForm.errors?.['mismatch'] && passwordForm.get('confirmPassword')?.touched">
+              Passwords do not match
+            </div>
+        
+            <button type="submit" class="btn-primary" [disabled]="passwordForm.invalid || isPasswordChanging">
+              <span *ngIf="!isPasswordChanging">Change Password</span>
+              <span *ngIf="isPasswordChanging" class="spinner"></span>
+            </button>
+          </ng-container>
+        </form>
+        
+      
+      </div>
+      
+      <!-- Two-Factor Authentication -->
+      <!-- <div class="two-factor">
+        <h3>Two-Factor Authentication</h3>
+        <div class="two-factor-status">
+          <div class="status-info">
+            <span class="status-label">Status:</span>
+            <span class="status-value" [class.enabled]="twoFactorEnabled" [class.disabled]="!twoFactorEnabled">
+              {{ twoFactorEnabled ? 'Enabled' : 'Disabled' }}
+            </span>
+          </div>
+          <button class="btn-toggle" (click)="toggleTwoFactor()">
+            {{ twoFactorEnabled ? 'Disable' : 'Enable' }} Two-Factor
+          </button>
+        </div>
+      </div> -->
+      
+      <!-- Login History -->
+      <!-- <div class="login-history">
+        <h3>Recent Login Activity</h3>
+        <div class="history-list">
+          <div class="history-item" *ngFor="let login of loginHistory">
+            <div class="device-info">
+              <i class="material-icons">{{ login.deviceIcon }}</i>
+              <div class="device-details">
+                <div class="device-name">{{ login.device }}</div>
+                <div class="device-location">{{ login.location }}</div>
+              </div>
+            </div>
+            <div class="login-time">
+              <div class="time">{{ login.time | date:'short' }}</div>
+              <div class="status" [class.current]="login.current">
+                {{ login.current ? 'Current Session' : '' }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-text" (click)="viewAllLoginHistory()">View All Activity</button>
+      </div> -->
+    </section>
+
+    <!-- Admin Section -->
+    <section  [appHideIfClaimsNotMet]="claimReq.admin" class="admin-section card">
+      <h2>Admin Controls</h2>
+      
+      <!-- Reset Employee Password -->
+      <div class="reset-password">
+        <h3>Reset Employee Password</h3>
+        <form [formGroup]="resetForm" (ngSubmit)="resetPassword()">
+          <div class="form-group">
+            <label for="employeeEmail">Employee Email</label>
+            <div class="input-with-icon">
+              <i class="material-icons">person</i>
+              <input 
+                id="employeeEmail" 
+                type="email" 
+                formControlName="employeeEmail" 
+                placeholder="Enter employee email" 
+                class="form-control"
+              />
+            </div>
+            <div class="error-message" *ngIf="resetForm.get('employeeEmail')?.invalid && resetForm.get('employeeEmail')?.touched">
+              <ng-container [ngSwitch]="getFirstError(resetForm.get('employeeEmail'))">
+                <div *ngSwitchCase="'required'">Please enter employee email</div>
+                <div *ngSwitchCase="'email'">Please enter a valid email address</div>
+              </ng-container>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="newPassword">New Password</label>
+            <div class="password-input">
+              <i class="material-icons">lock_reset</i>
+              <input 
+                id="newPassword" 
+                [type]="hideNewPassword ? 'password' : 'text'" 
+                formControlName="newPassword" 
+                placeholder="Enter new password" 
+                class="form-control"
+              />
+              <button type="button" class="password-toggle" (click)="hideNewPassword = !hideNewPassword">
+                <i class="material-icons">{{ hideNewPassword ? 'visibility_off' : 'visibility' }}</i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="resetForm.get('newPassword')?.invalid && resetForm.get('newPassword')?.touched">
+              <ng-container [ngSwitch]="getFirstError(resetForm.get('newPassword'))">
+                <div *ngSwitchCase="'required'">Please enter a new password</div>
+                <div *ngSwitchCase="'minlength'">Password must be at least 8 characters</div>
+                <div *ngSwitchCase="'pattern'">Password must include at least one letter, number, and special character</div>
+              </ng-container>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-primary" [disabled]="resetForm.invalid || isResetting">
+            <span *ngIf="!isResetting">Reset Password</span>
+            <span *ngIf="isResetting" class="spinner"></span>
+          </button>
+        </form>
+      </div>
+      
+      <!-- Employee Time Reports -->
+      <!-- <div class="employee-reports">
+        <h3>Employee Time Reports</h3>
+        <div class="report-actions">
+          <button class="btn-secondary" (click)="generateTimeReports()">
+            <i class="material-icons">assessment</i>
+            Generate Reports
+          </button>
+          <button class="btn-secondary" (click)="exportTimeData()">
+            <i class="material-icons">download</i>
+            Export Data
+          </button>
+        </div>
+      </div> -->
+    </section>
+
+    <!-- Danger Zone -->
+    <section class="danger-section card">
+      <h2>Danger Zone</h2>
+      <div class="danger-actions">
+        <div class="danger-action">
+          <div class="danger-info">
+            <h3>Delete Account</h3>
+            <p>This will permanently delete your account and all associated data. This action cannot be undone.</p>
+          </div>
+          <button class="btn-danger" (click)="confirmDeleteAccount()">
+            Delete My Account
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal" *ngIf="showDeleteModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Delete Account</h2>
+      <button class="modal-close" (click)="showDeleteModal = false">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="warning-icon">
+        <i class="material-icons">warning</i>
+      </div>
+      <p>Are you sure you want to delete your account? This action cannot be undone and will permanently delete:</p>
+      <ul>
+        <li>Your profile information</li>
+        <li>All time tracking data</li>
+        <li>Project history and reports</li>
+      </ul>
+      <div class="confirmation-input">
+        <p>Please type <strong>DELETE</strong> to confirm:</p>
+        <input type="text" [(ngModel)]="deleteConfirmation" placeholder="Type DELETE" class="form-control" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="showDeleteModal = false">Cancel</button>
+      <button class="btn-danger" [disabled]="deleteConfirmation !== 'DELETE'" (click)="deleteAccount()">
+        <span *ngIf="!isDeleting">Delete Account</span>
+        <span *ngIf="isDeleting" class="spinner"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Two-Factor Setup Modal -->
+<div class="modal" *ngIf="showTwoFactorModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Set Up Two-Factor Authentication</h2>
+      <button class="modal-close" (click)="showTwoFactorModal = false">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="two-factor-setup">
+        <div class="qr-container">
+          <img [src]="twoFactorQrCode" alt="QR Code for Two-Factor Authentication" />
+        </div>
+        <div class="setup-instructions">
+          <h3>Setup Instructions:</h3>
+          <ol>
+            <li>Download an authenticator app like Google Authenticator or Authy</li>
+            <li>Scan the QR code with your authenticator app</li>
+            <li>Enter the 6-digit code from your app below</li>
+          </ol>
+          <div class="verification-code">
+            <label for="verificationCode">Verification Code</label>
+            <input 
+              id="verificationCode" 
+              type="text" 
+              [(ngModel)]="twoFactorCode" 
+              placeholder="Enter 6-digit code" 
+              class="form-control"
+              maxlength="6"
+              pattern="[0-9]*"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="showTwoFactorModal = false">Cancel</button>
+      <button class="btn-primary" [disabled]="!twoFactorCode || twoFactorCode.length !== 6" (click)="verifyTwoFactorCode()">
+        <span *ngIf="!isVerifying">Verify & Enable</span>
+        <span *ngIf="isVerifying" class="spinner"></span>
+      </button>
+    </div>
+  </div>
 </div>

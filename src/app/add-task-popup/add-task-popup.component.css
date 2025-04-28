@@ -119,9 +119,26 @@ input[type="search"]::-webkit-search-cancel-button {
     cursor: not-allowed;
   }
 
+  .btn-close {
+    background: transparent;
+    color: #5e35b1;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-close:hover {
+    background: #f5f0ff;
+    transform: rotate(90deg);
+  }
 
 
-
+  
 
 
 

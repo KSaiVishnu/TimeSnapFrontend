@@ -5,7 +5,7 @@
 >
   <div class="tasks-layout">
     <!-- Filters Panel Skeleton -->
-    <div class="filters-panel skeleton-filters-panel">
+    <!-- <div class="filters-panel skeleton-filters-panel">
       <div class="filters-header">
         <div class="skeleton-title"></div>
         <div class="skeleton-button"></div>
@@ -25,7 +25,100 @@
         <div class="skeleton-label"></div>
         <div class="skeleton-select"></div>
       </div>
+    </div> -->
+
+
+    <div class="filters-panel">
+      <div class="filters-header">
+        <h3>Filters</h3>
+        <button (click)="onClearFilters()" class="clear-btn">
+          Clear Filters
+        </button>
+      </div>
+
+      <div class="filter-group">
+        <label for="search-task">Search By TaskId</label>
+        <div class="search-input">
+          <i class="fas fa-search"></i>
+          <input
+            id="search-task"
+            type="search"
+            [(ngModel)]="searchTaskId"
+            (input)="applyFilters()"
+            placeholder="Enter task id"
+          />
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="search-task">Search By TaskName</label>
+        <div class="search-input">
+          <i class="fas fa-search"></i>
+          <input
+            id="search-task"
+            type="search"
+            [(ngModel)]="searchText"
+            (input)="applyFilters()"
+            placeholder="Enter task name"
+          />
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Filter by Due Date</label>
+        <div class="input-wrapper">
+          <select
+            [(ngModel)]="selectedDate"
+            (change)="applyFilters()"
+            class="custom-select"
+          >
+            <option value="all">All</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Filter by Billing Type</label>
+        <div class="input-wrapper">
+          <select
+            [(ngModel)]="selectedType"
+            (change)="applyFilters()"
+            class="custom-select"
+          >
+            <option value="all">All</option>
+            <option value="Billable">Billable</option>
+            <option value="Non-Billable">Non-Billable</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- <div class="filter-group">
+        <label for="filter-date">Filter by Due Date</label>
+        <mat-form-field appearance="outline" class="custom-select">
+          <mat-select [(value)]="selectedDate" (valueChange)="applyFilters()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="today">Today</mat-option>
+            <mat-option value="week">This Week</mat-option>
+            <mat-option value="month">This Month</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div> -->
+
+      <!-- <div class="filter-group">
+        <label for="filter-type">Filter by Billing Type</label>
+        <mat-form-field appearance="outline" class="custom-select">
+          <mat-select [(value)]="selectedType" (valueChange)="applyFilters()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="Billable">Billable</mat-option>
+            <mat-option value="Non-Billable">Non-Billable</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div> -->
     </div>
+
 
     <!-- Tasks Board Skeleton -->
     <div class="tasks-board skeleton-tasks-board">
@@ -82,7 +175,7 @@
 </div>
 
 <!-- Show actual content when loaded -->
-<div *ngIf="apiStatus === 'SUCCESS'" class="tasks-container">
+<div class="tasks-container">
   <div class="tasks-layout">
     <!-- Filters Panel -->
     <div class="filters-panel">
@@ -177,7 +270,7 @@
     </div>
 
     <!-- Tasks Board -->
-    <div class="tasks-board">
+    <div *ngIf="apiStatus === 'SUCCESS'" class="tasks-board">
       <div class="tasks-header">
         <h2>Tasks</h2>
         <button (click)="openAddTaskPopup()" class="add-task-btn">

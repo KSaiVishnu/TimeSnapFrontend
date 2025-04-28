@@ -58,7 +58,7 @@ export class DeleteTaskPopupComponent {
         this.close(); // Now this works correctly
       },
       error: (err) => {
-        this.toastr.error('Error While Updating Task', 'Updation Error');
+        this.toastr.error('Error While deleting Task', 'Deletion Error');
         console.log(err);
         this.close();
       }
