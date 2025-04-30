@@ -284,6 +284,7 @@ export class TaskUploadComponent {
       console.log(this.parsedData, this.parsedData.length);
       this.parsedData = [...this.parsedData];
       console.log(this.rawData);
+      this.errorEmpIds = [];
       this.cdr.detectChanges();
 
     };
