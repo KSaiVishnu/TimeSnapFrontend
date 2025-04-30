@@ -1,64 +1,105 @@
-<!-- <div class="container">
-    <div class="upload-box" (click)="handleClick()">
-      <div *ngIf="files.length === 0">
-        <p>Drag and Drop files here</p>
-        <p>or</p>
-        <button class="btn upload-button">Browse Files</button>
-      </div>
-      <div *ngIf="files.length > 0">
-        <ul>
-          <li *ngFor="let file of files; let i = index">
-            {{ file.name }}
-            <button (click)="files.splice(i, 1)">❌</button>
-          </li>
-        </ul>
-      </div>
-      <input type="file" (change)="onFileChange($event)" hidden #fileInput />
+<div class="pt-3">
+  <div
+    class="upload-box"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="handleClick()"
+  >
+    <div *ngIf="files.length === 0" class="text-center">
+      <span class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </span>
+      <p>Drag and Drop files here</p>
     </div>
+
+    <p *ngIf="files.length === 0">or</p>
+
+    <div class="file-list" *ngIf="files.length > 0">
+      <div class="add-file-container">
+        <input type="file" (change)="onFileChange($event)" hidden multiple #fileInput />
+      </div>
+
+      <div *ngFor="let file of files; let i = index" class="file-item">
+        <span class="file-name"> File {{ i + 1 }}: {{ file.name }} </span>
+        <button (click)="removeFile(i, $event)" class="remove-btn">❌</button>
+      </div>
+    </div>
+
+    <input type="file" (change)="onFileChange($event)" multiple hidden #fileInput />
+    <button *ngIf="files.length === 0" class="btn upload-button">
+      Browse Files
+    </button>
     <button *ngIf="files.length > 0" (click)="uploadFiles()" class="btn btn-primary mt-4">
       Upload
     </button>
   </div>
-   -->
 
-
-   <!-- <h3>Time Sheets</h3> -->
-   <div class="pt-3">
-    <div
-      class="upload-box"
-      (dragover)="onDragOver($event)"
-      (dragleave)="onDragLeave($event)"
-      (drop)="onDrop($event)"
-      (click)="handleClick()"
-    >
-      <div *ngIf="files.length === 0" class="text-center">
-        <span style="color: #18a7ff; font-size: 50px">
-          <i class="fas fa-cloud-upload-alt"></i>
-        </span>
-        <p>Drag and Drop files here</p>
-      </div>
-  
-      <p *ngIf="files.length === 0">or</p>
-  
-      <div class="file-list" *ngIf="files.length > 0">
-        <div class="add-file-container">
-          <a class="add-btn" (click)="fileInput.click()">Add</a>
-          <input type="file" (change)="onFileChange($event)" hidden multiple #fileInput />
-        </div>
-  
-        <div *ngFor="let file of files; let i = index" class="file-item">
-          <span class="file-name"> File {{ i + 1 }}: {{ file.name }} </span>
-          <button (click)="removeFile(i, $event)" class="remove-btn">❌</button>
-        </div>
-      </div>
-  
-      <input type="file" (change)="onFileChange($event)" multiple hidden #fileInput />
-      <button *ngIf="files.length === 0" class="btn upload-button">
-        Browse Files
-      </button>
-      <button *ngIf="files.length > 0" (click)="uploadFiles()" class="btn btn-primary mt-4">
-        Upload
-      </button>
-    </div>
+  <div *ngIf="parsedData.length > 0" class="table-container mat-elevation-z2">
+    <h5 class="table-title">Preview Timesheet Data</h5>
+    
+    <table mat-table [dataSource]="parsedData" class="timesheets-table">
+      <!-- UserId Column -->
+      <ng-container matColumnDef="UserId">
+        <th mat-header-cell *matHeaderCellDef>User ID</th>
+        <td mat-cell 
+            *matCellDef="let row" 
+            [matTooltip]="getErrorMessage(row)"
+            [ngClass]="{'error-cell': isError(row)}">
+            {{ row.UserId }}
+        </td>
+      </ng-container>
+    
+      <!-- TaskId Column -->
+      <ng-container matColumnDef="TaskId">
+        <th mat-header-cell *matHeaderCellDef>Task ID</th>
+        <td mat-cell 
+            *matCellDef="let row"
+            [matTooltip]="getErrorMessage(row)"
+            [ngClass]="{'error-cell': isError(row)}">
+            {{ row.TaskId }}
+        </td>
+      </ng-container>
+    
+      <!-- Total Hours Column -->
+      <ng-container matColumnDef="TotalHours">
+        <th mat-header-cell *matHeaderCellDef>Total Hours</th>
+        <td mat-cell *matCellDef="let row">
+            {{ row.TotalHours }}
+        </td>
+      </ng-container>
+    
+      <!-- Date Column -->
+      <ng-container matColumnDef="Date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let row">
+            {{ row.Date | date:'yyyy-MM-dd' }}
+        </td>
+      </ng-container>
+    
+      <!-- Notes Column -->
+      <ng-container matColumnDef="Notes">
+        <th mat-header-cell *matHeaderCellDef>Notes</th>
+        <td mat-cell *matCellDef="let row" [matTooltip]="row.Notes">
+          <!-- Option 1: Truncate with ellipsis -->
+          <span class="cell-content">{{ row.Notes }}</span>
+          
+          <!-- Option 2: Multi-line with truncation (uncomment to use) -->
+          <!-- <span class="cell-content-wrap">{{ row.Notes }}</span> -->
+          
+          <!-- Option 3: Expandable cell (requires additional component logic) -->
+          <!-- <span class="expandable-cell" (click)="openCellDialog('Notes', row.Notes)">
+            {{ row.Notes | truncate:30 }}
+            <mat-icon class="expand-icon">open_in_new</mat-icon>
+          </span> -->
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row 
+          *matRowDef="let row; columns: displayedColumns;"
+          [ngClass]="{'error-row': isError(row)}">
+      </tr>
+    </table>
   </div>
-  
+</div>

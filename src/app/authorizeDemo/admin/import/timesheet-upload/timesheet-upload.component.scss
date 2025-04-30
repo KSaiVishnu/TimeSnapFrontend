@@ -1,7 +1,4 @@
-// styles.scss
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
-
-// _variables.scss (you can import this in each component)
+// Import variables
 $primary: #3a7bd5;
 $primary-light: #6fa1ff;
 $primary-dark: #0d47a1;
@@ -26,81 +23,7 @@ $gray-900: #212529;
 $font-family-base: 'Roboto', 'Segoe UI', sans-serif;
 $font-family-heading: 'Montserrat', 'Segoe UI', sans-serif;
 
-body {
-  font-family: $font-family-base;
-  background-color: $light;
-  color: $gray-800;
-  line-height: 1.6;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: $font-family-heading;
-  font-weight: 600;
-  color: $dark;
-  margin-top: 0;
-}
-
-.mat-card {
-  border-radius: 12px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  border: none !important;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  color: $gray-300;
-}
-
-.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
-  color: $primary;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.8em 0 0.8em 0;
-}
-
-.mat-raised-button.mat-primary {
-  background-color: $primary;
-}
-
-.mat-raised-button.mat-accent {
-  background-color: $secondary;
-}
-
-.mat-spinner circle {
-  stroke: $primary !important;
-}
-
-.flex-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-// Custom loading animation
-.mat-spinner {
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 80%;
-    height: 80%;
-    top: 10%;
-    left: 10%;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-top-color: $primary-light;
-    animation: spinner-secondary 1.5s linear infinite;
-  }
-}
-
-@keyframes spinner-secondary {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-// file-upload.component.scss
-
+// Upload Box Styles
 .upload-box {
   background-color: white;
   border: 2px dashed $gray-300;
@@ -121,11 +44,11 @@ h1, h2, h3, h4, h5, h6 {
     background-color: rgba($primary, 0.05);
   }
   
-  i {
-    font-size: 3rem;
-    color: $primary;
-    margin-bottom: 16px;
+  .upload-icon {
     display: block;
+    color: $primary;
+    font-size: 50px;
+    margin-bottom: 16px;
   }
   
   p {
@@ -160,22 +83,6 @@ h1, h2, h3, h4, h5, h6 {
     
     .add-file-container {
       margin-bottom: 16px;
-      
-      .add-btn {
-        display: inline-block;
-        background-color: $primary;
-        color: white;
-        border-radius: 6px;
-        padding: 8px 16px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        
-        &:hover {
-          background-color: darken($primary, 5%);
-        }
-      }
     }
     
     .file-item {
@@ -226,4 +133,131 @@ h1, h2, h3, h4, h5, h6 {
       background-color: darken($primary, 5%);
     }
   }
+}
+
+// Table Styles
+.table-container {
+  margin-top: 30px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  
+  .table-title {
+    font-family: $font-family-heading;
+    font-weight: 600;
+    color: $dark;
+    padding: 20px;
+    margin: 0;
+    border-bottom: 1px solid $gray-200;
+  }
+  
+  .timesheets-table {
+    width: 100%;
+    table-layout: fixed; // Important for fixed column widths
+    
+    .mat-header-row {
+      background-color: $gray-100;
+    }
+    
+    .mat-header-cell {
+      color: $gray-800;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 16px;
+    }
+    
+    .mat-cell {
+      padding: 16px;
+      font-size: 0.95rem;
+      color: $gray-800;
+    }
+    
+    // Column width definitions
+    .mat-column-UserId {
+      // width: 100px;
+      flex: 0 0 100px;
+    }
+    
+    .mat-column-TaskId {
+      // width: 100px;
+      flex: 0 0 100px;
+    }
+    
+    .mat-column-TotalHours {
+      // width: 100px;
+      flex: 0 0 100px;
+    }
+    
+    .mat-column-Date {
+      // width: 120px;
+      flex: 0 0 120px;
+    }
+    
+    .mat-column-Notes {
+      // width: auto;
+      // min-width: 200px;
+      
+      // Text truncation with ellipsis
+      .cell-content {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+      }
+      
+      // Alternative: Text wrapping
+      .cell-content-wrap {
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.4;
+        max-height: 4.2em; // Show approximately 3 lines
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
+    }
+    
+    .error-row {
+      background-color: rgba($danger, 0.08);
+    }
+    
+    .error-cell {
+      color: $danger;
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 992px) {
+  .table-container {
+    overflow-x: auto;
+    
+    .timesheets-table {
+      min-width: 700px;
+    }
+  }
+}
+
+// Expandable cell styles
+.expandable-cell {
+  position: relative;
+  cursor: pointer;
+  
+  .expand-icon {
+    font-size: 16px;
+    color: $primary;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+}
+
+// Custom tooltip
+::ng-deep .custom-tooltip {
+  white-space: pre-line !important;
+  max-width: 300px !important;
+  font-size: 0.9rem !important;
+  padding: 10px !important;
+  background-color: rgba($dark, 0.9) !important;
 }
