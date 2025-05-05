@@ -114,6 +114,7 @@
           <th>Time</th>
           <th>Billing Type</th>
           <th>Notes</th>
+          <th>Actions</th>
         </tr>
       </thead>
 
@@ -121,13 +122,31 @@
         <!-- Loop through each user -->
         <ng-container *ngFor="let user of timesheetsData; let i = index">
           <!-- User Name Row (Spanning All Columns) -->
-          <tr class="user-row" (click)="toggleUser(i)">
+          <!-- <tr class="user-row" (click)="toggleUser(i)">
             <td colspan="6">
               <strong>{{ user.userName }} ({{ user.empId }})</strong>
-              <!-- <span class="total-time">{{ getTotalTime(user.timesheets) }}</span> -->
+              <span class="total-time">{{ getTotalTime(user.timesheets) }}</span>
               <span class="toggle-icon">{{
                 expandedUsers[i] ? "▼" : "►"
               }}</span>
+            </td>
+          </tr> -->
+
+          <tr class="user-row" (click)="toggleUser(i)">
+            <td>{{ user.empId }}</td>
+            <td>{{ user.userName }}</td>
+            <td></td>
+            <td>
+              <span class="total-time">{{
+                getTotalTime(user.timesheets)
+              }}</span>
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+              <span class="toggle-icon">
+                {{ expandedUsers[i] ? "▼" : "►" }}
+              </span>
             </td>
           </tr>
 
@@ -135,17 +154,33 @@
           <tr *ngFor="let task of user.timesheets" [hidden]="!expandedUsers[i]">
             <td>{{ task.taskId }}</td>
             <!-- <td>{{ task.taskName.substring(0, 60) }}...</td> -->
-             <td>
-            {{
-              task.taskName.length > 60
-                ? task.taskName.substring(0, 60) + "..."
-                : task.taskName
-            }}
+            <td>
+              {{
+                task.taskName.length > 60
+                  ? task.taskName.substring(0, 60) + "..."
+                  : task.taskName
+              }}
             </td>
             <td>{{ task.date | date : "MMM dd, yyyy" }}</td>
             <td>{{ task.totalMinutes | timeFormat }}</td>
             <td>{{ task.billingType }}</td>
             <td>{{ task.notes }}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-btn edit" matTooltip="Edit Task" (click)="openEditTimeSheetPopup(task)">
+                  <i class="far fa-edit"></i>
+                </button>
+                <button
+                  class="action-btn delete"
+                  matTooltip="Delete Task"
+                  (click)="
+                    openDeleteTimeSheetPopup(task.timesheetId)
+                  "
+                >
+                  <i class="far fa-trash-alt"></i>
+                </button>
+              </div>
+            </td>
           </tr>
         </ng-container>
       </tbody>

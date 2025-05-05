@@ -234,7 +234,7 @@ export class TimesheetUploadComponent {
           typeof row['StoryId'] === 'number'
             ? row['StoryId'].toString()
             : row['StoryId'],
-        TaskName: row['StoryName'],
+        // TaskName: row['StoryName'],
         UserId: row['UserId'], // Email from Excel
         Date: this.formatExcelDate(row['Date']),
         TotalHours: row['Daily Log'], // e.g., "02:00"
@@ -418,7 +418,7 @@ export class TimesheetUploadComponent {
       messages.push(`User not assigned to Task`);
     }
 
-    console.log(this.errorMap);
+    // console.log(this.errorMap);
     // console.log(messages);
     return messages.join(', ');
   }

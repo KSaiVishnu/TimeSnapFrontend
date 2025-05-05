@@ -37,8 +37,6 @@ export interface UserEmployee {
   email: string;
 }
 
-
-
 enum ApiStatus {
   INITIAL = 'INITIAL',
   IN_PROGRESS = 'IN_PROGRESS',
@@ -59,7 +57,7 @@ enum ApiStatus {
     TaskReportComponent,
     MatTabsModule,
     MatTab,
-    MatTabGroup
+    MatTabGroup,
   ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.scss',
@@ -67,16 +65,27 @@ enum ApiStatus {
 export class EmployeesComponent implements OnInit, AfterViewInit {
   // allAssignees: { userName: string; employeeId: string }[] = []; // Store all users
 
+  // displayedColumns: string[] = [
+  //   // 'id',
+  //   'userName',
+  //   'email',
+  //   'employeeId',
+  //   'role',
+  //   'actions',
+  // ];
+  // dataSource = new MatTableDataSource<any>();
+  // @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   displayedColumns: string[] = [
-    'id',
     'userName',
     'email',
     'employeeId',
     'role',
     'actions',
   ];
-  dataSource = new MatTableDataSource<any>();
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  dataSource = new MatTableDataSource<Employee>();
 
   baseURL = environment.apiBaseUrl;
   employees: any = [];
@@ -86,7 +95,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   count = 1;
 
   userEmployees: UserEmployee[] = [];
-
 
   roles = [
     { id: '8ce4f9f7-026f-11f0-ac41-000d3a915061', name: 'Admin' },
@@ -118,6 +126,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
       ],
       empId: ['', Validators.required],
     });
+    // this.dataSource = this.employees;
   }
 
   getFirstError(controlName: string): string | null {
@@ -127,8 +136,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
 
   emailDomainValidator(control: AbstractControl) {
     const email = control.value;
-    return email &&
-      (email.endsWith('@framsikt.no'))
+    return email && email.endsWith('@framsikt.no')
       ? null
       : { invalidDomain: true };
   }
@@ -137,13 +145,15 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     this.fetchEmployees();
     // this.fetchLastIdentityId();
     this.fetchUserEmployees();
-
   }
 
+  // ngAfterViewInit() {
+  //   if (this.paginator) {
+  //     this.dataSource.paginator = this.paginator;
+  //   }
+  // }
   ngAfterViewInit() {
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
+    this.dataSource.paginator = this.paginator;
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -156,9 +166,9 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     this.apiStatus = ApiStatus.IN_PROGRESS;
     this.http.get<any[]>(`${this.baseURL}/user-employee`).subscribe({
       next: (data) => {
-        // data = [];
-        this.apiStatus = ApiStatus.SUCCESS;
         this.employees = data;
+        this.dataSource.data = data; // Set data for the paginator to work
+        this.apiStatus = ApiStatus.SUCCESS;
         this.cdr.detectChanges(); // Forces UI update
       },
       error: (error: HttpErrorResponse) => {
@@ -169,7 +179,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  fetchUserEmployees(){
+  fetchUserEmployees() {
     this.invitedStatus = ApiStatus.IN_PROGRESS;
     this.userService.getUserEmployees().subscribe({
       next: (data) => {
@@ -185,11 +195,9 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         this.invitedErrorMessage = errorInfo.message;
         this.cdr.detectChanges();
         // Optional: Show a toast or message to the user
-      }
-    });    
+      },
+    });
   }
-
-  
 
   onRetry() {
     this.fetchEmployees();
@@ -242,7 +250,8 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
       .post<{ message: string }>(
         `${this.baseURL}/user-employee/add-employee`,
         this.addedUsers
-      ).subscribe({
+      )
+      .subscribe({
         next: (response: any) => {
           // Success response
           console.log(response.message);
@@ -250,12 +259,12 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         },
         error: (err) => {
           console.log(err);
-          this.toastr.error("Error Uploading Employees", 'Error');
-        }
+          this.toastr.error('Error Uploading Employees', 'Error');
+        },
       });
-      // .subscribe((response) => {
-      //   console.log(response.message);
-      // });
+    // .subscribe((response) => {
+    //   console.log(response.message);
+    // });
     this.addedUsers = [];
   }
 

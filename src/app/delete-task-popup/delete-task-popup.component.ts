@@ -28,7 +28,7 @@ export class DeleteTaskPopupComponent {
   baseURL = environment.apiBaseUrl;
 
   close() {
-    this.dialogRef.close(this.data.task.taskId); // Pass deleted taskId
+    this.dialogRef.close(); // Pass deleted taskId
   }
 
   // deleteTask() {
@@ -55,12 +55,14 @@ export class DeleteTaskPopupComponent {
       next: (res: any) => {
         this.toastr.success('Task Deleted Successfully', 'Task Deletion');
         console.log(res);
-        this.close(); // Now this works correctly
+        // this.close(); // Now this works correctly
+        this.dialogRef.close(this.data.task.taskId); // Pass deleted taskId
       },
       error: (err) => {
         this.toastr.error('Error While deleting Task', 'Deletion Error');
         console.log(err);
-        this.close();
+        // this.close();
+        this.dialogRef.close(this.data.task.taskId); // Pass deleted taskId
       }
     });
   }

@@ -44,18 +44,18 @@ export class ExportPopupComponent {
     console.log(this.data);
 
     const exportData = this.data.map((ts: any) => ({
-      ID: ts.id,
-      Employee_ID: ts.empId,
-      Task_ID: ts.taskId,
+      // ID: ts.id,
+      // Employee_ID: ts.empId,
+      TaskId: ts.taskId,
+      TaskName: ts.taskName,
+      UserName: ts.userName,
       Date: new Date(ts.date).toLocaleDateString(),
-      Total_Hours:
+      DailyLog:
         Math.floor(ts.totalMinutes / 60) +
         ':' +
         (ts.totalMinutes % 60).toString().padStart(2, '0'),
+      BillingType: ts.billingType,
       Notes: ts.notes,
-      Username: ts.userName,
-      Task_Name: ts.taskName,
-      Billing_Type: ts.billingType,
     }));
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);

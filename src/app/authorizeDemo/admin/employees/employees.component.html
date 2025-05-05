@@ -286,7 +286,7 @@
 
                 <!-- Success State -->
                 <div *ngIf="apiStatus === 'SUCCESS' && employees.length > 0" class="table-responsive">
-                  <table class="employees-table">
+                  <!-- <table class="employees-table">
                     <thead>
                       <tr>
                         <th>Name</th>
@@ -297,7 +297,7 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let employee of employees">
+                        <tr *ngFor="let employee of dataSource.data">
                         <td class="employee-name">{{ employee.userName }}</td>
                         <td class="employee-email">{{ employee.email }}</td>
                         <td class="employee-id">{{ employee.empId }}</td>
@@ -328,11 +328,65 @@
                   </table>
 
                   <div class="pagination">
-                    <mat-paginator
+                    <mat-paginator #paginator
                       [pageSizeOptions]="[10, 15, 20]"
                       showFirstLastButtons
                     ></mat-paginator>
-                  </div>
+                  </div> -->
+                
+
+                  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                    <!-- <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef>Id</th>
+                      <td mat-cell *matCellDef="let employee">{{ employee.id }}</td>
+                    </ng-container> -->
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="userName">
+                      <th mat-header-cell *matHeaderCellDef>Name</th>
+                      <td mat-cell *matCellDef="let employee">{{ employee.userName }}</td>
+                    </ng-container>
+                  
+                    <!-- Email Column -->
+                    <ng-container matColumnDef="email">
+                      <th mat-header-cell *matHeaderCellDef>Email</th>
+                      <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
+                    </ng-container>
+                  
+                    <!-- EmpId Column -->
+                    <ng-container matColumnDef="employeeId">
+                      <th mat-header-cell *matHeaderCellDef>Emp ID</th>
+                      <td mat-cell *matCellDef="let employee">{{ employee.empId }}</td>
+                    </ng-container>
+                  
+                    <!-- Role Column -->
+                    <ng-container matColumnDef="role">
+                      <th mat-header-cell *matHeaderCellDef>Role</th>
+                      <td mat-cell *matCellDef="let employee">
+                        <select [(ngModel)]="employee.roleId" class="role-select">
+                          <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+                        </select>
+                      </td>
+                    </ng-container>
+                  
+                    <!-- Actions Column -->
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell *matHeaderCellDef>Actions</th>
+                      <td mat-cell *matCellDef="let employee">
+                        <button (click)="updateUserRole(employee)" class="action-btn" title="Save changes">
+                          <i class="far fa-save"></i>
+                        </button>
+                      </td>
+                    </ng-container>
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  </table>
+                  
+                  <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+                  
+                
                 </div>
               </div>
             </div>

@@ -27,6 +27,8 @@ import { ErrorHandlerService } from '../../../shared/services/error-handler.serv
 import { MatButton } from '@angular/material/button';
 import { MinutesToHoursPipe } from "../../../shared/pipes/minutes-to-hours.pipe";
 import { TimeFormatPipe } from "../../../shared/pipes/time-format.pipe";
+import { DeleteTimesheetPopupComponent } from '../../../delete-timesheet-popup/delete-timesheet-popup.component';
+import { EditLogPopupComponent } from '../../../edit-log-popup/edit-log-popup.component';
 
 enum ApiStatus {
   INITIAL = 'INITIAL',
@@ -54,7 +56,7 @@ enum ApiStatus {
     TimeFormatPipe
 ],
   templateUrl: './all-timesheets.component.html',
-  styleUrl: './all-timesheets.component.scss',
+  styleUrl: './all-timesheets.component.css',
 })
 export class AllTimesheetsComponent {
   //   range = new FormGroup({
@@ -230,7 +232,7 @@ export class AllTimesheetsComponent {
   expandedIndexes: Set<number> = new Set();
 
   currentPage: number = 1;
-  pageSize: number = 50;
+  pageSize: number = 100;
   totalPages: number = 0;
 
   range: FormGroup;
@@ -350,6 +352,47 @@ export class AllTimesheetsComponent {
       width: '400px',
       data: filteredTimeSheets,
     });
+  }
+
+  openEditTimeSheetPopup(log: any){
+    console.log(log);
+
+    // log.isEditing = true;
+    const dialogRef = this.dialog.open(EditLogPopupComponent, {
+      width: '50%',
+      data: { log },
+    });
+
+    dialogRef.afterClosed().subscribe((updatedLog) => {
+      console.log(updatedLog);
+      this.fetchTimesheets();
+    });
+  }
+
+  openDeleteTimeSheetPopup(logId: any){
+    console.log(logId);
+    
+    const dialogRef = this.dialog.open(DeleteTimesheetPopupComponent, {
+      width: '50%',
+      data: { id: logId },
+    });
+
+
+    dialogRef.afterClosed().subscribe((deletedId) => {
+      if (deletedId) {
+        // let deletedTimeSheet = this.timesheets.find(
+        //   (each: any) => each.id === deletedId
+        // );
+        // this.totalTimeInMinutes -= deletedTimeSheet.totalMinutes;
+        // this.timesheets = this.timesheets.filter((t) => t.id !== deletedId);
+
+        // this.timesheets = [...this.timesheets]; // Ensure UI refresh
+
+
+        this.fetchTimesheets();
+      }
+    });
+
   }
 
   getTotalTime(timesheets: any[]): string {
