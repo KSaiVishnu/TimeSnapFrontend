@@ -1,0 +1,37 @@
+<mat-card class="timesheet-card" [ngClass]="{'has-notes': entry.notes}">
+    <mat-card-content>
+      <!-- Row 1: Task ID, Name, and Badges -->
+      <div class="timesheet-row">
+        <div class="task-id-name">
+          <span class="task-id" matTooltip="Task ID">{{ entry.taskId }}</span>
+          <h3 class="task-name">{{ entry.taskName }}</h3>
+        </div>
+        <div class="task-badges">
+          <span *ngIf="entry.status" class="status-badge" [ngClass]="getStatusClass(entry.status)">
+            <mat-icon class="badge-icon">{{ getStatusIcon(entry.status) }}</mat-icon>
+            {{ entry.status }}
+          </span>
+          <span class="billing-badge" [ngClass]="getBillingTypeClass(entry.billingType)">
+            {{ entry.billingType }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Row 2: Time, Project Code, and Notes -->
+      <div class="timesheet-row">
+        <div class="task-metadata">
+          <div class="metadata-item time-item">
+            <mat-icon class="metadata-icon">schedule</mat-icon>
+            <span>{{ entry.totalMinutes | duration }}</span>
+          </div>
+          <div *ngIf="entry.projectCode" class="metadata-item">
+            <mat-icon class="metadata-icon">code</mat-icon>
+            <span>{{ entry.projectCode }}</span>
+          </div>
+        </div>
+        <div class="task-notes" *ngIf="entry.notes">
+          <p class="notes-text">{{ entry.notes }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>

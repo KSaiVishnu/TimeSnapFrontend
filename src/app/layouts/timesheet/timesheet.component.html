@@ -1,1 +1,282 @@
-<p style="margin-top: 10px;">timesheet works!</p>
+<!-- Loading Page -->
+<div *ngIf="loading" class="loading-page">
+  <div class="loading-container">
+    <div class="spinner-container">
+      <div class="spinner-border"></div>
+      <mat-spinner diameter="80" color="primary"></mat-spinner>
+    </div>
+    <h1 class="loading-title">Loading your timesheets</h1>
+    <p class="loading-subtitle">
+      Please wait while we fetch your timesheet data...
+    </p>
+
+    <!-- Skeleton loaders -->
+    <div class="skeleton-container">
+      <div class="skeleton-group">
+        <div class="skeleton-date"></div>
+        <div class="skeleton-entries">
+          <div class="skeleton-entry"></div>
+          <div class="skeleton-entry"></div>
+        </div>
+      </div>
+      <div class="skeleton-group">
+        <div class="skeleton-date"></div>
+        <div class="skeleton-entries">
+          <div class="skeleton-entry"></div>
+          <div class="skeleton-entry"></div>
+          <div class="skeleton-entry"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error Page -->
+<div *ngIf="error" class="error-page">
+  <div class="error-container">
+    <div class="error-icon-container">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+    </div>
+    <h1 class="error-title">Something went wrong</h1>
+    <p class="error-message">{{ errorMessage }}</p>
+    <div class="error-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="retryFetch()"
+        class="retry-button"
+      >
+        Try Again
+      </button>
+      <button mat-stroked-button (click)="refreshPage()" class="refresh-button">
+        Refresh Page
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Timesheet Content -->
+<div *ngIf="!loading && !error" class="timesheet-content" [@fadeIn]>
+  <!-- Page loading overlay -->
+  <div *ngIf="pageLoading" class="page-loading-overlay">
+    <mat-progress-bar
+      mode="indeterminate"
+      class="page-loading-bar"
+      color="primary"
+    ></mat-progress-bar>
+  </div>
+
+  <div class="timesheet-header">
+    <div class="header-left">
+      <h1 class="page-title">My Timesheets</h1>
+    </div>
+
+    <div class="header-right">
+      <!-- Date Range Picker -->
+      <div class="date-range-picker">
+        <mat-form-field appearance="outline">
+          <mat-label>Date Range</mat-label>
+          <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+            <input
+              matStartDate
+              placeholder="Start date"
+              formControlName="start"
+            />
+            <input matEndDate placeholder="End date" formControlName="end" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="groupedData.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">event_note</mat-icon>
+    <h2 class="empty-title">No timesheets found</h2>
+    <p class="empty-message">
+      You don't have any timesheet entries for the selected date range.
+    </p>
+  </div>
+
+  <!-- Timeline and Data Container -->
+  <div *ngIf="groupedData.length > 0" class="timeline-data-container">
+    <!-- Enhanced Time-liner -->
+    <div class="enhanced-time-liner">
+      <div class="time-liner-track"></div>
+      <div
+        *ngFor="let group of groupedData; let i = index"
+        class="time-liner-group"
+      >
+        <div class="time-liner-date-container">
+          <div class="time-liner-date">{{ group.date | date : "MMM d" }}</div>
+        </div>
+        <div
+          class="time-liner-dot-container"
+          (click)="toggleDayExpansion(group.date.toISOString())"
+        >
+          <div
+            class="time-liner-dot"
+            [class.active]="isDayExpanded(group.date.toISOString())"
+          ></div>
+        </div>
+        <div
+          *ngIf="i < groupedData.length - 1"
+          class="time-liner-connector"
+          [class.active-connector]="
+            isDayExpanded(group.date.toISOString()) &&
+            isDayExpanded(groupedData[i + 1].date.toISOString())
+          "
+        ></div>
+      </div>
+    </div>
+
+    <!-- Timesheet Groups -->
+    <div class="timesheet-groups-container">
+      <div class="add-container">
+        <a href="javascript:void(0)" class="add-log" (click)="onAddTimesheet()">
+          <i class="fas fa-plus"></i>Add Log
+        </a>
+      </div>
+      <div
+        *ngFor="let group of groupedData; let isLast = last"
+        class="timesheet-group"
+      >
+        <!-- Date header -->
+        <div
+          class="date-header"
+          (click)="toggleDayExpansion(group.date.toISOString())"
+        >
+          <div class="date-info">
+            <mat-icon class="date-icon">calendar_today</mat-icon>
+            <span class="date-text">{{
+              group.date | date : "EEEE MMMM d, yyyy"
+            }}</span>
+            <span class="date-total">{{
+              formatDuration(group.totalMinutes)
+            }}</span>
+          </div>
+          <mat-icon
+            class="expand-icon"
+            [@rotateAnimation]="
+              isDayExpanded(group.date.toISOString()) ? 'expanded' : 'collapsed'
+            "
+          >
+            expand_more
+          </mat-icon>
+        </div>
+
+        <!-- Timesheet entries (expandable) -->
+        <div
+          class="timesheet-entries"
+          [@expandCollapse]="
+            isDayExpanded(group.date.toISOString()) ? 'expanded' : 'collapsed'
+          "
+        >
+          <!-- Table header -->
+          <div class="table-header">
+            <div class="table-cell task-id-cell">Task ID</div>
+            <div class="table-cell task-name-cell">Task Name</div>
+            <div class="table-cell time-cell">Time</div>
+            <!-- <div class="table-cell project-cell">Project</div> -->
+            <!-- <div class="table-cell status-cell">Status</div> -->
+            <div class="table-cell billing-cell">Billing</div>
+            <div class="table-cell notes-cell">Notes</div>
+            <div class="table-cell actions-cell">Actions</div>
+          </div>
+
+          <!-- Table rows -->
+          <div *ngFor="let entry of group.timesheets" class="table-row">
+            <div class="table-cell task-id-cell">
+              <span class="task-id">{{ entry.taskId }}</span>
+            </div>
+
+            <div class="table-cell task-name-cell">
+              <div class="task-name-wrapper">
+                <span class="task-name">{{ entry.taskName }}</span>
+              </div>
+            </div>
+
+            <div class="table-cell time-cell">
+              <div class="time-badge">
+                <mat-icon class="time-icon">schedule</mat-icon>
+                <span>{{ formatDuration(entry.totalMinutes) }}</span>
+              </div>
+            </div>
+
+            <!-- <div class="table-cell project-cell">
+              <span *ngIf="entry.projectCode" class="project-code">{{ entry.projectCode }}</span>
+              <span *ngIf="!entry.projectCode" class="no-data">-</span>
+            </div> -->
+
+            <!-- <div class="table-cell status-cell">
+              <span *ngIf="entry.status" class="status-badge" [ngClass]="getStatusClass(entry.status)">
+                {{ entry.status }}
+              </span>
+              <span *ngIf="!entry.status" class="no-data">-</span>
+            </div> -->
+
+            <div class="table-cell billing-cell">
+              <span
+                class="billing-badge"
+                [ngClass]="getBillingTypeClass(entry.billingType)"
+              >
+                {{ entry.billingType }}
+              </span>
+            </div>
+
+            <div class="table-cell notes-cell">
+              <span *ngIf="entry.notes" class="notes-text">{{
+                entry.notes
+              }}</span>
+              <span *ngIf="!entry.notes" class="no-data">-</span>
+            </div>
+
+            <div class="action-buttons table-cell actions-cell">
+              <button (click)="onEditTimesheet(entry)" class="edit-button">
+                <span class="button-content">
+                  <span>Edit</span>
+                </span>
+              </button>
+
+              <button (click)="onDeleteTimesheet(entry)" class="delete-button">
+                <span class="button-content">
+                  <span>Delete</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="groupedData.length > 0" class="pagination-container">
+    <div class="custom-pagination">
+      <button
+        class="pagination-button prev-button"
+        [disabled]="pageNumber <= 1"
+        (click)="onPrevPage()"
+      >
+        <mat-icon>chevron_left</mat-icon>
+        <span>Previous</span>
+      </button>
+      <div class="pagination-info">
+        Page {{ pageNumber }} of {{ totalPages }}
+      </div>
+      <button
+        class="pagination-button next-button"
+        [disabled]="pageNumber >= totalPages"
+        (click)="onNextPage()"
+      >
+        <span>Next</span>
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

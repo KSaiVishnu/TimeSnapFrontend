@@ -56,9 +56,13 @@
         ></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
-      <!-- <button mat-raised-button color="primary" (click)="fetchTimesheets()">
-    Apply
-  </button> -->
+      <!-- <button mat-raised-button color="primary" (click)="fetchTimesheets()">Apply</button> -->
+
+      <mat-form-field appearance="fill" style="width: 300px; margin: 0px 0px 10px 20px;">
+        <mat-label>Search by Username</mat-label>
+        <input type="search" matInput placeholder="Enter username" [(ngModel)]="searchQuery" (ngModelChange)="filterTimesheets()" />
+      </mat-form-field>
+      
     </div>
     <button
       *ngIf="timesheetsData.length !== 0"
@@ -120,7 +124,7 @@
 
       <tbody>
         <!-- Loop through each user -->
-        <ng-container *ngFor="let user of timesheetsData; let i = index">
+        <ng-container *ngFor="let user of filteredTimesheetsData; let i = index">
           <!-- User Name Row (Spanning All Columns) -->
           <!-- <tr class="user-row" (click)="toggleUser(i)">
             <td colspan="6">
@@ -167,15 +171,17 @@
             <td>{{ task.notes }}</td>
             <td>
               <div class="action-buttons">
-                <button class="action-btn edit" matTooltip="Edit Task" (click)="openEditTimeSheetPopup(task)">
+                <button
+                  class="action-btn edit"
+                  matTooltip="Edit Task"
+                  (click)="openEditTimeSheetPopup(task)"
+                >
                   <i class="far fa-edit"></i>
                 </button>
                 <button
                   class="action-btn delete"
                   matTooltip="Delete Task"
-                  (click)="
-                    openDeleteTimeSheetPopup(task.timesheetId)
-                  "
+                  (click)="openDeleteTimeSheetPopup(task.timesheetId)"
                 >
                   <i class="far fa-trash-alt"></i>
                 </button>

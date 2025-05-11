@@ -125,8 +125,7 @@
                   </div>
                 </div>
               </div> -->
-            
-            
+
               <div class="card-content">
                 <form [formGroup]="form" (ngSubmit)="onSubmitEmployees()">
                   <!-- Changed to column layout -->
@@ -228,7 +227,9 @@
                     >
                       <div class="chip-content">
                         <span class="chip-name">{{ user.userName }}</span>
-                        <span class="chip-details">{{ user.employeeId }} | {{ user.email }}</span>
+                        <span class="chip-details"
+                          >{{ user.employeeId }} | {{ user.email }}</span
+                        >
                       </div>
                       <button class="remove-btn" (click)="removeAssignee(i)">
                         <i class="fas fa-times"></i>
@@ -237,7 +238,6 @@
                   </div>
                 </div>
               </div>
-            
             </div>
           </div>
 
@@ -251,6 +251,10 @@
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search employees..." class="search-input">
                   </div> -->
+
+                  <!-- <button class="refresh-btn" (click)="fetchEmployees()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                  </button> -->
                 </div>
               </div>
 
@@ -285,7 +289,10 @@
                 </div>
 
                 <!-- Success State -->
-                <div *ngIf="apiStatus === 'SUCCESS' && employees.length > 0" class="table-responsive">
+                <div
+                  *ngIf="apiStatus === 'SUCCESS' && employees.length > 0"
+                  class="table-responsive"
+                >
                   <!-- <table class="employees-table">
                     <thead>
                       <tr>
@@ -333,10 +340,12 @@
                       showFirstLastButtons
                     ></mat-paginator>
                   </div> -->
-                
 
-                  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
+                  <table
+                    mat-table
+                    [dataSource]="dataSource"
+                    class="mat-elevation-z8"
+                  >
                     <!-- <ng-container matColumnDef="id">
                       <th mat-header-cell *matHeaderCellDef>Id</th>
                       <td mat-cell *matCellDef="let employee">{{ employee.id }}</td>
@@ -345,48 +354,77 @@
                     <!-- Name Column -->
                     <ng-container matColumnDef="userName">
                       <th mat-header-cell *matHeaderCellDef>Name</th>
-                      <td mat-cell *matCellDef="let employee">{{ employee.userName }}</td>
+                      <td mat-cell *matCellDef="let employee">
+                        {{ employee.userName }}
+                      </td>
                     </ng-container>
-                  
+
                     <!-- Email Column -->
                     <ng-container matColumnDef="email">
                       <th mat-header-cell *matHeaderCellDef>Email</th>
-                      <td mat-cell *matCellDef="let employee">{{ employee.email }}</td>
+                      <td mat-cell *matCellDef="let employee">
+                        {{ employee.email }}
+                      </td>
                     </ng-container>
-                  
+
                     <!-- EmpId Column -->
                     <ng-container matColumnDef="employeeId">
                       <th mat-header-cell *matHeaderCellDef>Emp ID</th>
-                      <td mat-cell *matCellDef="let employee">{{ employee.empId }}</td>
+                      <td mat-cell *matCellDef="let employee">
+                        {{ employee.empId }}
+                      </td>
                     </ng-container>
-                  
+
                     <!-- Role Column -->
                     <ng-container matColumnDef="role">
                       <th mat-header-cell *matHeaderCellDef>Role</th>
                       <td mat-cell *matCellDef="let employee">
-                        <select [(ngModel)]="employee.roleId" class="role-select">
-                          <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+                        <select
+                          [(ngModel)]="employee.roleId"
+                          class="role-select"
+                        >
+                          <option *ngFor="let role of roles" [value]="role.id">
+                            {{ role.name }}
+                          </option>
                         </select>
                       </td>
                     </ng-container>
-                  
+
                     <!-- Actions Column -->
                     <ng-container matColumnDef="actions">
                       <th mat-header-cell *matHeaderCellDef>Actions</th>
                       <td mat-cell *matCellDef="let employee">
-                        <button (click)="updateUserRole(employee)" class="action-btn" title="Save changes">
-                          <i class="far fa-save"></i>
-                        </button>
+                        <div class="action-buttons">
+                          <button
+                            (click)="updateUserRole(employee)"
+                            class="action-btn"
+                            title="Save changes"
+                          >
+                            <i class="far fa-save"></i>
+                          </button>
+                          <!-- <button
+                            (click)="onDeleteEmployee(employee)"
+                            class="action-btn delete"
+                            matTooltip="Delete Task"
+                          >
+                            <i class="far fa-trash-alt"></i>
+                          </button> -->
+                        </div>
                       </td>
                     </ng-container>
-                  
+
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr
+                      mat-row
+                      *matRowDef="let row; columns: displayedColumns"
+                    ></tr>
                   </table>
-                  
-                  <mat-paginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
-                  
-                
+
+                  <mat-paginator
+                  #employeePaginator
+                    [pageSizeOptions]="[10, 15, 20]"
+                    showFirstLastButtons
+                  ></mat-paginator>
                 </div>
               </div>
             </div>
@@ -415,7 +453,10 @@
             </div>
 
             <div class="card-content">
-              <div *ngIf="invitedStatus === 'IN_PROGRESS'" class="loading-container">
+              <div
+                *ngIf="invitedStatus === 'IN_PROGRESS'"
+                class="loading-container"
+              >
                 <div class="loading-clock">
                   <div class="clock-face"></div>
                   <div class="hour-hand"></div>
@@ -427,19 +468,29 @@
               <!-- Error State -->
               <div *ngIf="invitedStatus === 'FAILURE'" class="error-container">
                 <p class="error-message">
-                  {{ invitedErrorMessage }} (Error Code: {{ invitedErrorStatus }})
+                  {{ invitedErrorMessage }} (Error Code:
+                  {{ invitedErrorStatus }})
                 </p>
-                <button (click)="fetchUserEmployees()" class="retry-btn">Retry</button>
+                <button (click)="fetchUserEmployees()" class="retry-btn">
+                  Retry
+                </button>
               </div>
 
               <!-- No Data -->
-              <div *ngIf="invitedStatus === 'SUCCESS' && userEmployees.length === 0" class="no-data">
+              <div
+                *ngIf="
+                  invitedStatus === 'SUCCESS' && userEmployees.length === 0
+                "
+                class="no-data"
+              >
                 <i class="fas fa-envelope-open"></i>
                 <p>No invited employees found.</p>
               </div>
 
-              <!-- Data Table -->
-              <div *ngIf="invitedStatus === 'SUCCESS' && userEmployees.length > 0" class="table-responsive">
+              <!-- <div
+                *ngIf="invitedStatus === 'SUCCESS' && userEmployees.length > 0"
+                class="table-responsive"
+              >
                 <table class="employees-table">
                   <thead>
                     <tr>
@@ -447,7 +498,6 @@
                       <th>Employee ID</th>
                       <th>User Name</th>
                       <th>Email</th>
-                      <!-- <th>Status</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -456,11 +506,72 @@
                       <td>{{ user.employeeId }}</td>
                       <td>{{ user.userName }}</td>
                       <td>{{ user.email }}</td>
-                      <!-- <td><span class="status-badge">Invited</span></td> -->
+
                     </tr>
                   </tbody>
                 </table>
+              </div> -->
+            
+
+              <div *ngIf="invitedStatus === 'SUCCESS' && userEmployees.length > 0" class="table-responsive">
+                <div class="mat-elevation-z8">
+                  <table mat-table [dataSource]="userEmployeeDataSource" class="mat-table employees-table">
+
+                    <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef> ID </th>
+                      <td mat-cell *matCellDef="let emp"> {{ emp.id }} </td>
+                    </ng-container>
+              
+                    <!-- Employee ID -->
+                    <ng-container matColumnDef="employeeId">
+                      <th mat-header-cell *matHeaderCellDef> Employee ID </th>
+                      <td mat-cell *matCellDef="let emp"> {{ emp.employeeId }} </td>
+                    </ng-container>
+              
+                    <!-- User Name -->
+                    <ng-container matColumnDef="userName">
+                      <th mat-header-cell *matHeaderCellDef> Name </th>
+                      <td mat-cell *matCellDef="let emp"> {{ emp.userName }} </td>
+                    </ng-container>
+              
+                    <!-- Email -->
+                    <ng-container matColumnDef="email">
+                      <th mat-header-cell *matHeaderCellDef> Email </th>
+                      <td mat-cell *matCellDef="let emp"> {{ emp.email }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell *matHeaderCellDef> Actions </th>
+                      <td mat-cell *matCellDef="let emp">
+                         <!-- {{ emp.email }}  -->
+                         <div class="action-buttons">
+                          <!-- <button
+                            class="action-btn edit"
+                            matTooltip="Edit Task"
+                          >
+                            <i class="far fa-edit"></i>
+                          </button> -->
+                          <button
+                            class="action-btn delete"
+                            matTooltip="Delete Task"
+                            (click)="onDeleteEmployee(emp)"
+                          >
+                            <i class="far fa-trash-alt"></i>
+                          </button>
+                        </div>
+                        
+                        </td>
+                    </ng-container>
+              
+                    <tr mat-header-row *matHeaderRowDef="userEmployeeDisplayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: userEmployeeDisplayedColumns;"></tr>
+                  </table>
+              
+                  <mat-paginator #userEmployeePaginator [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons></mat-paginator>
+                </div>
               </div>
+              
+            
             </div>
           </div>
         </div>

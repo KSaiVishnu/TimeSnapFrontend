@@ -86,6 +86,11 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
   errorMessage: string = '';
   errorStatus: number | null = null;
 
+
+  searchQuery: string = '';
+  filteredTasksData: any[] = [];
+
+
   setEditingTask(taskId: number | null) {
     this.currentlyEditingTaskId = taskId;
   }
@@ -166,6 +171,16 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
     this.closeTask(task);
   }
 
+
+  filterTasks(){
+    const query = this.searchQuery.toLowerCase();
+    this.filteredTasksData = this.tasks.filter(task =>
+      task.taskId.toLowerCase().includes(query)
+    );
+    this.dataSource = new MatTableDataSource(this.filteredTasksData);
+    this.dataSource.paginator = this.paginator;
+  }
+
   fetchTasks() {
     let params = new HttpParams();
 
@@ -182,10 +197,11 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
         // res = [];
         this.apiStatus = ApiStatus.SUCCESS;
         this.tasks = res;
+        this.filteredTasksData = res;
 
         this.cdr.detectChanges(); // Forces UI to update
 
-        this.dataSource = new MatTableDataSource(this.tasks);
+        this.dataSource = new MatTableDataSource(this.filteredTasksData);
         this.dataSource.paginator = this.paginator;
       },
       error: (err: HttpErrorResponse) => {

@@ -4,12 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TimesheetService {
-
   baseURL = environment.apiBaseUrl;
-  
 
   constructor(private http: HttpClient) {}
 
@@ -27,7 +25,21 @@ export class TimesheetService {
       .set('pageNumber', pageNumber)
       .set('pageSize', pageSize);
 
-    return this.http.get(`${this.baseURL}/timesheet/filtered-timesheets`, { params });
+    return this.http.get(`${this.baseURL}/timesheet/filtered-timesheets`, {
+      params,
+    });
   }
 
+  getUserTimesheets(pageNumber: number, pageSize: number, empId: string, startDate: string, endDate: string): Observable<any> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString())
+      .set('startDate', startDate)
+      .set('endDate', endDate);
+  
+    return this.http.get(`${this.baseURL}/timesheet/my-timesheets/${empId}`, {
+      params,
+    });
+  }
+  
 }

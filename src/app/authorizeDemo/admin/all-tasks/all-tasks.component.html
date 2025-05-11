@@ -115,6 +115,18 @@
 <div class="tasks-container">
   <div class="header-actions">
     <h2 class="section-title">{{billingType | titlecase}} Task Management</h2>
+
+    <mat-form-field appearance="fill" style="width: 300px; margin: 0px 0px 0px 0px;">
+      <mat-label>Search by TaskId</mat-label>
+      <input type="search" matInput placeholder="Enter TaskId" [(ngModel)]="searchQuery" (ngModelChange)="filterTasks()" />
+    </mat-form-field>
+
+    <!-- <mat-form-field appearance="fill" style="width: 300px; margin: 0px 0px 0px 0px;">
+      <mat-label>Search by TaskId</mat-label>
+      <input type="search" matInput placeholder="Enter TaskId" [(ngModel)]="searchQuery" (ngModelChange)="filterTasks()" />
+    </mat-form-field> -->
+    
+
     <button (click)="openAddTaskPopup()" class="add-task-btn">
       <i class="fas fa-plus"></i>
       <span>Add Task</span>

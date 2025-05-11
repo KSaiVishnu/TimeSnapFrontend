@@ -893,6 +893,7 @@ $input-radius: 8px;
 .timesheet-container {
   width: 100%;
   padding: 18px 0px 0px 0px;
+  // height: 100%;
 }
 
 .timesheet-card {
@@ -1091,6 +1092,7 @@ $input-radius: 8px;
   box-shadow: $card-shadow;
   border: 1px solid $border-color;
   text-align: center;
+  height: 95%;
 }
 
 .empty-state-icon {
@@ -1312,6 +1314,7 @@ $input-radius: 8px;
 /* Timesheet Skeleton */
 .timesheet-skeleton-container {
   margin-top: 24px;
+  height: 100%;
 }
 
 .timesheet-skeleton-card {

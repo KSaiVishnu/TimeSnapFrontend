@@ -231,6 +231,11 @@ export class AllTimesheetsComponent {
   paginatedTimesheets: any[] = [];
   expandedIndexes: Set<number> = new Set();
 
+
+  searchQuery: string = '';
+ filteredTimesheetsData: any[] = [];
+
+
   currentPage: number = 1;
   pageSize: number = 100;
   totalPages: number = 0;
@@ -281,6 +286,14 @@ export class AllTimesheetsComponent {
   totalUsers: number = 0;
 
 
+  filterTimesheets() {
+    const query = this.searchQuery.toLowerCase();
+    this.filteredTimesheetsData = this.timesheetsData.filter(user =>
+      user.userName.toLowerCase().includes(query)
+    );
+  }
+  
+
   fetchTimesheets() {
     if (!this.range.value.start || !this.range.value.end) return;
 
@@ -289,7 +302,8 @@ export class AllTimesheetsComponent {
       .set('endDate', this.formatDate(this.range.value.end))
       .set('billingType', this.billingType)
       .set('page', this.currentPage)  // Send current page
-      .set('pageSize', this.pageSize); // Send page size;
+      .set('pageSize', this.pageSize) // Send page size;
+      .set('searchQuery', this.searchQuery);
 
     console.log(this.currentPage,this.pageSize)
 
@@ -305,7 +319,10 @@ export class AllTimesheetsComponent {
         next: (response) => {
           console.log(response);
           this.apiStatus = ApiStatus.SUCCESS;
-          this.timesheetsData = [...response.timesheets];
+          
+          this.timesheetsData = response.timesheets;
+          this.filteredTimesheetsData = [...this.timesheetsData];
+
 
           // this.totalPages = Math.ceil(response.totalUsers / this.pageSize); // Correct total pages
           // this.currentPage = 1; // Reset to first page on new fetch

@@ -90,4 +90,10 @@ export class UserService {
     return this.http.delete(this.baseURL + '/delete-account');
   }
   
+
+  deleteUserByEmployeeId(employeeId: string) {
+    return this.http.delete(`${this.baseURL}/DeleteUser/${employeeId}`);
+  }
+
+
 }

@@ -23,6 +23,7 @@ import { ImportComponent } from './authorizeDemo/admin/import/import.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetVerifyOtpComponent } from './reset-verify-otp/reset-verify-otp.component';
 import { SetNewPasswordComponent } from './user/set-new-password/set-new-password.component';
+import { TimesheetComponent } from './layouts/timesheet/timesheet.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/signin', pathMatch: 'full' },
@@ -59,6 +60,9 @@ export const routes: Routes = [
         // },
         {
           path: 'tasks/:id', loadComponent: () => import('./layouts/task-details/task-details.component').then(m => m.TaskDetailsComponent)
+        },
+        {
+          path:'timesheets',component:TimesheetComponent
         },
         {
           path: 'admin-or-manager', component: AdminOrManagerComponent,

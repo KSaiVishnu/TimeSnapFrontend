@@ -62,7 +62,8 @@ export class DeleteTaskPopupComponent {
         this.toastr.error('Error While deleting Task', 'Deletion Error');
         console.log(err);
         // this.close();
-        this.dialogRef.close(this.data.task.taskId); // Pass deleted taskId
+        this.dialogRef.close(); // Pass deleted taskId
+        // this.dialogRef.close(this.data.task.taskId); // Pass deleted taskId
       }
     });
   }

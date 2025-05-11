@@ -1,0 +1,180 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2 class="dialog-title">Add Timesheet</h2>
+    <button class="close-button" (click)="close()">
+❌    </button>
+  </div>
+
+  <div class="dialog-content">
+    <form [formGroup]="timesheetForm">
+      <!-- Task ID Field -->
+      <!-- <div class="form-field">
+        <label class="form-label"
+          >Task ID <span class="required">*</span></label
+        >
+        <div class="input-wrapper">
+          <input
+            type="text"
+            formControlName="taskId"
+            class="form-input"
+            placeholder="Enter task ID"
+          />
+          <div
+            *ngIf="taskId.invalid && (taskId.dirty || taskId.touched)"
+            class="error-message"
+          >
+            <span *ngIf="taskId.errors?.['required']">Task ID is required</span>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="form-field autocomplete-wrapper">
+        <label class="form-label"
+          >Task ID <span class="required">*</span></label
+        >
+        <div class="input-wrapper" style="position: relative">
+          <input
+            type="search"
+            formControlName="taskId"
+            class="form-input"
+            placeholder="Enter task ID"
+            (focus)="isTaskInputFocused = true"
+            (input)="filterTasks(taskId.value)"
+            #taskId
+          />
+
+          <ul
+            *ngIf="filteredOptions.length > 0 && isTaskInputFocused"
+            class="autocomplete-list"
+            style="
+              position: absolute;
+              background: white;
+              border: 1px solid #ccc;
+              max-height: 100px;
+              overflow-y: auto;
+              width: 100%;
+              z-index: 1000;
+            "
+          >
+            <li
+              *ngFor="let option of filteredOptions"
+              (click)="selectOption(option)"
+            >
+              {{ option.label }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex-container">
+        <div style="display: flex; flex-direction: row">
+          <!-- Date Field -->
+          <div class="form-field date-field">
+            <label class="form-label"
+              >Date <span class="required">*</span></label
+            >
+            <div class="input-wrapper">
+              <input type="date" formControlName="date" class="form-input" />
+              <div
+                *ngIf="date.invalid && (date.dirty || date.touched)"
+                class="error-message"
+              >
+                <span *ngIf="date.errors?.['required']">Date is required</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Duration Field -->
+          <div class="form-field duration-field date-field">
+            <!-- <label class="form-label"
+            >Duration <span class="required">*</span></label
+          > -->
+            <div class="duration-inputs">
+              <div class="time-input-group">
+                <label class="form-label">Hours</label>
+                <select formControlName="hours" class="form-input time-select">
+                  <option *ngFor="let hour of hoursRange" [value]="hour">
+                    {{ formatNumber(hour) }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="time-separator">:</div>
+
+              <div class="time-input-group">
+                <label class="form-label">Minutes</label>
+                <select
+                  formControlName="minutes"
+                  class="form-input time-select"
+                >
+                  <option *ngFor="let minute of minutesRange" [value]="minute">
+                    {{ formatNumber(minute) }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div
+              *ngIf="
+                (hours.invalid || minutes.invalid) &&
+                (hours.touched || minutes.touched)
+              "
+              class="error-message"
+            >
+              <span
+                *ngIf="hours.errors?.['required'] || minutes.errors?.['required']"
+                >Duration is required</span
+              >
+              <span *ngIf="hours.value === 0 && minutes.value === 0"
+                >Duration must be greater than 0</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes Field -->
+      <!-- <div class="form-field">
+        <label class="form-label">Notes</label>
+        <div class="input-wrapper">
+          <textarea 
+            formControlName="notes" 
+            class="form-input textarea" 
+            placeholder="Add notes about this timesheet entry"
+            rows="3"
+          ></textarea>
+        </div>
+      </div> -->
+
+      <div class="form-field">
+        <label class="form-label">Notes</label>
+        <div class="input-wrapper">
+          <select
+            formControlName="notes"
+            [(ngModel)]="notesValue"
+            class="form-input"
+          >
+            <option *ngFor="let option of notesOptions" [value]="option.value">
+              {{ option.text }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="dialog-actions">
+    <button class="cancel-button" (click)="close()" [disabled]="isSubmitting">
+      Cancel
+    </button>
+    <button
+      class="submit-button"
+      (click)="save()"
+      [disabled]="timesheetForm.invalid || isSubmitting"
+    >
+      <ng-container *ngIf="!isSubmitting">Save</ng-container>
+      <div *ngIf="isSubmitting" class="spinner-container">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
+    </button>
+  </div>
+</div>
