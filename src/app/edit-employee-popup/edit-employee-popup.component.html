@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Edit Employee</h2>
+
+<mat-dialog-content>
+    <div class="d-flex flex-row">
+
+  <div style="width: 48%;" class="form-group mb-3">
+    <label>Employee ID</label>
+    <input
+      type="text"
+      class="form-control"
+      [(ngModel)]="employee.employeeId"
+      placeholder="Enter Employee ID"
+    />
+  </div>
+
+  <div style="width: 48%; margin-left: 2%;" class="form-group mb-3">
+    <label>User Name</label>
+    <input
+      type="text"
+      class="form-control"
+      [(ngModel)]="employee.userName"
+      placeholder="Enter User Name"
+    />
+  </div>
+      </div>
+
+
+  <div class="form-group mb-3">
+    <label>Email</label>
+    <input
+      type="email"
+      class="form-control"
+      [(ngModel)]="employee.email"
+      placeholder="Enter Email"
+    />
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()" [disabled]="isUpdating">Cancel</button>
+  <button mat-button color="primary" (click)="update()" [disabled]="isUpdating">
+    <ng-container *ngIf="!isUpdating">Update</ng-container>
+    <ng-container *ngIf="isUpdating">
+      <mat-progress-spinner
+        diameter="20"
+        mode="indeterminate"
+        color="accent"
+        style="display: inline-block; vertical-align: middle"
+      ></mat-progress-spinner>
+    </ng-container>
+  </button>
+</mat-dialog-actions>

@@ -23,6 +23,7 @@ import { MatTab, MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { UserService } from '../../../shared/services/user.service';
 import { DeleteEmployeePopupComponent } from '../../../delete-employee-popup/delete-employee-popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { EditEmployeePopupComponent } from '../../../edit-employee-popup/edit-employee-popup.component';
 
 interface Employee {
   userId: string;
@@ -83,7 +84,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   @ViewChild('employeePaginator') employeePaginator!: MatPaginator;
   @ViewChild('userEmployeePaginator') userEmployeePaginator!: MatPaginator;
 
-
   displayedColumns: string[] = [
     'userName',
     'email',
@@ -93,7 +93,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   ];
   dataSource = new MatTableDataSource<Employee>();
 
-
   userEmployeeDisplayedColumns: string[] = [
     'id',
     'employeeId',
@@ -102,8 +101,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     'actions',
   ];
   userEmployeeDataSource = new MatTableDataSource<any>();
-
-
 
   baseURL = environment.apiBaseUrl;
   employees: any = [];
@@ -135,7 +132,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     private errorHandler: ErrorHandlerService,
     private toastr: ToastrService,
     private userService: UserService,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {
     this.form = this.formBuilder.group({
       empName: ['', Validators.required],
@@ -177,8 +174,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
 
     this.dataSource.paginator = this.employeePaginator;
     this.userEmployeeDataSource.paginator = this.userEmployeePaginator;
-
-
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -203,7 +198,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         if (!this.dataSource.paginator) {
           this.dataSource.paginator = this.employeePaginator;
         }
-          // this.dataSource.paginator = this.employeePaginator;
+        // this.dataSource.paginator = this.employeePaginator;
       },
       error: (error: HttpErrorResponse) => {
         this.apiStatus = ApiStatus.FAILURE;
@@ -226,13 +221,12 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         // this.userEmployeeDataSource.paginator = this.paginator;
         // this.userEmployeeDataSource.paginator = this.userEmployeePaginator;
 
-              // ✅ Safe: assign paginator only if not already set
-      if (!this.userEmployeeDataSource.paginator) {
-        this.userEmployeeDataSource.paginator = this.userEmployeePaginator;
-      }
+        // ✅ Safe: assign paginator only if not already set
+        if (!this.userEmployeeDataSource.paginator) {
+          this.userEmployeeDataSource.paginator = this.userEmployeePaginator;
+        }
 
         this.cdr.detectChanges();
-
       },
       error: (err) => {
         console.error('Failed to fetch user employees:', err);
@@ -246,39 +240,78 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     });
   }
 
-
-  
-
-  onDeleteEmployee(employee: any){
+  onDeleteEmployee(employee: any) {
     console.log(employee);
-        const dialogRef = this.dialog.open(DeleteEmployeePopupComponent, {
-          width: '50%',
-          data: { employee },
-        });
-    
-        dialogRef.afterClosed().subscribe((email: any) => {
-          // console.log(deletedTaskId);
-          // console.log(this.tasks);
-          if (email) {
-            this.employees = this.employees.filter((t: any) => t.email !== email);
-            this.userEmployees = this.userEmployees.filter((t: any) => t.email !== email);
+    const dialogRef = this.dialog.open(DeleteEmployeePopupComponent, {
+      width: '50%',
+      data: { employee },
+    });
 
-            this.dataSource = new MatTableDataSource(this.employees);
-            // this.dataSource.paginator = this.paginator;
-            this.dataSource.paginator = this.employeePaginator;
+    dialogRef.afterClosed().subscribe((email: any) => {
+      // console.log(deletedTaskId);
+      // console.log(this.tasks);
+      if (email) {
+        this.employees = this.employees.filter((t: any) => t.email !== email);
+        this.userEmployees = this.userEmployees.filter(
+          (t: any) => t.email !== email
+        );
 
-            this.userEmployeeDataSource = new MatTableDataSource(this.userEmployees);
-            this.userEmployeeDataSource.paginator = this.userEmployeePaginator;
+        this.dataSource = new MatTableDataSource(this.employees);
+        // this.dataSource.paginator = this.paginator;
+        this.dataSource.paginator = this.employeePaginator;
 
-            // this.userEmployeeDataSource.paginator = this.paginator;
-            // setTimeout(() => {
-            //   this.userEmployeeDataSource.paginator = this.paginator;
-            // });
-          }
-    
+        this.userEmployeeDataSource = new MatTableDataSource(
+          this.userEmployees
+        );
+        this.userEmployeeDataSource.paginator = this.userEmployeePaginator;
 
-          // // console.log(this.tasks);
-        });
+        // this.userEmployeeDataSource.paginator = this.paginator;
+        // setTimeout(() => {
+        //   this.userEmployeeDataSource.paginator = this.paginator;
+        // });
+      }
+
+      // // console.log(this.tasks);
+    });
+  }
+
+  onEditEmployee(employee: any) {
+    console.log(employee);
+    const dialogRef = this.dialog.open(EditEmployeePopupComponent, {
+      width: '50%',
+      data: { employee },
+    });
+
+    dialogRef.afterClosed().subscribe((updatedEmployee: any) => {
+      if (updatedEmployee) {
+        // 🔁 Update in this.employees
+        // const empIndex = this.employees.findIndex(
+        //   (e: any) => e.id === updatedEmployee.id
+        // );
+        // if (empIndex !== -1) {
+        //   console.log(this.employees[empIndex]);
+        //   this.employees[empIndex].userName = updatedEmployee.userName;
+        //   this.employees[empIndex].empId = updatedEmployee.employeeId;
+        //   this.employees[empIndex].email = updatedEmployee.email;          
+        // }
+
+        // 🔁 Update in this.userEmployees
+        const userEmpIndex = this.userEmployees.findIndex(
+          (e) => e.id === updatedEmployee.id
+        );
+        if (userEmpIndex !== -1) {
+          this.userEmployees[userEmpIndex] = updatedEmployee;
+        }
+
+        this.dataSource = new MatTableDataSource(this.employees);
+        this.dataSource.paginator = this.employeePaginator;
+
+        this.userEmployeeDataSource = new MatTableDataSource(
+          this.userEmployees
+        );
+        this.userEmployeeDataSource.paginator = this.userEmployeePaginator;
+      }
+    });
   }
 
   onRetry() {
