@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { HostListener } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 
 
@@ -64,6 +65,7 @@ export class AddTimesheetComponent implements OnInit {
 
 
   constructor(
+    private toastr: ToastrService,
     private fb: FormBuilder,
     private http: HttpClient,
     private dialogRef: MatDialogRef<AddTimesheetComponent>,
@@ -162,40 +164,90 @@ onClickOutside(event: MouseEvent) {
     this.dialogRef.close();
   }
 
-  save(): void {
-    if (this.timesheetForm.invalid) return;
+  // save(): void {
+  //   if (this.timesheetForm.invalid) return;
     
-    // Check if duration is greater than 0
-    if (this.hours.value === 0 && this.minutes.value === 0) {
-      this.timesheetForm.get('hours')?.setErrors({ 'zeroDuration': true });
-      return;
-    }
+  //   // Check if duration is greater than 0
+  //   if (this.hours.value === 0 && this.minutes.value === 0) {
+  //     this.timesheetForm.get('hours')?.setErrors({ 'zeroDuration': true });
+  //     return;
+  //   }
 
-    this.isSubmitting = true;
+  //   this.isSubmitting = true;
     
-    const formValues = this.timesheetForm.value;
-    const totalMinutes = (formValues.hours * 60) + formValues.minutes;
+  //   const formValues = this.timesheetForm.value;
+  //   const totalMinutes = (formValues.hours * 60) + formValues.minutes;
     
-    const timesheet = {
-      empId: this.data.empId,
-      taskId: formValues.taskId,
-      date: formValues.date,
-      totalMinutes: totalMinutes,
-      notes: formValues.notes
-    };
+  //   const timesheet = {
+  //     empId: this.data.empId,
+  //     taskId: formValues.taskId,
+  //     date: formValues.date,
+  //     totalMinutes: totalMinutes,
+  //     notes: formValues.notes
+  //   };
 
-    console.log(timesheet);
+  //   console.log(timesheet);
     
-    this.http.post(`${this.baseURL}/timesheet/addlog`, timesheet).subscribe({
-      next: (response: any) => {
-        console.log('Timesheet saved successfully', response);
-        this.dialogRef.close(response);
-      },
-      error: (error: any) => {
-        console.error('Error saving timesheet', error);
-        this.isSubmitting = false;
-        // Handle error (you could add error handling UI here)
-      }
-    });
+  //   this.http.post(`${this.baseURL}/timesheet/addlog`, timesheet).subscribe({
+  //     next: (response: any) => {
+  //       console.log('Timesheet saved successfully', response);
+  //       this.dialogRef.close(response);
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error saving timesheet', error);
+  //       this.isSubmitting = false;
+  //       // Handle error (you could add error handling UI here)
+  //     }
+  //   });
+  // }
+
+
+save(): void {
+  if (this.timesheetForm.invalid) {
+    this.toastr.error('Please correct the form errors.', 'Form Invalid');
+    return;
   }
+
+  if (this.hours.value === 0 && this.minutes.value === 0) {
+    this.timesheetForm.get('hours')?.setErrors({ 'zeroDuration': true });
+    this.toastr.warning('Duration cannot be zero.', 'Invalid Time');
+    return;
+  }
+
+  this.isSubmitting = true;
+
+  const formValues = this.timesheetForm.value;
+  const totalMinutes = (formValues.hours * 60) + formValues.minutes;
+
+  const timesheet = {
+    empId: this.data.empId,
+    taskId: formValues.taskId,
+    date: formValues.date,
+    totalMinutes: totalMinutes,
+    notes: formValues.notes
+  };
+
+  this.http.post(`${this.baseURL}/timesheet/addlog`, timesheet).subscribe({
+    next: (response: any) => {
+      this.toastr.success('Timesheet saved successfully.', 'Success');
+      this.dialogRef.close(response);
+    },
+    error: (error: any) => {
+      this.isSubmitting = false;
+
+      if (error.status === 400) {
+        const message = typeof error.error === 'string' ? error.error : 'Invalid input data.';
+        this.toastr.error(message, 'Bad Request');
+      } else if (error.status === 500) {
+        this.toastr.error('A server error occurred. Please try again later.', 'Server Error');
+      } else {
+        this.toastr.error('An unexpected error occurred. Please try again.', 'Error');
+      }
+
+      console.error('Error saving timesheet:', error);
+    }
+  });
+}
+
+
 }

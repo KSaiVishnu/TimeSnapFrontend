@@ -101,6 +101,23 @@
     <p class="empty-message">
       You don't have any timesheet entries for the selected date range.
     </p>
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      "
+      class="add-container"
+    >
+      <button
+        href="javascript:void(0)"
+        class="add-log"
+        (click)="onAddTimesheet()"
+      >
+        <i class="fas fa-plus"></i>Add Log
+      </button>
+    </div>
   </div>
 
   <!-- Timeline and Data Container -->
@@ -138,9 +155,13 @@
     <!-- Timesheet Groups -->
     <div class="timesheet-groups-container">
       <div class="add-container">
-        <a href="javascript:void(0)" class="add-log" (click)="onAddTimesheet()">
+        <button
+          href="javascript:void(0)"
+          class="add-log"
+          (click)="onAddTimesheet()"
+        >
           <i class="fas fa-plus"></i>Add Log
-        </a>
+        </button>
       </div>
       <div
         *ngFor="let group of groupedData; let isLast = last"
