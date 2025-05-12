@@ -493,3 +493,25 @@
     }
   }
 }
+
+
+.add-log-btn {
+  background: linear-gradient(90deg, #6F43C0 0%, #8A63D2 100%);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(111, 67, 192, 0.3);
+}
+
+.add-log-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(111, 67, 192, 0.4);
+}

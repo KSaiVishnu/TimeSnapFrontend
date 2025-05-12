@@ -73,7 +73,6 @@ interface TimesheetGroup {
     MatDateRangeInput,
     MatDatepickerToggle,
     FormsModule,
-    MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
     MatDatepickerModule,

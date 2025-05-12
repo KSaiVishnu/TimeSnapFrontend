@@ -1,0 +1,151 @@
+<div class="timesheet-form-container">
+  <!-- <h2 class="form-title">Add Time Log</h2> -->
+  
+  <mat-card>
+    <div class="card-header">
+      <h3 class="card-header-title">Add Timesheet</h3>
+          <button class="close-button" (click)="cancel()">
+❌    </button>
+    </div>
+    
+    <mat-card-content>
+      <form [formGroup]="logForm" (ngSubmit)="saveLog()">
+        <div class="form-grid">
+          <!-- Employee Section -->
+          <div class="field-group full-width">
+            <label class="field-label required-field">Employee</label>
+            <mat-form-field appearance="fill">
+              <mat-label>Select or search employee</mat-label>
+              <input
+                type="search"
+                matInput
+                formControlName="empId"
+                (input)="filterEmployees()"
+                [matAutocomplete]="autoEmp"
+                placeholder="Type to search by ID or name"
+              />
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-spinner *ngIf="loadingEmployees" matSuffix diameter="16"></mat-spinner>
+              <!-- <mat-error *ngIf="hasError('empId', 'required')">Employee is required</mat-error> -->
+              <mat-autocomplete #autoEmp="matAutocomplete" (optionSelected)="onEmpSelected($event)">
+                <mat-option *ngFor="let emp of filteredEmployees" [value]="emp.empId">
+                  {{ emp.empId }} - {{ emp.userName }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <!-- <div class="helper-text" *ngIf="!hasError('empId', 'required')">
+              Search by employee ID or name
+            </div> -->
+          </div>
+
+          <!-- Task Section -->
+          <div class="field-group full-width">
+            <label class="field-label required-field">Task</label>
+            <mat-form-field appearance="fill">
+              <mat-label>Select or search task</mat-label>
+              <input
+                type="search"
+                matInput
+                formControlName="taskId"
+                (input)="filterTasks()"
+                [matAutocomplete]="autoTask"
+                placeholder="Type to search by ID or name"
+              />
+              <mat-icon matPrefix>assignment</mat-icon>
+              <mat-spinner *ngIf="loadingTasks" matSuffix diameter="16"></mat-spinner>
+              <!-- <mat-error *ngIf="hasError('taskId', 'required')">Task is required</mat-error> -->
+              <mat-autocomplete #autoTask="matAutocomplete" (optionSelected)="onTaskSelected($event)">
+                <mat-option *ngFor="let task of filteredTasks" [value]="task.taskId">
+                  {{ task.taskId }} - {{ task.taskName }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <!-- <div class="helper-text" *ngIf="!hasError('taskId', 'required')">
+              Search by task ID or name
+            </div> -->
+          </div>
+
+          <!-- <div class="form-divider"></div> -->
+          
+          <!-- Date Section -->
+          <div class="field-group">
+            <label class="field-label required-field">Date</label>
+            <mat-form-field appearance="fill">
+              <mat-label>Select date</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="date" placeholder="MM/DD/YYYY" />
+              <mat-icon matPrefix>event</mat-icon>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="hasError('date', 'required')">Date is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Time Section -->
+          <div class="field-group">
+            <label class="field-label required-field">Time Duration</label>
+            <div class="time-section">
+              <!-- Hours -->
+              <mat-form-field appearance="fill">
+                <mat-label>Hours</mat-label>
+                <mat-select formControlName="hours">
+                  <mat-option *ngFor="let h of hourOptions" [value]="h">{{ formatNumber(h) }}</mat-option>
+                </mat-select>
+                <!-- <mat-icon matPrefix>schedule</mat-icon> -->
+              </mat-form-field>
+
+              <!-- Minutes -->
+              <mat-form-field appearance="fill">
+                <mat-label>Minutes</mat-label>
+                <mat-select formControlName="minutes">
+                  <mat-option *ngFor="let m of minuteOptions" [value]="m">{{ formatNumber(m) }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!-- <div class="helper-text">
+              Total time spent on the task
+            </div> -->
+          </div>
+
+          <!-- Note Section -->
+          <div class="field-group full-width">
+            <label class="field-label required-field">Notes</label>
+            <mat-form-field appearance="outline">
+              <mat-label>Select activity type</mat-label>
+              <mat-select formControlName="notes">
+                <mat-option *ngFor="let note of notesOptions" [value]="note">{{ note }}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>note</mat-icon>
+              <mat-error *ngIf="hasError('notes', 'required')">Activity type is required</mat-error>
+            </mat-form-field>
+            <!-- <div class="helper-text">
+              Category of work performed
+            </div> -->
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div *ngIf="formError" class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ formError }}</span>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+          <button type="button" mat-stroked-button (click)="cancel()">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            mat-raised-button 
+            color="primary" 
+            [disabled]="isSubmitting"
+            class="save-button"
+          >
+            <mat-spinner *ngIf="isSubmitting" diameter="16" class="button-spinner"></mat-spinner>
+            <span *ngIf="!isSubmitting">Save Log</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

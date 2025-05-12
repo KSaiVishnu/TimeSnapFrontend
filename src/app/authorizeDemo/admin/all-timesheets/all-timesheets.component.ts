@@ -29,6 +29,7 @@ import { MinutesToHoursPipe } from "../../../shared/pipes/minutes-to-hours.pipe"
 import { TimeFormatPipe } from "../../../shared/pipes/time-format.pipe";
 import { DeleteTimesheetPopupComponent } from '../../../delete-timesheet-popup/delete-timesheet-popup.component';
 import { EditLogPopupComponent } from '../../../edit-log-popup/edit-log-popup.component';
+import { AddLogAdminComponent } from '../../../add-log-admin/add-log-admin.component';
 
 enum ApiStatus {
   INITIAL = 'INITIAL',
@@ -410,6 +411,18 @@ export class AllTimesheetsComponent {
       }
     });
 
+  }
+
+  onAddLog(){
+    
+    const dialogRef = this.dialog.open(AddLogAdminComponent, {
+      width: '50%',
+    });
+    dialogRef.afterClosed().subscribe((res: any) => {
+      if(res){
+        this.fetchTimesheets();
+      }
+    });
   }
 
   getTotalTime(timesheets: any[]): string {

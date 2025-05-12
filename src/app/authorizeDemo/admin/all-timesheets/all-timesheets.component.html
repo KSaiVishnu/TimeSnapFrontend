@@ -58,11 +58,19 @@
       </mat-form-field>
       <!-- <button mat-raised-button color="primary" (click)="fetchTimesheets()">Apply</button> -->
 
-      <mat-form-field appearance="fill" style="width: 300px; margin: 0px 0px 10px 20px;">
+      <mat-form-field
+        appearance="fill"
+        style="width: 300px; margin: 0px 0px 10px 20px"
+      >
         <mat-label>Search by Username</mat-label>
-        <input type="search" matInput placeholder="Enter username" [(ngModel)]="searchQuery" (ngModelChange)="filterTimesheets()" />
+        <input
+          type="search"
+          matInput
+          placeholder="Enter username"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="filterTimesheets()"
+        />
       </mat-form-field>
-      
     </div>
     <button
       *ngIf="timesheetsData.length !== 0"
@@ -72,6 +80,10 @@
       style="margin-left: auto; margin-right: 10px"
     >
       Export
+    </button>
+
+    <button (click)="onAddLog()" class="add-log-btn">
+      <i class="fas fa-plus"></i> Add Log
     </button>
   </div>
 
@@ -124,7 +136,9 @@
 
       <tbody>
         <!-- Loop through each user -->
-        <ng-container *ngFor="let user of filteredTimesheetsData; let i = index">
+        <ng-container
+          *ngFor="let user of filteredTimesheetsData; let i = index"
+        >
           <!-- User Name Row (Spanning All Columns) -->
           <!-- <tr class="user-row" (click)="toggleUser(i)">
             <td colspan="6">

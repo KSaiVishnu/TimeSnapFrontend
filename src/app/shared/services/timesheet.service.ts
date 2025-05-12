@@ -41,5 +41,17 @@ export class TimesheetService {
       params,
     });
   }
+
+    getAllEmployees(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseURL}/user-employee`);
+  }
+
+  getTasksByEmpId(empId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseURL}/tasks/${empId}`);
+  }
+
+  addLogForUser(payload: any): Observable<any> {
+    return this.http.post(`${this.baseURL}/timelogs`, payload);
+  }
   
 }
