@@ -19,14 +19,14 @@ export class AppComponent implements OnInit {
       const url = event.urlAfterRedirects;
 
       if (url === '/' || url === '') {
-        this.titleService.setTitle('Toolsikt');  // root => dashboard
+        this.titleService.setTitle('ToolSikt');  // root => dashboard
         this.updateFavicon('main-logo.png');
       }
       // } else if (url.startsWith('/signin')) {
       //   this.titleService.setTitle('Timesheet'); // time tracker page
       // } 
       else {
-        this.titleService.setTitle('Time Sheet'); // fallback
+        this.titleService.setTitle('TimeSikt'); // fallback
         this.updateFavicon('logo.png');
       }
     });

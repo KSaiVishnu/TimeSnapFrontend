@@ -567,6 +567,9 @@ animation: pulse 2s infinite;
   z-index: 1;
   width: 100%;
   max-width: 300px;
+    @media (max-width: 992px) {
+    display: none;
+  }
 }
 
 .feature-item {
