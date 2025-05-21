@@ -24,9 +24,11 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetVerifyOtpComponent } from './reset-verify-otp/reset-verify-otp.component';
 import { SetNewPasswordComponent } from './user/set-new-password/set-new-password.component';
 import { TimesheetComponent } from './layouts/timesheet/timesheet.component';
+import { LandingPageComponent } from './landing-page/landing-page.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/signin', pathMatch: 'full' },
+    // { path: '', redirectTo: '/signin', pathMatch: 'full' },
+    { path: '', component: LandingPageComponent }, // landing page on app root
     {
       path: '', component: UserComponent,
       children: [

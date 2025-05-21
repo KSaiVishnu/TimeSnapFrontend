@@ -1,0 +1,18 @@
+.landing-page ul {
+  list-style: none;
+  padding: 0;
+}
+
+.landing-page li {
+  margin-bottom: 20px;
+}
+
+.landing-page a {
+  font-weight: bold;
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.landing-page a:hover {
+  text-decoration: underline;
+}

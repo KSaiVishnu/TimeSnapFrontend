@@ -174,8 +174,11 @@ export class AllTasksComponent implements AfterViewInit, OnInit {
 
   filterTasks(){
     const query = this.searchQuery.toLowerCase();
-    this.filteredTasksData = this.tasks.filter(task =>
-      task.taskId.toLowerCase().includes(query)
+    // this.filteredTasksData = this.tasks.filter(task =>
+    //   task.taskId.toLowerCase().includes(query)
+    // );
+        this.filteredTasksData = this.tasks.filter((task) =>
+      (task.taskId + ' - ' + task.taskName).toLowerCase().includes(query)
     );
     this.dataSource = new MatTableDataSource(this.filteredTasksData);
     this.dataSource.paginator = this.paginator;

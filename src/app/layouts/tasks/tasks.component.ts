@@ -673,17 +673,21 @@ export class TasksComponent {
     let filtered = [...this.allTasks];
 
     // Search by task name
-    const searchText = this.searchText.toLowerCase();
-    if (searchText) {
-      filtered = filtered.filter((task) =>
-        task.taskName.toLowerCase().includes(searchText)
-      );
-    }
+    // const searchText = this.searchText.toLowerCase();
+    // if (searchText) {
+    //   filtered = filtered.filter((task) =>
+    //     task.taskName.toLowerCase().includes(searchText)
+    //   );
+    // }
 
     const searchByTaskId = this.searchTaskId.toLowerCase();
     if (searchByTaskId) {
-      filtered = filtered.filter((task) =>
-        task.taskId.toLowerCase().includes(searchByTaskId)
+      filtered = filtered.filter(
+        (task) =>
+          (task.taskId + ' ' + task.taskName)
+            .toLowerCase()
+            .includes(searchByTaskId)
+        // (task.taskId + ' - ' + task.taskName)
       );
     }
 

@@ -114,18 +114,25 @@
 <!-- all-tasks.html -->
 <div class="tasks-container">
   <div class="header-actions">
-    <h2 class="section-title">{{billingType | titlecase}} Task Management</h2>
-
-    <mat-form-field appearance="fill" style="width: 300px; margin: 0px 0px 0px 0px;">
-      <mat-label>Search by TaskId</mat-label>
-      <input type="search" matInput placeholder="Enter TaskId" [(ngModel)]="searchQuery" (ngModelChange)="filterTasks()" />
+    <h2 class="section-title">{{ billingType | titlecase }} Task Management</h2>
+    <mat-form-field
+      appearance="fill"
+      style="width: 300px; margin: 0px 0px 0px 0px"
+    >
+      <mat-label>Search Task</mat-label>
+      <input
+        type="search"
+        matInput
+        placeholder="Enter Task ID or Name"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="filterTasks()"
+      />
     </mat-form-field>
 
     <!-- <mat-form-field appearance="fill" style="width: 300px; margin: 0px 0px 0px 0px;">
       <mat-label>Search by TaskId</mat-label>
       <input type="search" matInput placeholder="Enter TaskId" [(ngModel)]="searchQuery" (ngModelChange)="filterTasks()" />
     </mat-form-field> -->
-    
 
     <button (click)="openAddTaskPopup()" class="add-task-btn">
       <i class="fas fa-plus"></i>
@@ -183,7 +190,10 @@
         <ng-container matColumnDef="assigneeNames">
           <th mat-header-cell *matHeaderCellDef>Assignees</th>
           <td mat-cell *matCellDef="let element">
-            <div class="task-assignee-container" *ngIf="element.assignees.length > 0">
+            <div
+              class="task-assignee-container"
+              *ngIf="element.assignees.length > 0"
+            >
               <app-edit-assignee-names
                 [assignee]="element.assignees"
                 [taskId]="element.taskId"
@@ -193,7 +203,9 @@
                 (assigneesUpdated)="updateAssigneeNames(element, $event)"
               ></app-edit-assignee-names>
             </div>
-            <div style="color: red;" *ngIf="element.assignees.length <= 0"> --- No Assignees --- </div>
+            <div style="color: red" *ngIf="element.assignees.length <= 0">
+              --- No Assignees ---
+            </div>
           </td>
         </ng-container>
 
@@ -292,10 +304,8 @@
       </button>
     </div>
 
-
-
     <!-- No Tasks Empty State -->
-<!-- <div  *ngIf="apiStatus === 'SUCCESS' && tasks.length === 0" class="no-tasks">
+    <!-- <div  *ngIf="apiStatus === 'SUCCESS' && tasks.length === 0" class="no-tasks">
   <h3>No Tasks Available</h3>
   <p>Get started by adding your first task</p>
   <button (click)="openAddTaskPopup()" class="add-task-btn">
@@ -303,8 +313,6 @@
     <span>Add Task</span>
   </button>
 </div> -->
-
-
   </div>
 
   <!-- <div *ngIf="!isLoading && tasks.length === 0" class="empty-state">
@@ -316,6 +324,4 @@
       <span>Add Task</span>
     </button>
   </div> -->
-
-
 </div>
