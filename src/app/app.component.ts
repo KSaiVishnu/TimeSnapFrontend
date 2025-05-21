@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 
       if (url === '/' || url === '') {
         this.titleService.setTitle('Toolsikt');  // root => dashboard
-        this.updateFavicon('favicon.ico');
+        this.updateFavicon('main-logo.png');
       }
       // } else if (url.startsWith('/signin')) {
       //   this.titleService.setTitle('Timesheet'); // time tracker page
