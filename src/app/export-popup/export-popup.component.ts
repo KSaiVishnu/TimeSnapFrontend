@@ -50,13 +50,31 @@ export class ExportPopupComponent {
       TaskName: ts.taskName,
       UserName: ts.userName,
       Date: new Date(ts.date).toLocaleDateString(),
-      DailyLog:
-        Math.floor(ts.totalMinutes / 60) +
-        ':' +
-        (ts.totalMinutes % 60).toString().padStart(2, '0'),
+      // DailyLog:
+      //   Math.floor(ts.totalMinutes / 60) +
+      //   ':' +
+      //   (ts.totalMinutes % 60).toString().padStart(2, '0'),
+      DailyLog: +(ts.totalMinutes / 60).toFixed(2),
       BillingType: ts.billingType,
       Notes: ts.notes,
     }));
+
+    // Calculate total DailyLog
+    const totalLog = exportData.reduce(
+      (sum: any, entry: any) => sum + entry.DailyLog,
+      0
+    );
+
+    // Add summary row
+    exportData.push({
+      TaskId: '',
+      TaskName: '',
+      UserName: 'Total Hours',
+      Date: '',
+      DailyLog: +totalLog.toFixed(2),
+      BillingType: '',
+      Notes: '',
+    });
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
     const workbook: XLSX.WorkBook = {

@@ -1037,11 +1037,16 @@ trigger("rotateAnimation", [
 
 .add-container {
   display: flex;
-  justify-content: flex-end; /* Aligns items to the right */
+  justify-content: space-between; /* Pushes content to both ends */
   position: relative; /* Needed for absolute positioning inside the container */
   margin-bottom: 12px;
 }
 
+.total-time {
+  font-weight: 600;
+  font-size: 1rem;
+  align-self: center;
+}
 
 .add-log {
   background: linear-gradient(90deg, #6F43C0 0%, #8A63D2 100%);

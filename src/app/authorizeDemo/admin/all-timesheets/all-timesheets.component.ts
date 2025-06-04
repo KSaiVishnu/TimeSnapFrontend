@@ -1,6 +1,9 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule, MatDateRangePicker } from '@angular/material/datepicker';
+import {
+  MatDatepickerModule,
+  MatDateRangePicker,
+} from '@angular/material/datepicker';
 import {
   FormBuilder,
   FormControl,
@@ -8,7 +11,11 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ExportPopupComponent } from '../../../export-popup/export-popup.component';
 import { CommonModule } from '@angular/common';
@@ -25,8 +32,8 @@ import { MatCard, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ErrorHandlerService } from '../../../shared/services/error-handler.service';
 import { MatButton } from '@angular/material/button';
-import { MinutesToHoursPipe } from "../../../shared/pipes/minutes-to-hours.pipe";
-import { TimeFormatPipe } from "../../../shared/pipes/time-format.pipe";
+import { MinutesToHoursPipe } from '../../../shared/pipes/minutes-to-hours.pipe';
+import { TimeFormatPipe } from '../../../shared/pipes/time-format.pipe';
 import { DeleteTimesheetPopupComponent } from '../../../delete-timesheet-popup/delete-timesheet-popup.component';
 import { EditLogPopupComponent } from '../../../edit-log-popup/edit-log-popup.component';
 import { AddLogAdminComponent } from '../../../add-log-admin/add-log-admin.component';
@@ -54,8 +61,8 @@ enum ApiStatus {
     MatButton,
     MatDateRangePicker,
     MinutesToHoursPipe,
-    TimeFormatPipe
-],
+    TimeFormatPipe,
+  ],
   templateUrl: './all-timesheets.component.html',
   styleUrl: './all-timesheets.component.css',
 })
@@ -232,10 +239,8 @@ export class AllTimesheetsComponent {
   paginatedTimesheets: any[] = [];
   expandedIndexes: Set<number> = new Set();
 
-
   searchQuery: string = '';
- filteredTimesheetsData: any[] = [];
-
+  filteredTimesheetsData: any[] = [];
 
   currentPage: number = 1;
   pageSize: number = 100;
@@ -247,6 +252,8 @@ export class AllTimesheetsComponent {
   errorMessage: string = '';
   errorStatus: number | null = null;
 
+  totalMinutesAllUsers: number = 0;
+
   constructor(
     private http: HttpClient,
     private fb: FormBuilder,
@@ -256,26 +263,28 @@ export class AllTimesheetsComponent {
   ) {
     const today = new Date();
     const currentDay = today.getDay();
-    
+
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - currentDay + (currentDay === 0 ? -6 : 1));
-    
+    startOfWeek.setDate(
+      today.getDate() - currentDay + (currentDay === 0 ? -6 : 1)
+    );
+
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
-    
+
     this.range = this.fb.group({
       start: [startOfWeek],
       end: [endOfWeek],
     });
-    
+
     this.expandedUsers = new Array(this.timesheetsData.length).fill(true);
   }
 
   ngOnInit(): void {
     this.fetchTimesheets();
-      this.range.valueChanges.subscribe(() => {
-        this.fetchTimesheets();
-      });
+    this.range.valueChanges.subscribe(() => {
+      this.fetchTimesheets();
+    });
   }
 
   expandedUsers: boolean[] = [];
@@ -286,14 +295,12 @@ export class AllTimesheetsComponent {
 
   totalUsers: number = 0;
 
-
   filterTimesheets() {
     const query = this.searchQuery.toLowerCase();
-    this.filteredTimesheetsData = this.timesheetsData.filter(user =>
+    this.filteredTimesheetsData = this.timesheetsData.filter((user) =>
       user.userName.toLowerCase().includes(query)
     );
   }
-  
 
   fetchTimesheets() {
     if (!this.range.value.start || !this.range.value.end) return;
@@ -302,11 +309,11 @@ export class AllTimesheetsComponent {
       .set('startDate', this.formatDate(this.range.value.start))
       .set('endDate', this.formatDate(this.range.value.end))
       .set('billingType', this.billingType)
-      .set('page', this.currentPage)  // Send current page
+      .set('page', this.currentPage) // Send current page
       .set('pageSize', this.pageSize) // Send page size;
       .set('searchQuery', this.searchQuery);
 
-    console.log(this.currentPage,this.pageSize)
+    console.log(this.currentPage, this.pageSize);
 
     console.log(
       this.formatDate(this.range.value.start),
@@ -320,14 +327,20 @@ export class AllTimesheetsComponent {
         next: (response) => {
           console.log(response);
           this.apiStatus = ApiStatus.SUCCESS;
-          
+
           this.timesheetsData = response.timesheets;
           this.filteredTimesheetsData = [...this.timesheetsData];
 
+          let total = 0;
+          response.timesheets.forEach((employee: any) => {
+            employee.timesheets.forEach((ts: any) => {
+              total += ts.totalMinutes;
+            });
+          });
+          this.totalMinutesAllUsers = total;
 
           // this.totalPages = Math.ceil(response.totalUsers / this.pageSize); // Correct total pages
           // this.currentPage = 1; // Reset to first page on new fetch
-
 
           this.totalUsers = response.totalUsers;
           this.totalPages = Math.ceil(this.totalUsers / this.pageSize);
@@ -344,17 +357,16 @@ export class AllTimesheetsComponent {
         },
       });
   }
-    private handleError(error: HttpErrorResponse) {
-      const errorInfo = this.errorHandler.getErrorMessage(error);
-      this.errorStatus = errorInfo.status;
-      this.errorMessage = errorInfo.message;
-    } 
+  private handleError(error: HttpErrorResponse) {
+    const errorInfo = this.errorHandler.getErrorMessage(error);
+    this.errorStatus = errorInfo.status;
+    this.errorMessage = errorInfo.message;
+  }
 
+  onRetry() {
+    this.fetchTimesheets();
+  }
 
-    onRetry(){
-      this.fetchTimesheets();
-    }
-  
   private formatDate(date: Date | null): string {
     if (!date) return '';
     const localDate = new Date(
@@ -372,7 +384,7 @@ export class AllTimesheetsComponent {
     });
   }
 
-  openEditTimeSheetPopup(log: any){
+  openEditTimeSheetPopup(log: any) {
     console.log(log);
 
     // log.isEditing = true;
@@ -387,14 +399,13 @@ export class AllTimesheetsComponent {
     });
   }
 
-  openDeleteTimeSheetPopup(logId: any){
+  openDeleteTimeSheetPopup(logId: any) {
     console.log(logId);
-    
+
     const dialogRef = this.dialog.open(DeleteTimesheetPopupComponent, {
       width: '50%',
       data: { id: logId },
     });
-
 
     dialogRef.afterClosed().subscribe((deletedId) => {
       if (deletedId) {
@@ -406,20 +417,17 @@ export class AllTimesheetsComponent {
 
         // this.timesheets = [...this.timesheets]; // Ensure UI refresh
 
-
         this.fetchTimesheets();
       }
     });
-
   }
 
-  onAddLog(){
-    
+  onAddLog() {
     const dialogRef = this.dialog.open(AddLogAdminComponent, {
       width: '50%',
     });
     dialogRef.afterClosed().subscribe((res: any) => {
-      if(res){
+      if (res) {
         this.fetchTimesheets();
       }
     });
@@ -429,9 +437,10 @@ export class AllTimesheetsComponent {
     const totalMinutes = timesheets.reduce((sum, t) => sum + t.totalMinutes, 0);
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}`;
   }
-  
 
   private flattenTimesheets(): any[] {
     return this.timesheetsData.flatMap((user) =>

@@ -115,6 +115,8 @@ export class TimesheetComponent implements OnInit {
   totalHoursToday = 0
   totalHoursThisWeek = 0
 
+  totalMinutesInDateRange = 0
+
   // UI States
   loading = true
   pageLoading = false
@@ -282,6 +284,10 @@ export class TimesheetComponent implements OnInit {
     this.totalHoursToday = 0
     this.totalHoursThisWeek = 0
 
+    this.totalMinutesInDateRange = 0
+
+    console.log(this.groupedData);
+
     this.groupedData.forEach((group) => {
       const groupDate = new Date(group.date)
       groupDate.setHours(0, 0, 0, 0)
@@ -293,11 +299,15 @@ export class TimesheetComponent implements OnInit {
       if (groupDate >= weekStart && groupDate <= today) {
         this.totalHoursThisWeek += group.totalMinutes
       }
+
+      this.totalMinutesInDateRange += group.totalMinutes;
     })
 
     // Convert minutes to hours
     this.totalHoursToday = Math.round((this.totalHoursToday / 60) * 10) / 10
     this.totalHoursThisWeek = Math.round((this.totalHoursThisWeek / 60) * 10) / 10
+
+    console.log(this.totalMinutesInDateRange);
   }
 
   onPageChange(event: any): void {
