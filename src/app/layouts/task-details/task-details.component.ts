@@ -275,6 +275,7 @@ export class TaskDetailsComponent implements OnInit {
         error: (error: any) => {
           if (error.status === 404) {
             this.timesheets = [];
+              this.cdr.detectChanges(); // Force update when empty
           } else {
             console.error('Error fetching timesheets:', error);
           }

@@ -238,30 +238,53 @@ export class LineChartComponent implements OnChanges {
     //   hoursData = sortedEntries.map((entry) => entry[1]); // Corresponding hours
     // }
 
-
-
     let categories: string[] = [];
     let hoursData: number[] = [];
 
-    console.log(this.taskDetails)
-  
-    if (!this.taskDetails || !this.taskDetails.startDate || !this.taskDetails.dueDate) {
+    console.log(this.taskDetails);
+
+    if (
+      !this.taskDetails ||
+      !this.taskDetails.startDate ||
+      !this.taskDetails.dueDate
+    ) {
       categories = ['No Data'];
       hoursData = [0];
       return;
     }
-  
-    const startDate = new Date(this.taskDetails.startDate);
-    const dueDate = new Date(this.taskDetails.dueDate);
+
+    const startDateOriginal = new Date(this.taskDetails.startDate);
+    let dueDate = new Date(this.taskDetails.dueDate);
+
+    // Calculate difference in months
+    const diffInMonths =
+      (dueDate.getFullYear() - startDateOriginal.getFullYear()) * 12 +
+      (dueDate.getMonth() - startDateOriginal.getMonth());
+
+    // Limit startDate to last 3 months if diff > 3 months
+    let startDate = startDateOriginal;
+    if (diffInMonths > 3) {
+      // startDate = new Date(dueDate);
+      startDate = new Date(); // today
+      startDate.setMonth(startDate.getMonth() - 3);
+
+      dueDate = new Date();
+    }
+
+    // Create map for date -> hours worked
     const groupedData = new Map<string, number>();
 
-    console.log(startDate, dueDate)
-  
+    console.log(startDate, dueDate);
+
     // Initialize all dates in the range with 0 hours
-    for (let d = new Date(startDate); d <= dueDate; d.setDate(d.getDate() + 1)) {
+    for (
+      let d = new Date(startDate);
+      d <= dueDate;
+      d.setDate(d.getDate() + 1)
+    ) {
       groupedData.set(new Date(d).toLocaleDateString('en-CA'), 0);
     }
-  
+
     // Fill in timesheet data
     if (this.timesheets && this.timesheets.length > 0) {
       this.timesheets.forEach((t) => {
@@ -272,13 +295,10 @@ export class LineChartComponent implements OnChanges {
         }
       });
     }
-  
+
     // Extract sorted data
     categories = Array.from(groupedData.keys());
     hoursData = Array.from(groupedData.values());
-
-
-
 
     this.chartOptions = {
       series: [
